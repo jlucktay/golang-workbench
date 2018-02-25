@@ -28,9 +28,11 @@ type action func(current score) (result score, turnIsOver bool)
 // roles swap.  Otherwise, the roll value is added to thisTurn.
 func roll(s score) (score, bool) {
 	outcome := rand.Intn(6) + 1 // A random int in [1, 6]
+
 	if outcome == 1 {
 		return score{s.opponent, s.player, 0}, true
 	}
+
 	return score{s.player, s.opponent, outcome + s.thisTurn}, false
 }
 
@@ -49,6 +51,7 @@ func stayAtK(k int) strategy {
 		if s.thisTurn >= k {
 			return stay
 		}
+
 		return roll
 	}
 }
@@ -59,23 +62,28 @@ func play(strategy0, strategy1 strategy) int {
 	var s score
 	var turnIsOver bool
 	currentPlayer := rand.Intn(2) // Randomly decide who plays first
+
 	for s.player+s.thisTurn < win {
 		action := strategies[currentPlayer](s)
 		s, turnIsOver = action(s)
+
 		if turnIsOver {
 			currentPlayer = (currentPlayer + 1) % 2
 		}
 	}
+
 	return currentPlayer
 }
 
 // roundRobin simulates a series of games between every pair of strategies.
 func roundRobin(strategies []strategy) ([]int, int) {
 	wins := make([]int, len(strategies))
+
 	for i := 0; i < len(strategies); i++ {
 		for j := i + 1; j < len(strategies); j++ {
 			for k := 0; k < gamesPerSeries; k++ {
 				winner := play(strategies[i], strategies[j])
+
 				if winner == 0 {
 					wins[i]++
 				} else {
@@ -84,7 +92,9 @@ func roundRobin(strategies []strategy) ([]int, int) {
 			}
 		}
 	}
+
 	gamesPerStrategy := gamesPerSeries * (len(strategies) - 1) // no self play
+
 	return wins, gamesPerStrategy
 }
 
@@ -93,25 +103,32 @@ func roundRobin(strategies []strategy) ([]int, int) {
 // e.g., ratios(1, 2, 3) = "1/6 (16.7%), 2/6 (33.3%), 3/6 (50.0%)"
 func ratioString(vals ...int) string {
 	total := 0
+
 	for _, val := range vals {
 		total += val
 	}
+
 	s := ""
+
 	for _, val := range vals {
 		if s != "" {
 			s += ", "
 		}
+
 		pct := 100 * float64(val) / float64(total)
 		s += fmt.Sprintf("%d/%d (%0.1f%%)", val, total, pct)
 	}
+
 	return s
 }
 
 func main() {
 	strategies := make([]strategy, win)
+
 	for k := range strategies {
 		strategies[k] = stayAtK(k + 1)
 	}
+
 	wins, games := roundRobin(strategies)
 
 	for k := range strategies {
