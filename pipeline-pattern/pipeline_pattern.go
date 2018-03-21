@@ -37,10 +37,6 @@ func pipe(input chan uint64) chan uint64 {
 }
 
 func factorial(in uint64) uint64 {
-	if in == 0 {
-		return 0
-	}
-
 	total := uint64(1)
 
 	for i := in; i > 1; i-- {
