@@ -24,24 +24,26 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var f func(*html.Node)
+	fmt.Println(getDayDesc(doc))
 
-	f = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == "a" {
-			for _, a := range n.Attr {
-				if a.Key == "href" {
-					fmt.Println(a.Val)
-					break
-				}
-			}
-		}
+	// var f func(*html.Node)
 
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
-		}
-	}
+	// f = func(n *html.Node) {
+	// 	if n.Type == html.ElementNode && n.Data == "a" {
+	// 		for _, a := range n.Attr {
+	// 			if a.Key == "href" {
+	// 				// fmt.Println(a.Val)
+	// 				break
+	// 			}
+	// 		}
+	// 	}
 
-	f(doc)
+	// 	for c := n.FirstChild; c != nil; c = c.NextSibling {
+	// 		f(c)
+	// 	}
+	// }
+
+	// f(doc)
 }
 
 /*
@@ -50,16 +52,25 @@ func main() {
 func getDayDesc(n *html.Node) string {
 	var s string
 
+	// s += "Data: <" + n.Data + ">\n"
+
 	if n.Type == html.ElementNode && n.Data == "article" {
 		for _, a := range n.Attr {
 			if a.Key == "class" && strings.Contains(a.Val, "day-desc") {
-				s += ""
+				s += `
+				*****
+				*   *
+				* x *
+				*   *
+				*****
+`
 				break
 			}
 		}
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		// s += "Type: '" + string(c.Type) + "'\n"
 		s += getDayDesc(c)
 	}
 
