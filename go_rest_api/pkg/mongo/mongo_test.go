@@ -1,9 +1,11 @@
 package mongo_test
 
 import (
-	"go_rest_api/pkg/mongo"
 	"log"
 	"testing"
+
+	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/mongo"
 )
 
 const (

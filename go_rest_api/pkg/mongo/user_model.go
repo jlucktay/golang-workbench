@@ -3,6 +3,8 @@ package mongo
 import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+
+	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
 )
 
 type userModel struct {

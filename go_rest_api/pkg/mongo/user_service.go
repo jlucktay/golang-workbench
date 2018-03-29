@@ -1,9 +1,10 @@
 package mongo
 
 import (
-	"../../../go_rest_api/pkg/root"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+
+	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
 )
 
 type UserService struct {
