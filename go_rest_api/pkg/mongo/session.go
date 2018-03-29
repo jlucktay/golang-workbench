@@ -29,3 +29,10 @@ func (s *Session) Close() {
 		s.session.Close()
 	}
 }
+
+func (s *Session) DropDatabase(db string) error {
+	if s.session != nil {
+		return s.session.DB(db).DropDatabase()
+	}
+	return nil
+}

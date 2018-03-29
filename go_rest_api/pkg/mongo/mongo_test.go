@@ -24,7 +24,11 @@ func createUser_should_insert_user_into_mongo(t *testing.T) {
 	if err != nil {
 		log.Fatalf("Unable to connect to mongo: %s", err)
 	}
-	defer session.Close()
+	defer func() {
+		session.DropDatabase(dbName)
+		session.Close()
+	}()
+
 	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName)
 
 	testUsername := "integration_test_user"
