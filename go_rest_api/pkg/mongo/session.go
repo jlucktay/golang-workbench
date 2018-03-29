@@ -8,31 +8,22 @@ type Session struct {
 	session *mgo.Session
 }
 
-func NewSession(url string) (*Session, error) {
-	session, err := mgo.Dial("localhost:27017")
+func (s *Session) Open() error {
+	var err error
+	s.session, err = mgo.Dial("127.0.0.1:27017")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &Session{session}, err
+	s.session.SetMode(mgo.Monotonic, true)
+	return nil
 }
 
-func (s *Session) Copy() *Session {
-	return &Session{s.session.Copy()}
-}
-
-func (s *Session) GetCollection(db string, col string) *mgo.Collection {
-	return s.session.DB(db).C(col)
+func (s *Session) Copy() *mgo.Session {
+	return s.session.Copy()
 }
 
 func (s *Session) Close() {
 	if s.session != nil {
 		s.session.Close()
 	}
-}
-
-func (s *Session) DropDatabase(db string) error {
-	if s.session != nil {
-		return s.session.DB(db).DropDatabase()
-	}
-	return nil
 }
