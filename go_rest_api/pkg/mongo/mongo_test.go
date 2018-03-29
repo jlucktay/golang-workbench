@@ -40,7 +40,7 @@ func createUser_should_insert_user_into_mongo(t *testing.T) {
 		Password: testPassword}
 
 	//Act
-	err = userService.Create(&user)
+	err = userService.CreateUser(&user)
 
 	//Assert
 	if err != nil {
