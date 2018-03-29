@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/mock"
 	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/mongo"
 )
 
@@ -29,7 +30,8 @@ func createUser_should_insert_user_into_mongo(t *testing.T) {
 		session.Close()
 	}()
 
-	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName)
+	mockHash := mock.Hash{}
+	userService := mongo.NewUserService(session.Copy(), dbName, userCollectionName, &mockHash)
 
 	testUsername := "integration_test_user"
 	testPassword := "integration_test_password"
