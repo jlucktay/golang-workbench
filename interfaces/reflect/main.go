@@ -1,3 +1,4 @@
+// The 'reflect' package in the standard library lets Go examine aspects of itself at runtime.
 package main
 
 import (

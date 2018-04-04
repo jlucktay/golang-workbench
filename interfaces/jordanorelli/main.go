@@ -1,3 +1,4 @@
+// Playing with JSON marshaling combined with parsing timestamp fields.
 package main
 
 import (

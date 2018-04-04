@@ -1,3 +1,4 @@
+// Chaining things together through the magic of interfaces!
 package main
 
 import (
