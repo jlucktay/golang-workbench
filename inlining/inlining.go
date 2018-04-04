@@ -1,3 +1,5 @@
+// See the accompanying README.
+// The Go compiler is pretty cool/smart!
 package main
 
 import (

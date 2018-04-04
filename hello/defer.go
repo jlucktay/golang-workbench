@@ -1,3 +1,4 @@
+// The 'defer' keyword will defer execution until the end of that block.
 package main
 
 import "fmt"

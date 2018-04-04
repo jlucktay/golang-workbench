@@ -1,3 +1,4 @@
+// Switch statements are nice and handy.
 package main
 
 import (

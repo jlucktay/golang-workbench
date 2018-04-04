@@ -1,3 +1,4 @@
+// Run something else in the shell
 package main
 
 import (

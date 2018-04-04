@@ -1,3 +1,4 @@
+// Practising with JSON marshaling.
 package main
 
 import (

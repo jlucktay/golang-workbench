@@ -1,3 +1,4 @@
+// Go is reasonably nice and clever about default values for builtin variable types.
 package main
 
 import "fmt"

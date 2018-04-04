@@ -1,3 +1,4 @@
+// One of the first bits of Go code I ever wrote.
 package main
 
 import (

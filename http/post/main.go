@@ -1,3 +1,6 @@
+// Makes a HTTP POST request to talk to the Google Translate API.
+// Also makes use of the 'gcloud' command from the GCP SDK: https://cloud.google.com/sdk/
+// There was some pre-setup required in GCP to create/authorise a service account.
 package main
 
 import (

@@ -1,3 +1,4 @@
+// A tiny HTTP server, using some packages from the standard library.
 package main
 
 import (

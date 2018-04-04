@@ -1,3 +1,4 @@
+// Playing around with this prime sieve example from the golang.org front page.
 package main
 
 import (

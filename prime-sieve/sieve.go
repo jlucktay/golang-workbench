@@ -1,6 +1,5 @@
 // A concurrent prime sieve
 // https://golang.org/doc/play/sieve.go
-
 package main
 
 import "fmt"

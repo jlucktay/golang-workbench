@@ -1,3 +1,4 @@
+// Playing around with html.Parse from the (extended) standard library.
 package main
 
 import (

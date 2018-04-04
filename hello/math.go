@@ -1,3 +1,4 @@
+// The 'math' package in the standard library contains lots of nice things.
 package main
 
 import (

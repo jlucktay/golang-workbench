@@ -1,3 +1,4 @@
+// Package fizzbuzz implements a basic function for this lovely interview question.
 package fizzbuzz
 
 import (
@@ -8,7 +9,7 @@ import (
 // Fizzbuzz: See https://wikipedia.org/wiki/Fizz_buzz
 func fizzbuzz(number int) (string, error) {
 	if number <= 0 {
-		return "", errors.New("Undefined")
+		return "", errors.New("undefined")
 	}
 
 	switch {

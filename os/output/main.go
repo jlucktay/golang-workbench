@@ -1,3 +1,4 @@
+// Calling another command to do things over there, capture output, and bring it back.
 package main
 
 import (
