@@ -1,3 +1,4 @@
+// Package server defines internal behaviour.
 package server
 
 import (
@@ -14,6 +15,7 @@ type userRouter struct {
 	userService root.UserService
 }
 
+// NewUserRouter sets up a Router with some functions to handle various routes.
 func NewUserRouter(u root.UserService, router *mux.Router) *mux.Router {
 	userRouter := userRouter{u}
 
@@ -21,40 +23,45 @@ func NewUserRouter(u root.UserService, router *mux.Router) *mux.Router {
 	router.HandleFunc("/profile", validate(userRouter.profileHandler)).Methods("GET")
 	router.HandleFunc("/{username}", userRouter.getUserHandler).Methods("GET")
 	router.HandleFunc("/login", userRouter.loginHandler).Methods("POST")
+
 	return router
 }
 
 func (s *userRouter) createUserHandler(w http.ResponseWriter, r *http.Request) {
-	err, user := decodeUser(r)
+	user, err := decodeUser(r)
+
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
 	err = s.userService.CreateUser(&user)
+
 	if err != nil {
 		Error(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	Json(w, http.StatusOK, err)
+	JSON(w, http.StatusOK, err)
 }
 
 func (s *userRouter) profileHandler(w http.ResponseWriter, r *http.Request) {
 	claim, ok := r.Context().Value(contextKeyAuthtoken).(claims)
+
 	if !ok {
 		Error(w, http.StatusBadRequest, "no context")
 		return
 	}
-	username := claim.Username
 
-	err, user := s.userService.GetUserByUsername(username)
+	username := claim.Username
+	user, err := s.userService.GetUserByUsername(username)
+
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	Json(w, http.StatusOK, user)
+	JSON(w, http.StatusOK, user)
 }
 
 func (s *userRouter) getUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,49 +69,58 @@ func (s *userRouter) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(vars)
 	username := vars["username"]
 
-	err, user := s.userService.GetUserByUsername(username)
+	user, err := s.userService.GetUserByUsername(username)
+
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
 		return
 	}
 
-	Json(w, http.StatusOK, user)
+	JSON(w, http.StatusOK, user)
 }
 
 func (s *userRouter) loginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("loginHandler")
-	err, credentials := decodeCredentials(r)
+	credentials, err := decodeCredentials(r)
+
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
 
 	var user root.User
-	err, user = s.userService.Login(credentials)
+	user, err = s.userService.Login(credentials)
+
 	if err == nil {
 		cookie := newAuthCookie(user)
-		JsonWithCookie(w, http.StatusOK, user, cookie)
+		JSONWithCookie(w, http.StatusOK, user, cookie)
 	} else {
 		Error(w, http.StatusInternalServerError, "Incorrect password")
 	}
 }
 
-func decodeUser(r *http.Request) (error, root.User) {
+func decodeUser(r *http.Request) (root.User, error) {
 	var u root.User
+
 	if r.Body == nil {
-		return errors.New("no request body"), u
+		return u, errors.New("no request body")
 	}
+
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&u)
-	return err, u
+
+	return u, err
 }
 
-func decodeCredentials(r *http.Request) (error, root.Credentials) {
+func decodeCredentials(r *http.Request) (root.Credentials, error) {
 	var c root.Credentials
+
 	if r.Body == nil {
-		return errors.New("no request body"), c
+		return c, errors.New("no request body")
 	}
+
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&c)
-	return err, c
+
+	return c, err
 }

@@ -1,3 +1,4 @@
+// Initialises and runs the app!
 package main
 
 func main() {

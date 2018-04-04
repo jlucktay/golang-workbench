@@ -19,15 +19,15 @@ import (
 
 //createUserHandler tests
 func Test_UserRouter_createUserHandler(t *testing.T) {
-	t.Run("happy path", createUserHandler_should_pass_User_object_to_UserService_CreateUser)
-	t.Run("invalid payload", createUserHandler_should_return_StatusBadRequest_if_payload_is_invalid)
-	t.Run("internal error", createUserHandler_should_return_StatusInternalServerError_if_UserService_returns_error)
+	t.Run("happy path", createUserHandlerShouldPassUserObjectToUserServiceCreateUser)
+	t.Run("invalid payload", createUserHandlerShouldReturnStatusBadRequestIfPayloadIsInvalid)
+	t.Run("internal error", createUserHandlerShouldReturnStatusInternalServerErrorIfUserServiceReturnsError)
 }
 
-func createUserHandler_should_pass_User_object_to_UserService_CreateUser(t *testing.T) {
+func createUserHandlerShouldPassUserObjectToUserServiceCreateUser(t *testing.T) {
 	// Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 	var result *root.User
 	us.CreateUserFn = func(u *root.User) error {
 		result = u
@@ -45,7 +45,7 @@ func createUserHandler_should_pass_User_object_to_UserService_CreateUser(t *test
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/", payload)
 	r.Header.Set("Content-Type", "application/json")
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	// Assert
 	if !us.CreateUserInvoked {
@@ -59,10 +59,10 @@ func createUserHandler_should_pass_User_object_to_UserService_CreateUser(t *test
 	}
 }
 
-func createUserHandler_should_return_StatusBadRequest_if_payload_is_invalid(t *testing.T) {
+func createUserHandlerShouldReturnStatusBadRequestIfPayloadIsInvalid(t *testing.T) {
 	//Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 	us.CreateUserFn = func(u *root.User) error {
 		return nil
 	}
@@ -71,7 +71,7 @@ func createUserHandler_should_return_StatusBadRequest_if_payload_is_invalid(t *t
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/", nil)
 	r.Header.Set("Content-Type", "application/json")
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	//Assert
 	if w.Code != http.StatusBadRequest {
@@ -79,10 +79,10 @@ func createUserHandler_should_return_StatusBadRequest_if_payload_is_invalid(t *t
 	}
 }
 
-func createUserHandler_should_return_StatusInternalServerError_if_UserService_returns_error(t *testing.T) {
+func createUserHandlerShouldReturnStatusInternalServerErrorIfUserServiceReturnsError(t *testing.T) {
 	//Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 	us.CreateUserFn = func(u *root.User) error {
 		return errors.New("user service error")
 	}
@@ -95,7 +95,7 @@ func createUserHandler_should_return_StatusInternalServerError_if_UserService_re
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/", payload)
 	r.Header.Set("Content-Type", "application/json")
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	//Assert
 	if w.Code != http.StatusInternalServerError {
@@ -105,19 +105,19 @@ func createUserHandler_should_return_StatusInternalServerError_if_UserService_re
 
 //profileHandler tests
 func Test_UserRouter_profileHandler(t *testing.T) {
-	t.Run("happy path", profileHandler_should_return_User_from_context)
-	t.Run("no context", profileHandler_should_return_StatusBadRequest_if_no_auth_context)
-	t.Run("user not found", profileHandler_should_return_StatusNotFound_if_no_user_found)
+	t.Run("happy path", profileHandlerShouldReturnUserFromContext)
+	t.Run("no context", profileHandlerShouldReturnStatusBadRequestIfNoAuthContext)
+	t.Run("user not found", profileHandlerShouldReturnStatusNotFoundIfNoUserFound)
 }
 
-func profileHandler_should_return_User_from_context(t *testing.T) {
+func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 	// Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 	var result string
-	us.GetUserByUsernameFn = func(username string) (error, root.User) {
+	us.GetUserByUsernameFn = func(username string) (root.User, error) {
 		result = username
-		return nil, root.User{}
+		return root.User{}, nil
 	}
 
 	testUsername := "test_username"
@@ -129,7 +129,7 @@ func profileHandler_should_return_User_from_context(t *testing.T) {
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
 	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.StandardClaims{}})
-	test_mux.ServeHTTP(w, r.WithContext(ctx))
+	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	// Assert
 	if !us.GetUserByUsernameInvoked {
@@ -140,28 +140,28 @@ func profileHandler_should_return_User_from_context(t *testing.T) {
 	}
 }
 
-func profileHandler_should_return_StatusBadRequest_if_no_auth_context(t *testing.T) {
+func profileHandlerShouldReturnStatusBadRequestIfNoAuthContext(t *testing.T) {
 	//Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 
 	//Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/profile", nil)
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	//Assert
 	if w.Code != http.StatusUnauthorized {
-		t.Fatalf("expected StatusUnauthorized, got: %s", w.Code)
+		t.Fatalf("expected StatusUnauthorized, got: %d", w.Code)
 	}
 }
 
-func profileHandler_should_return_StatusNotFound_if_no_user_found(t *testing.T) {
+func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	//Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
-	us.GetUserByUsernameFn = func(username string) (error, root.User) {
-		return errors.New("user service error"), root.User{}
+	testMux := NewUserRouter(&us, mux.NewRouter())
+	us.GetUserByUsernameFn = func(username string) (root.User, error) {
+		return root.User{}, errors.New("user service error")
 	}
 	testUsername := "test_username"
 	testUser := root.User{Username: testUsername}
@@ -172,31 +172,31 @@ func profileHandler_should_return_StatusNotFound_if_no_user_found(t *testing.T) 
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
 	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.StandardClaims{}})
-	test_mux.ServeHTTP(w, r.WithContext(ctx))
+	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	//Assert
 	if !us.GetUserByUsernameInvoked {
 		t.Fatal("expected GetUserByUsername() to be invoked")
 	}
 	if w.Code != http.StatusNotFound {
-		t.Fatalf("expected: StatusNotFound, got: %s", w.Code)
+		t.Fatalf("expected: StatusNotFound, got: %d", w.Code)
 	}
 }
 
 //getUserHandler tests
 func Test_UserRouter_getUserHandler(t *testing.T) {
-	t.Run("happy path", getUserHandler_should_call_GetUserByUsername_with_username_from_querystring)
-	t.Run("no user found", getUserHandler_should_return_StatusNotFound_if_no_user_found)
+	t.Run("happy path", getUserHandlerShouldCallGetUserByUsernameWithUsernameFromQuerystring)
+	t.Run("no user found", getUserHandlerShouldReturnStatusNotFoundIfNoUserFound)
 }
 
-func getUserHandler_should_call_GetUserByUsername_with_username_from_querystring(t *testing.T) {
+func getUserHandlerShouldCallGetUserByUsernameWithUsernameFromQuerystring(t *testing.T) {
 	// Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
+	testMux := NewUserRouter(&us, mux.NewRouter())
 	var result string
-	us.GetUserByUsernameFn = func(username string) (error, root.User) {
+	us.GetUserByUsernameFn = func(username string) (root.User, error) {
 		result = username
-		return nil, root.User{}
+		return root.User{}, nil
 	}
 
 	testUsername := "test_username"
@@ -204,7 +204,7 @@ func getUserHandler_should_call_GetUserByUsername_with_username_from_querystring
 	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/"+testUsername, nil)
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	// Assert
 	if !us.GetUserByUsernameInvoked {
@@ -215,14 +215,12 @@ func getUserHandler_should_call_GetUserByUsername_with_username_from_querystring
 	}
 }
 
-func getUserHandler_should_return_StatusNotFound_if_no_user_found(t *testing.T) {
+func getUserHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	// Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
-	var result string
-	us.GetUserByUsernameFn = func(username string) (error, root.User) {
-		result = username
-		return errors.New("user service error"), root.User{}
+	testMux := NewUserRouter(&us, mux.NewRouter())
+	us.GetUserByUsernameFn = func(username string) (root.User, error) {
+		return root.User{}, errors.New("user service error")
 	}
 
 	testUsername := "test_username"
@@ -230,32 +228,30 @@ func getUserHandler_should_return_StatusNotFound_if_no_user_found(t *testing.T) 
 	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/"+testUsername, nil)
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	// Assert
 	if !us.GetUserByUsernameInvoked {
 		t.Fatal("expected GetUserByUsername() to be invoked")
 	}
 	if w.Code != http.StatusNotFound {
-		t.Fatalf("expected: StatusNotFound, got: %s", w.Code)
+		t.Fatalf("expected: StatusNotFound, got: %d", w.Code)
 	}
 }
 
 //gHandler tests
 func Test_UserRouter_loginHandler(t *testing.T) {
 	fmt.Println("loginHandler tests")
-	t.Run("happy path", loginHandler_should_provide_new_auth_cookie_if_userService_returns_a_user)
-	//t.Run("no user found", getUserHandler_should_return_StatusNotFound_if_no_user_found)
+	t.Run("happy path", loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser)
+	//t.Run("no user found", getUserHandlerShouldReturnStatusNotFoundIfNoUserFound)
 }
 
-func loginHandler_should_provide_new_auth_cookie_if_userService_returns_a_user(t *testing.T) {
+func loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser(t *testing.T) {
 	// Arrange
 	us := mock.UserService{}
-	test_mux := NewUserRouter(&us, mux.NewRouter())
-	var result string
-	us.LoginFn = func(credentials root.Credentials) (error, root.User) {
-		result = credentials.Username
-		return nil, root.User{}
+	testMux := NewUserRouter(&us, mux.NewRouter())
+	us.LoginFn = func(credentials root.Credentials) (root.User, error) {
+		return root.User{}, nil
 	}
 
 	testUsername := "test_username"
@@ -268,7 +264,7 @@ func loginHandler_should_provide_new_auth_cookie_if_userService_returns_a_user(t
 	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("POST", "/login", payload)
-	test_mux.ServeHTTP(w, r)
+	testMux.ServeHTTP(w, r)
 
 	// Assert
 	if !us.LoginInvoked {

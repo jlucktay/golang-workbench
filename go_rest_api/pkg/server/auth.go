@@ -1,3 +1,4 @@
+// Package server defines internal behaviour.
 package server
 
 import (
@@ -54,8 +55,9 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 
 		token, err := jwt.ParseWithClaims(cookie.Value, &claims{}, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected siging method")
+				return nil, fmt.Errorf("unexpected siging method")
 			}
+
 			return []byte("secret"), nil
 		})
 

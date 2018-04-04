@@ -1,3 +1,4 @@
+// Package server defines internal behaviour.
 package server
 
 import (
@@ -10,10 +11,12 @@ import (
 	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
 )
 
+// Server holds a router.
 type Server struct {
 	router *mux.Router
 }
 
+// NewServer returns an Server initialised with the given UserService.
 func NewServer(u root.UserService) *Server {
 	s := Server{router: mux.NewRouter()}
 
@@ -22,6 +25,7 @@ func NewServer(u root.UserService) *Server {
 	return &s
 }
 
+// Start will start the Server listening.
 func (s *Server) Start() {
 	log.Println("Listening on port 1337...")
 	if err := http.ListenAndServe(":1337", handlers.LoggingHandler(os.Stdout, s.router)); err != nil {

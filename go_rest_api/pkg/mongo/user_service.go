@@ -1,3 +1,4 @@
+// Package mongo interfaces with MongoDb for us.
 package mongo
 
 import (
@@ -6,16 +7,19 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// UserService holds a MongoDb collection.
 type UserService struct {
 	collection *mgo.Collection
 }
 
+// NewUserService initialises and returns a new UserService.
 func NewUserService(session *mgo.Session) *UserService {
 	collection := session.DB("test").C("user")
 	collection.EnsureIndex(userModelIndex())
 	return &UserService{collection}
 }
 
+// CreateUser will create a user on the designated service.
 func (p *UserService) CreateUser(u *root.User) error {
 	user := userModel{Username: u.Username}
 	err := user.addSaltedPassword(u.Password)
@@ -26,26 +30,30 @@ func (p *UserService) CreateUser(u *root.User) error {
 	return p.collection.Insert(&user)
 }
 
-func (p *UserService) GetUserByUsername(username string) (error, root.User) {
+// GetUserByUsername looks up a user by name and returns it.
+func (p *UserService) GetUserByUsername(username string) (root.User, error) {
 	model := userModel{}
 	err := p.collection.Find(bson.M{"username": username}).One(&model)
-	return err, root.User{
-		Id:       model.Id.Hex(),
-		Username: model.Username,
-		Password: "-"}
+	return root.User{
+			ID:       model.ID.Hex(),
+			Username: model.Username,
+			Password: "-"},
+		err
 }
 
-func (p *UserService) Login(c root.Credentials) (error, root.User) {
+// Login will log a user into a given service.
+func (p *UserService) Login(c root.Credentials) (root.User, error) {
 	model := userModel{}
 	err := p.collection.Find(bson.M{"username": c.Username}).One(&model)
 
 	err = model.comparePassword(c.Password)
 	if err != nil {
-		return err, root.User{}
+		return root.User{}, err
 	}
 
-	return err, root.User{
-		Id:       model.Id.Hex(),
-		Username: model.Username,
-		Password: "-"}
+	return root.User{
+			ID:       model.ID.Hex(),
+			Username: model.Username,
+			Password: "-"},
+		err
 }

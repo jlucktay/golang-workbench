@@ -1,3 +1,4 @@
+// Package mongo interfaces with MongoDb for us.
 package mongo
 
 import (
@@ -8,7 +9,7 @@ import (
 )
 
 type userModel struct {
-	Id           bson.ObjectId `bson:"_id,omitempty"`
+	ID           bson.ObjectId `bson:"_id,omitempty"`
 	Username     string
 	PasswordHash string
 	Salt         string
