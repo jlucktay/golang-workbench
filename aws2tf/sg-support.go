@@ -1,3 +1,4 @@
+// Makes use of my homegrown AWS CLI JSON parser.
 package main
 
 import (
@@ -5,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"./aws2tf"
+	"github.com/jlucktay/golang-workbench/aws2tf/aws2tf"
 )
 
 func main() {
