@@ -1,3 +1,4 @@
+// An example of the pipeline pattern that I wrote as part of a training course.
 package main
 
 import (
