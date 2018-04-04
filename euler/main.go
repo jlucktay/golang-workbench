@@ -2,7 +2,6 @@
 // Add a comment beneath your solution that includes a description of the problem.
 // Upload your solution to github.
 // Tweet me a link to your solution.
-
 package main
 
 import (
