@@ -39,9 +39,17 @@ hello-docker-main   1.1   379235791891   8 minutes ago    6.16MB
 hello-docker-main   1.2   1840671fa652   7 minutes ago    2.01MB
 ```
 
+Take note of how much smaller the `1.1` and `1.2` images are, compared to the initial `1.0`.
+
+This is thanks to the use of multiple stages!
+
+`1.1` builds in one stage and then copies the built executable into a fresh new stage.
+
+`1.2` takes this one step further, and executes in a completely bare second stage which comes from [scratch](https://hub.docker.com/_/scratch/).
+
 ## Running
 
-Run these `docker run` command lines from anywhere to execute the built images.
+Run these `docker run` command lines to execute the built images.
 
 ### 1.0
 
