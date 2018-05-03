@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 RUN mkdir /build
-ADD . /build/
+ADD src /build/
 WORKDIR /build
 RUN go build -o main .
 FROM alpine

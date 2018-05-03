@@ -1,19 +1,51 @@
 # Containerize This! How to build Golang Dockerfiles
 
-## Single-stage
+## Building
+
+Run the below `docker build` command lines from within each of the respective sub-directories.
+
+### Single-stage
 
 ``` shell
-docker build -t hello-docker-main:1.0 . -f Dockerfile.single
+cd 1.0-single
+docker build -t hello-docker-main:1.0 .
 ```
 
-## Multi-stage
+### Multi-stage
 
 ``` shell
-docker build -t hello-docker-main:1.1 . -f Dockerfile.multi
+cd 1.1-multi
+docker build -t hello-docker-main:1.1 .
 ```
 
-## FROM scratch
+### FROM scratch
 
 ``` shell
-docker build -t hello-docker-main:1.2 . -f Dockerfile.scratch
+cd 1.2-scratch
+docker build -t hello-docker-main:1.2 .
+```
+
+## Running
+
+Run these `docker run` command lines from anywhere to execute the built images.
+
+### 1.0
+
+``` shell
+$ docker run -it hello-docker-main:1.0
+Hello Docker v1.0!
+```
+
+### 1.1
+
+``` shell
+$ docker run -it hello-docker-main:1.1
+Hello Docker v1.1!
+```
+
+### 1.2
+
+``` shell
+$ docker run -it hello-docker-main:1.2
+Hello Docker v1.2!
 ```
