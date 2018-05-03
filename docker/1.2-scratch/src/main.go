@@ -1,5 +1,4 @@
-// Adapted from this blog post:
-// https://www.cloudreach.com/blog/containerize-this-golang-dockerfiles/
+// v1.2
 package main
 
 import "fmt"
