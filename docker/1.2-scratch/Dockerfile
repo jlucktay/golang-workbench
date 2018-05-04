@@ -4,8 +4,6 @@ ADD src /build/
 WORKDIR /build
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o main .
 FROM scratch
-# RUN adduser -S -D -H -h /app appuser
-# USER appuser
 COPY --from=builder /build/main /app/
 WORKDIR /app
 CMD ["./main"]
