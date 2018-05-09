@@ -26,6 +26,7 @@ func TestNbMonths(t *testing.T) {
 			ans := NbMonths(tC.startPriceOld, tC.startPriceNew, tC.savingperMonth, tC.percentLossByMonth)
 
 			if !reflect.DeepEqual(ans, tC.exp) {
+				t.Fatalf("NbMonths(%v, %v, %v, %v) == '%v', wanted '%v'", tC.startPriceOld, tC.startPriceNew, tC.savingperMonth, tC.percentLossByMonth, ans, tC.exp)
 			}
 		})
 	}
