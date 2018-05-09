@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -15,7 +17,7 @@ func main() {
 	dotfilesURL, _ := url.Parse("https://dotfiles.github.io")
 	ghRegex := `^https://github.com/[A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+$`
 
-	doc, err := goquery.NewDocumentFromReader(getResponse(*dotfilesURL).Body)
+	doc, err := goquery.NewDocumentFromReader(getResponse(*dotfilesURL))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,7 +27,7 @@ func main() {
 	}
 }
 
-func getResponse(get url.URL) http.Response {
+func getResponse(get url.URL) io.Reader {
 	res, err := http.DefaultClient.Do(newRequest(get))
 	if err != nil {
 		log.Fatal(err)
@@ -36,7 +38,10 @@ func getResponse(get url.URL) http.Response {
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
-	return *res
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(res.Body)
+
+	return buf
 }
 
 func newRequest(u url.URL) *http.Request {
