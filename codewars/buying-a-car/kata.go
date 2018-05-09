@@ -1,4 +1,7 @@
+// Package kata - https://www.codewars.com/kata/buying-a-car
 package kata
+
+import "fmt"
 
 // NbMonths ...
 // A man has a rather old car being worth $2000.
@@ -33,16 +36,49 @@ func NbMonths(startPriceOld, startPriceNew, savingperMonth int, percentLossByMon
 	month := &result[0]
 	bank := &result[1]
 
-	if startPriceOld > startPriceNew {
-		*bank = startPriceOld - startPriceNew
+	fOld := float64(startPriceOld)
+	fNew := float64(startPriceNew)
+
+	if fOld >= fNew {
+		*bank = int(fOld - fNew)
 		return result
 	}
 
-	for *bank < startPriceNew {
+	fmt.Println("BEFORE- bank:", *bank)
+	fmt.Println("BEFORE- month:", *month)
+	fmt.Println("BEFORE- fOld:", fOld)
+	fmt.Println("BEFORE- fNew:", fNew)
+	fmt.Println("BEFORE- percentLossByMonth:", percentLossByMonth)
+
+	for *bank < int(fNew) {
+		fmt.Printf("DURING- percentLossByMonth: %v\n", percentLossByMonth)
+
 		*bank += savingperMonth
+		fOld *= 1 - (percentLossByMonth / 100)
+		fNew *= 1 - (percentLossByMonth / 100)
 
 		*month++
+
+		if *month%2 == 0 {
+			percentLossByMonth += 0.5
+		}
+
+		fmt.Println("DURING- bank:", *bank)
+		fmt.Println("DURING- month:", *month)
+		fmt.Println("DURING- fOld:", fOld)
+		fmt.Println("DURING- fNew:", fNew)
+		fmt.Printf("DURING- percentLossByMonth: %v\n\n", percentLossByMonth)
 	}
+
+	fmt.Println("AFTER- bank:", *bank)
+
+	// *bank -= int(fNew)
+
+	fmt.Println("AFTER- bank:", *bank)
+	fmt.Println("AFTER- month:", *month)
+	fmt.Println("AFTER- fOld:", fOld)
+	fmt.Println("AFTER- fNew:", fNew)
+	fmt.Println("AFTER- percentLossByMonth:", percentLossByMonth)
 
 	return result
 }
