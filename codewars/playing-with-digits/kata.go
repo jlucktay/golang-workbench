@@ -1,5 +1,10 @@
 package kata
 
+import (
+	"fmt"
+	"math"
+)
+
 // DigPow ...
 // Some numbers have funny properties. For example:
 //
@@ -16,6 +21,40 @@ package kata
 // If it is the case we will return k, if not return -1.
 //
 // Note: n, p will always be given as strictly positive integers.
-func DigPow(n, p int) int {
+func DigPow(n, p uint) int {
+	fmt.Printf("splitIntoDigits(%v) == %v\n", n, splitIntoDigits(n))
+	fmt.Printf("successivePowers(%v, %v) == %v\n", n, p, successivePowers(n, p))
+
 	return 0
+}
+
+func splitIntoDigits(in uint) (out []uint) {
+	out = make([]uint, 0, 1)
+
+	for ; in > 0; in /= 10 {
+		out = append(out, in%10)
+	}
+
+	for i := len(out)/2 - 1; i >= 0; i-- {
+		opp := len(out) - 1 - i
+		out[i], out[opp] = out[opp], out[i]
+	}
+
+	return
+}
+
+func successivePowers(n, p uint) (total uint) {
+	digits := splitIntoDigits(n)
+	exponent := float64(p)
+	// fmt.Println("n:", n)
+
+	for _, digit := range digits {
+		// fmt.Println("total:", total)
+		// fmt.Println("digit:", digit)
+		// fmt.Println("exponent:", exponent)
+		total += uint(math.Pow(float64(digit), exponent))
+		exponent++
+	}
+
+	return
 }
