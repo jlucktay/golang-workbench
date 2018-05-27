@@ -80,8 +80,6 @@ func readTokenFromSecrets() (token string) {
 
 	token = tokenMap["GitHubPersonalAccessToken"]
 
-	fmt.Println(token)
-
 	return
 }
 
@@ -89,13 +87,10 @@ func genLinks(input *goquery.Document, filter string) (output chan url.URL) {
 	output = make(chan url.URL)
 
 	go func() {
-		sentOne := false // TODO: delete this
-
 		input.Find("a").Each(func(i int, s *goquery.Selection) {
 			src := s.AttrOr("href", "")
-			if u, _ := url.Parse(src); u.IsAbs() && u.Scheme != "data" && matchStringCompiled(filter, u.String()) && !sentOne {
+			if u, _ := url.Parse(src); u.IsAbs() && u.Scheme != "data" && matchStringCompiled(filter, u.String()) {
 				output <- *u
-				sentOne = true // TODO: delete this
 			}
 		})
 
