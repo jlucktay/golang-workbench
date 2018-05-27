@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -11,6 +13,10 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+)
+
+var (
+	ghpaToken = readTokenFromSecrets()
 )
 
 func main() {
@@ -22,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for x := range genAPILang(genLinks(doc, ghRegex)) {
+	for x := range genGoRepos(genAPILang(genLinks(doc, ghRegex))) {
 		fmt.Println(x)
 	}
 }
@@ -35,7 +41,7 @@ func getResponse(get url.URL) io.Reader {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+		log.Fatalf("URL '%s': status code error: %d %s", get.String(), res.StatusCode, res.Status)
 	}
 
 	buf := new(bytes.Buffer)
@@ -44,36 +50,63 @@ func getResponse(get url.URL) io.Reader {
 	return buf
 }
 
-func newRequest(u url.URL) *http.Request {
+func newRequest(u url.URL) (req *http.Request) {
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	req.Header.Add("User-Agent", "github/dotfiles")
+	req.Header.Add("User-Agent", "jlucktay (dotfiles)")
+	req.SetBasicAuth("jlucktay", ghpaToken)
 
-	return req
+	return
 }
 
-func genLinks(input *goquery.Document, filter string) chan url.URL {
-	output := make(chan url.URL)
+type secrets struct {
+	GitHubPersonalAccessToken string
+}
+
+func readTokenFromSecrets() (token string) {
+	fileContents, err := ioutil.ReadFile("./secrets.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var tokenMap map[string]string
+
+	if err := json.Unmarshal(fileContents, &tokenMap); err != nil {
+		log.Fatal(err)
+	}
+
+	token = tokenMap["GitHubPersonalAccessToken"]
+
+	fmt.Println(token)
+
+	return
+}
+
+func genLinks(input *goquery.Document, filter string) (output chan url.URL) {
+	output = make(chan url.URL)
 
 	go func() {
+		sentOne := false // TODO: delete this
+
 		input.Find("a").Each(func(i int, s *goquery.Selection) {
 			src := s.AttrOr("href", "")
-			if u, _ := url.Parse(src); u.IsAbs() && u.Scheme != "data" && matchStringCompiled(filter, u.String()) {
+			if u, _ := url.Parse(src); u.IsAbs() && u.Scheme != "data" && matchStringCompiled(filter, u.String()) && !sentOne {
 				output <- *u
+				sentOne = true // TODO: delete this
 			}
 		})
 
 		close(output)
 	}()
 
-	return output
+	return
 }
 
-func genAPILang(in chan url.URL) chan url.URL {
-	output := make(chan url.URL)
+func genAPILang(in chan url.URL) (output chan url.URL) {
+	output = make(chan url.URL)
 
 	go func() {
 		for i := range in {
@@ -89,7 +122,25 @@ func genAPILang(in chan url.URL) chan url.URL {
 		close(output)
 	}()
 
-	return output
+	return
+}
+
+func genGoRepos(input chan url.URL) (output chan string) {
+	// maybe do this with a map instead? use the repo URL as the key?
+	output = make(chan string)
+
+	go func() {
+		for i := range input {
+			// make API request
+			// print language(s)
+
+			output <- fmt.Sprint(getResponse(i))
+		}
+
+		close(output)
+	}()
+
+	return
 }
 
 func matchStringCompiled(needle, haystack string) bool {

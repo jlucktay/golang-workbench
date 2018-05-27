@@ -21,3 +21,6 @@ debug
 
 # MacOs
 .DS_Store
+
+# Secrets
+secrets.json
