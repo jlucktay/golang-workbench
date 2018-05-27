@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"io"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
 func BenchmarkWriteFile(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		f, err := os.Create("/tmp/test.txt")
+		f, err := os.Create(filepath.Clean("./test.txt"))
 		if err != nil {
 			panic(err)
 		}
@@ -24,7 +25,7 @@ func BenchmarkWriteFile(b *testing.B) {
 
 func BenchmarkWriteFileBuffered(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		f, err := os.Create("/tmp/test.txt")
+		f, err := os.Create(filepath.Clean("./test.txt"))
 		if err != nil {
 			panic(err)
 		}
@@ -42,7 +43,7 @@ func BenchmarkWriteFileBuffered(b *testing.B) {
 
 func BenchmarkReadFile(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		f, err := os.Open("/tmp/test.txt")
+		f, err := os.Open(filepath.Clean("./test.txt"))
 		if err != nil {
 			panic(err)
 		}
@@ -63,7 +64,7 @@ func BenchmarkReadFile(b *testing.B) {
 
 func BenchmarkReadFileBuffered(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		f, err := os.Open("/tmp/test.txt")
+		f, err := os.Open(filepath.Clean("./test.txt"))
 		if err != nil {
 			panic(err)
 		}
