@@ -7,15 +7,15 @@ import (
 )
 
 var (
-	ghpaToken = readTokenFromSecrets()
+	ghpaToken = readTokenFromSecrets("./secrets.json")
 )
 
 type secrets struct {
 	GitHubPersonalAccessToken string
 }
 
-func readTokenFromSecrets() (token string) {
-	fileContents, err := ioutil.ReadFile("./secrets.json")
+func readTokenFromSecrets(path string) (token string) {
+	fileContents, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Fatal(err)
 	}
