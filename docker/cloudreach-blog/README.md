@@ -29,10 +29,10 @@ docker build -t hello-docker-main:1.2 .
 
 ## Checking
 
-The `docker images` command will show all built images.
+The `docker images` command (with a repository filter) will show the built images.
 
 ``` shell
-$ docker images
+$ docker images hello-docker-main
 REPOSITORY          TAG   IMAGE ID       CREATED          SIZE
 hello-docker-main   1.0   f878922f1271   13 minutes ago   378MB
 hello-docker-main   1.1   379235791891   8 minutes ago    6.16MB
