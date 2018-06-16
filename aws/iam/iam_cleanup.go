@@ -29,8 +29,9 @@ func init() {
 }
 
 var (
-	sess   *session.Session
-	svcIam *iam.IAM
+	rolesProcessed uint
+	sess           *session.Session
+	svcIam         *iam.IAM
 )
 
 func main() {
@@ -64,6 +65,8 @@ func main() {
 
 		deleteRole(aws.StringValue(roleOutput.Role.RoleName))
 	}
+
+	fmt.Println("Roles processed:", rolesProcessed)
 }
 
 func genRoleNames(filename string) (output chan string) {
@@ -91,6 +94,8 @@ func genRoles(input chan string) (output chan *iam.GetRoleOutput) {
 
 	go func() {
 		for roleName := range input {
+			rolesProcessed++
+
 			iamRole, errGetRole := svcIam.GetRole(
 				&iam.GetRoleInput{
 					RoleName: aws.String(roleName),
