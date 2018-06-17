@@ -26,7 +26,9 @@ func readTokenFromSecrets(path string) (token string) {
 		log.Fatal(err)
 	}
 
-	token = tokenMap["GitHubPersonalAccessToken"]
+	if _, ok := tokenMap["GitHubPersonalAccessToken"]; ok {
+		token = tokenMap["GitHubPersonalAccessToken"]
+	}
 
 	return
 }
