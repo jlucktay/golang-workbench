@@ -10,16 +10,16 @@ func benchmarkConcat(size int, SelfConcat func(string, int) string, b *testing.B
 	}
 }
 
-func BenchmarkConcatOperator2(b *testing.B)      { benchmarkConcat(2, SelfConcatOperator, b) }
-func BenchmarkConcatOperator10(b *testing.B)     { benchmarkConcat(10, SelfConcatOperator, b) }
-func BenchmarkConcatOperator100(b *testing.B)    { benchmarkConcat(100, SelfConcatOperator, b) }
-func BenchmarkConcatOperator1000(b *testing.B)   { benchmarkConcat(1000, SelfConcatOperator, b) }
-func BenchmarkConcatOperator10000(b *testing.B)  { benchmarkConcat(10000, SelfConcatOperator, b) }
-func BenchmarkConcatOperator100000(b *testing.B) { benchmarkConcat(100000, SelfConcatOperator, b) }
+func BenchmarkConcatOperator2(b *testing.B)      { benchmarkConcat(2, selfConcatOperator, b) }
+func BenchmarkConcatOperator10(b *testing.B)     { benchmarkConcat(10, selfConcatOperator, b) }
+func BenchmarkConcatOperator100(b *testing.B)    { benchmarkConcat(100, selfConcatOperator, b) }
+func BenchmarkConcatOperator1000(b *testing.B)   { benchmarkConcat(1000, selfConcatOperator, b) }
+func BenchmarkConcatOperator10000(b *testing.B)  { benchmarkConcat(10000, selfConcatOperator, b) }
+func BenchmarkConcatOperator100000(b *testing.B) { benchmarkConcat(100000, selfConcatOperator, b) }
 
-func BenchmarkConcatBuffer2(b *testing.B)      { benchmarkConcat(2, SelfConcatBuffer, b) }
-func BenchmarkConcatBuffer10(b *testing.B)     { benchmarkConcat(10, SelfConcatBuffer, b) }
-func BenchmarkConcatBuffer100(b *testing.B)    { benchmarkConcat(100, SelfConcatBuffer, b) }
-func BenchmarkConcatBuffer1000(b *testing.B)   { benchmarkConcat(1000, SelfConcatBuffer, b) }
-func BenchmarkConcatBuffer10000(b *testing.B)  { benchmarkConcat(10000, SelfConcatBuffer, b) }
-func BenchmarkConcatBuffer100000(b *testing.B) { benchmarkConcat(100000, SelfConcatBuffer, b) }
+func BenchmarkConcatBuffer2(b *testing.B)      { benchmarkConcat(2, selfConcatBuffer, b) }
+func BenchmarkConcatBuffer10(b *testing.B)     { benchmarkConcat(10, selfConcatBuffer, b) }
+func BenchmarkConcatBuffer100(b *testing.B)    { benchmarkConcat(100, selfConcatBuffer, b) }
+func BenchmarkConcatBuffer1000(b *testing.B)   { benchmarkConcat(1000, selfConcatBuffer, b) }
+func BenchmarkConcatBuffer10000(b *testing.B)  { benchmarkConcat(10000, selfConcatBuffer, b) }
+func BenchmarkConcatBuffer100000(b *testing.B) { benchmarkConcat(100000, selfConcatBuffer, b) }
