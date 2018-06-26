@@ -2,6 +2,8 @@
 package mongo
 
 import (
+	"log"
+
 	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -44,16 +46,19 @@ func (p *UserService) GetUserByUsername(username string) (root.User, error) {
 // Login will log a user into a given service.
 func (p *UserService) Login(c root.Credentials) (root.User, error) {
 	model := userModel{}
-	err := p.collection.Find(bson.M{"username": c.Username}).One(&model)
+	errOne := p.collection.Find(bson.M{"username": c.Username}).One(&model)
+	if errOne != nil {
+		log.Fatal(errOne)
+	}
 
-	err = model.comparePassword(c.Password)
-	if err != nil {
-		return root.User{}, err
+	errPass := model.comparePassword(c.Password)
+	if errPass != nil {
+		return root.User{}, errPass
 	}
 
 	return root.User{
 			ID:       model.ID.Hex(),
 			Username: model.Username,
 			Password: "-"},
-		err
+		errPass
 }
