@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -46,16 +47,18 @@ func genAPILang(in chan url.URL) (output chan url.URL) {
 	return
 }
 
-func genGoRepos(input chan url.URL) (output chan string) {
-	// maybe do this with a map instead? use the repo URL as the key?
-	output = make(chan string)
+func genFilterGoRepos(input chan url.URL) (output chan url.URL) {
+	output = make(chan url.URL)
 
 	go func() {
 		for i := range input {
-			// make API request
-			// print language(s)
+			resp := fmt.Sprint(getResponse(i))
+			var responseHolder map[string]int
+			json.Unmarshal([]byte(resp), &responseHolder)
 
-			output <- fmt.Sprint(getResponse(i))
+			if filterForGoRepos(responseHolder) {
+				output <- i
+			}
 		}
 
 		close(output)
