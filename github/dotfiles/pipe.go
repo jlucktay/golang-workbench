@@ -66,3 +66,38 @@ func genFilterGoRepos(input chan url.URL) (output chan url.URL) {
 
 	return
 }
+
+func genGithubURL(input chan url.URL) chan url.URL {
+	output := make(chan url.URL)
+
+	go func() {
+		for i := range input {
+			// Truncate the '/languages' part from the end of the URL
+			apiRepo := i.String()[:len(i.String())-10]
+
+			apiURL, apiErr := url.Parse(apiRepo)
+			if apiErr != nil {
+				log.Fatal(apiErr)
+			}
+
+			resp := fmt.Sprint(getResponse(*apiURL))
+			var responseHolder map[string]interface{}
+			json.Unmarshal([]byte(resp), &responseHolder)
+
+			if htmlURL, urlOK := responseHolder["html_url"]; urlOK {
+				if str, strOK := htmlURL.(string); strOK {
+					githubURL, githubErr := url.Parse(str)
+					if githubErr != nil {
+						log.Fatal(githubErr)
+					}
+
+					output <- *githubURL
+				}
+			}
+		}
+
+		close(output)
+	}()
+
+	return output
+}

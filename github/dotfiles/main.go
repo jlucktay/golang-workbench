@@ -18,8 +18,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for x := range genFilterGoRepos(genAPILang(genLinks(doc, ghRegex))) {
-		fmt.Println(x)
+	for x := range genGithubURL(genFilterGoRepos(genAPILang(genLinks(doc, ghRegex)))) {
+		fmt.Println(x.String())
 	}
 }
 
