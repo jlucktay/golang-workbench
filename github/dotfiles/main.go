@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -21,13 +20,4 @@ func main() {
 	for x := range genGithubURL(genFilterGoRepos(genAPILang(genLinks(doc, ghRegex)))) {
 		fmt.Println(x.String())
 	}
-}
-
-func matchStringCompiled(needle, haystack string) bool {
-	r, err := regexp.Compile(needle)
-	if err != nil {
-		panic(err)
-	}
-
-	return r.MatchString(haystack)
 }

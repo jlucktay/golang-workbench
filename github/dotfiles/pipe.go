@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -13,10 +14,18 @@ import (
 func genLinks(input *goquery.Document, filter string) (output chan url.URL) {
 	output = make(chan url.URL)
 
+	r, err := regexp.Compile(filter)
+	if err != nil {
+		panic(err)
+	}
+
 	go func() {
 		input.Find("a").Each(func(i int, s *goquery.Selection) {
 			src := s.AttrOr("href", "")
-			if u, _ := url.Parse(src); u.IsAbs() && u.Scheme != "data" && matchStringCompiled(filter, u.String()) {
+			if u, _ := url.Parse(src); u.IsAbs() &&
+				u.Scheme != "data" &&
+				r.MatchString(u.String()) {
+
 				output <- *u
 			}
 		})
