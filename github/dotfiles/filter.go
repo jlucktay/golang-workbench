@@ -1,15 +1,16 @@
 package main
 
 func filterForGoRepos(input map[string]int) bool {
-	if _, ok := input["Go"]; ok {
-		for _, lineCount := range input {
-			if lineCount > input["Go"] {
-				return false
-			}
-		}
-
-		return true
+	i, ok := input["Go"]
+	if !ok {
+		return false
 	}
 
-	return false
+	for _, lineCount := range input {
+		if lineCount > i {
+			return false
+		}
+	}
+
+	return true
 }
