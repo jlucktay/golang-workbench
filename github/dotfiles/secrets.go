@@ -15,15 +15,15 @@ type secrets struct {
 }
 
 func readTokenFromSecrets(path string) (token string) {
-	fileContents, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Fatal(err)
+	fileContents, readErr := ioutil.ReadFile(path)
+	if readErr != nil {
+		log.Fatal(readErr)
 	}
 
 	var tokenMap map[string]string
 
-	if err := json.Unmarshal(fileContents, &tokenMap); err != nil {
-		log.Fatal(err)
+	if umErr := json.Unmarshal(fileContents, &tokenMap); umErr != nil {
+		log.Fatal(umErr)
 	}
 
 	if t, ok := tokenMap["GitHubPersonalAccessToken"]; ok {
