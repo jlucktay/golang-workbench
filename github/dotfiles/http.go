@@ -9,9 +9,17 @@ import (
 )
 
 func getResponse(get url.URL) io.Reader {
-	res, err := http.DefaultClient.Do(newRequest(get))
-	if err != nil {
-		log.Fatal(err)
+	req, reqErr := http.NewRequest("GET", get.String(), nil)
+	if reqErr != nil {
+		log.Fatal(reqErr)
+	}
+
+	req.Header.Add("User-Agent", "jlucktay (dotfiles)")
+	req.SetBasicAuth("jlucktay", ghpaToken)
+
+	res, resErr := http.DefaultClient.Do(req)
+	if resErr != nil {
+		log.Fatal(resErr)
 	}
 	defer res.Body.Close()
 
@@ -23,16 +31,4 @@ func getResponse(get url.URL) io.Reader {
 	buf.ReadFrom(res.Body)
 
 	return buf
-}
-
-func newRequest(u url.URL) (req *http.Request) {
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	req.Header.Add("User-Agent", "jlucktay (dotfiles)")
-	req.SetBasicAuth("jlucktay", ghpaToken)
-
-	return
 }
