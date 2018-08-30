@@ -15,7 +15,7 @@ func SquareOrSquareRoot(arr []int) []int {
 
 	for _, value := range arr {
 		if result := math.Sqrt(float64(value)); result == math.Floor(result) {
-			out = append(out, int(math.Sqrt(float64(value))))
+			out = append(out, int(result))
 		} else {
 			out = append(out, value*value)
 		}
