@@ -10,21 +10,21 @@ Run the below `docker build` command lines from within each of the respective su
 
 ``` shell
 cd 1.0-single
-docker build -t hello-docker-main:1.0 .
+docker build --tag hello-docker-main:1.0 .
 ```
 
 ### Multi-stage
 
 ``` shell
 cd 1.1-multi
-docker build -t hello-docker-main:1.1 .
+docker build --tag hello-docker-main:1.1 .
 ```
 
 ### FROM scratch
 
 ``` shell
 cd 1.2-scratch
-docker build -t hello-docker-main:1.2 .
+docker build --tag hello-docker-main:1.2 .
 ```
 
 ## Checking
@@ -32,11 +32,12 @@ docker build -t hello-docker-main:1.2 .
 The `docker images` command (with a repository filter) will show the built images.
 
 ``` shell
-$ docker images hello-docker-main
-REPOSITORY          TAG   IMAGE ID       CREATED          SIZE
-hello-docker-main   1.0   f878922f1271   13 minutes ago   378MB
-hello-docker-main   1.1   379235791891   8 minutes ago    6.16MB
-hello-docker-main   1.2   1840671fa652   7 minutes ago    2.01MB
+$ make show
+docker images hello-docker-main
+REPOSITORY          TAG   IMAGE ID       CREATED         SIZE
+hello-docker-main   1.0   ee418f55f5bf   4 minutes ago   313MB
+hello-docker-main   1.1   6ecb3fc7af82   4 minutes ago   6.32MB
+hello-docker-main   1.2   dee372c86f13   4 minutes ago   1.9MB
 ```
 
 Take note of how much smaller the `1.1` and `1.2` images are, compared to the initial `1.0`.
@@ -54,20 +55,20 @@ Run these `docker run` command lines to execute the built images.
 ### 1.0
 
 ``` shell
-$ docker run -it hello-docker-main:1.0
+$ docker run hello-docker-main:1.0
 Hello Docker v1.0!
 ```
 
 ### 1.1
 
 ``` shell
-$ docker run -it hello-docker-main:1.1
+$ docker run hello-docker-main:1.1
 Hello Docker v1.1!
 ```
 
 ### 1.2
 
 ``` shell
-$ docker run -it hello-docker-main:1.2
+$ docker run hello-docker-main:1.2
 Hello Docker v1.2!
 ```
