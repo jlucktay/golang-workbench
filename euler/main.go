@@ -23,7 +23,7 @@ func main() {
 	fmt.Println("\n\nSum of primes below 2 million:", sum)
 }
 
-// Blagged the basis for this function (and this function only!) from:
+// Blagged the basis for this function (and this function only!) with thanks from:
 // https://www.thepolyglotdeveloper.com/2016/12/determine-number-prime-using-golang/
 func isPrime(value uint64) bool {
 	for i := uint64(2); i <= uint64(math.Floor(float64(value)/2)); i++ {

@@ -1,4 +1,4 @@
-// From here:
+// Thank you:
 // https://stackoverflow.com/questions/41079492/golang-code-to-increase-cpu-usage
 package main
 

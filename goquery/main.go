@@ -1,4 +1,4 @@
-// From:
+// Thank you:
 // https://www.progville.com/go/goquery-jquery-html-golang/
 package main
 
