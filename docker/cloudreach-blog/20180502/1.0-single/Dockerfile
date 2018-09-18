@@ -1,6 +1,6 @@
 FROM golang:alpine
 RUN mkdir /app
-ADD src /app/
+COPY src /app/
 WORKDIR /app
 RUN go build -o main .
 RUN adduser -S -D -H -h /app appuser

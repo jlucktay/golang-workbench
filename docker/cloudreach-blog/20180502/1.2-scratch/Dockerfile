@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 RUN mkdir /build
-ADD src /build/
+COPY src /build/
 WORKDIR /build
 ENV CGO_ENABLED 0
 ENV GOOS linux
