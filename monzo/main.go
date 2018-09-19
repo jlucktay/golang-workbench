@@ -40,8 +40,6 @@ func init() {
 func main() {
 	flag.Parse()
 
-	fmt.Println("flagURL has value ", flagURL)
-
 	urlTarget, errParse := url.Parse(fmt.Sprintf("https://%s", flagURL))
 	if errParse != nil {
 		log.Fatal(errParse)
