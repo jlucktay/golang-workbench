@@ -10,4 +10,5 @@ $ go run . -url monzo.com
 [genCrawl] 'https://monzo.com/' is a child of 'https://monzo.com'.
 [genCrawl] 'https://monzo.com/about' is a child of 'https://monzo.com'.
 [genCrawl] 'https://monzo.com/blog' is a child of 'https://monzo.com'.
+...
 ```
