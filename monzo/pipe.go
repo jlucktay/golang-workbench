@@ -48,8 +48,8 @@ func genCrawl(urlTarget url.URL, domainFilter string) {
 	// Keeping the children URLs in a seperate slice like this is a bit of a hack
 	// I don't like it but it got me past some locking issues
 	// TODO: learn more about locking and clean this up
-	children := make([]url.URL, 0, 1)
-	crawled.m[urlTarget] = make([]url.URL, 0, 1)
+	children := make([]url.URL, 0)
+	crawled.m[urlTarget] = make([]url.URL, 0)
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		href := s.AttrOr("href", "")
