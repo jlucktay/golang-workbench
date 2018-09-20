@@ -38,7 +38,9 @@ func crawl(urlTarget url.URL) {
 
 	log.Printf("Fetched '%+v'.\n", urlTarget.String())
 
-	// Get all links on this page, and store them for later reference
+	// Keeping the children URLs in a seperate slice like this is a bit of a hack
+	// I don't like it but it got me past some locking issues
+	// TODO: learn more about locking and clean this up
 	childResults := getLinks(urlTarget, doc)
 	// If we've already crawled this page, we're done here
 	if childResults == nil {
@@ -65,17 +67,16 @@ func crawl(urlTarget url.URL) {
 	pageCrawled++ // Stats
 }
 
+// Get all links on this page, and store them for later reference
 func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 	crawled.Lock()
+
 	if _, ok := crawled.m[urlTarget]; ok {
 		crawled.Unlock()
 		log.Printf("Already crawled '%+v', returning.\n", urlTarget)
 		return nil
 	}
 
-	// Keeping the children URLs in a seperate slice like this is a bit of a hack
-	// I don't like it but it got me past some locking issues
-	// TODO: learn more about locking and clean this up
 	children := make([]url.URL, 0)
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
@@ -87,6 +88,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 			children = append(children, *urlHref)
 		}
 	})
+
 	crawled.m[urlTarget] = children
 	crawled.Unlock()
 

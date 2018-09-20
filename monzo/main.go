@@ -91,5 +91,6 @@ func main() {
 	// Print stats to stdout
 	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n", pageCrawled, urlTarget.String(), pageOutsideDomain)
 
+	// Print findings to JSON file
 	outputToJSON()
 }
