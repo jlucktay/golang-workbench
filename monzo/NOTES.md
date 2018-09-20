@@ -15,6 +15,18 @@ sys     0m2.553s
 $
 ```
 
+After adding unit test coverage to `convertURL()` and refactoring/adding logic:
+
+``` shell
+$ time go run . -url monzo.com
+Pages crawled: 1190
+Pages outside target 'https://monzo.com' domain: 8280
+
+real    0m8.197s
+user    0m4.381s
+sys     0m2.462s
+```
+
 ## References
 
 - [Golang.org](https://golang.org)

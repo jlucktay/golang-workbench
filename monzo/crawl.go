@@ -55,9 +55,10 @@ func crawl(urlTarget url.URL, domainFilter string) {
 		href := s.AttrOr("href", "")
 		urlHref := convertURL(href, domainFilter)
 
-		log.Printf("'%+v' is a child of '%v'.\n", urlHref, urlTarget.String())
-
-		children = append(children, *urlHref)
+		if urlHref != nil {
+			log.Printf("'%+v' is a child of '%v'.\n", urlHref, urlTarget.String())
+			children = append(children, *urlHref)
+		}
 	})
 	crawled.m[urlTarget] = children
 	crawled.Unlock()

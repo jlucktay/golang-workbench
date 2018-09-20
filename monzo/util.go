@@ -8,6 +8,11 @@ import (
 )
 
 func convertURL(input, domain string) *url.URL {
+	// If they are just anchor links on the same page, disregard and return nil
+	if strings.HasPrefix(input, "#") {
+		return nil
+	}
+
 	prefix := ""
 
 	// The assumption for relative URLs on the same domain is that they are all secure, hence prepending 'https'
@@ -22,6 +27,20 @@ func convertURL(input, domain string) *url.URL {
 	urlOut, errParse := url.Parse(prefix + input)
 	if errParse != nil {
 		log.Fatalf("Error parsing '%s': %v\n", prefix+input, errParse)
+	}
+
+	// Make non-absolute URLs into absolute
+	if !urlOut.IsAbs() {
+		split := strings.SplitN(urlOut.String(), "/", 2)
+		urlOut.Scheme = "https"
+
+		if len(split) < 2 {
+			urlOut.Host = domain
+			urlOut.Path = "/" + split[0]
+		} else {
+			urlOut.Host = split[0]
+			urlOut.Path = "/" + split[1]
+		}
 	}
 
 	return urlOut
