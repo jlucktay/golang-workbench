@@ -7,7 +7,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func genCrawl(urlTarget url.URL, domainFilter string) {
+func crawl(urlTarget url.URL, domainFilter string) {
 	if urlTarget.Host != domainFilter {
 		log.Printf("[genCrawl] '%+v' didn't pass the domain filter '%s', returning.\n", urlTarget.String(), domainFilter)
 		pageOutsideDomain++
@@ -68,7 +68,7 @@ func genCrawl(urlTarget url.URL, domainFilter string) {
 		log.Printf("[genCrawl] Crawling child %+v/%+v of %+v: '%+v'\n", b+1, len(children), urlTarget.String(), c.String())
 
 		go func(u url.URL) {
-			genCrawl(u, domainFilter)
+			crawl(u, domainFilter)
 			done <- true
 		}(c)
 	}

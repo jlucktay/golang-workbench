@@ -84,7 +84,7 @@ func main() {
 	}
 
 	// Start crawling with recursive function
-	genCrawl(*urlTarget, flagURL)
+	crawl(*urlTarget, flagURL)
 
 	// Print stats to stdout
 	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n", pageCrawled, urlTarget.String(), pageOutsideDomain)
