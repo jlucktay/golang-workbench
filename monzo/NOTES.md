@@ -39,6 +39,18 @@ user    0m4.058s
 sys     0m2.204s
 ```
 
+Adding the relative path and HTTP/HTTPS protocol handling to `convertURL()` did slow it back down, although the number of pages covered/crawled went up significantly:
+
+``` shell
+$ time go run . -url monzo.com
+Pages crawled: 2315
+Pages outside target 'https://monzo.com' domain: 16805
+
+real    0m10.043s
+user    0m7.713s
+sys     0m4.701s
+```
+
 ## References
 
 - [Golang.org](https://golang.org)
