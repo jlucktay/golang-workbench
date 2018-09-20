@@ -62,3 +62,12 @@ sys     0m4.701s
 - [Stack Overflow](https://stackoverflow.com)
   - Not going to list all of the specific pages, but check out [my recent upvotes](https://stackoverflow.com/users/380599/jlucktay?tab=votes) for a sample 😅
   - Special mention to [this page](https://stackoverflow.com/questions/38362631/go-error-non-constant-array-bound) though, for detailing one issue I ran into when optimising
+
+## Magefile target candidates
+
+- `check latest error log for non-404 errors:`
+- `$ cat $(ls -rt1 *error* | tail -n 1) | grep -v "\[404\]"`
+- `$ go test -count 1 -v .`
+- `$ time go run .`
+- `$ time go run . -url monzo.com`
+- `$ rm -f *.json *.log`
