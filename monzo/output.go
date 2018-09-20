@@ -17,7 +17,7 @@ func outputToJSON() {
 	cpSlice := make([]CrawledPage, 0)
 
 	for parent, children := range crawled.m {
-		cpChildren := make([]string, len(children))
+		cpChildren := make([]string, 0)
 
 		for _, child := range children {
 			cpChildren = append(cpChildren, child.String())
