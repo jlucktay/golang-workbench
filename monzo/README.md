@@ -2,7 +2,9 @@
 
 See the [other](DESIGN.md) [Markdown](SPEC.md) [files](NOTES.md) for some more details.
 
-You can supply a URL as a command line argument like so:
+After running the crawler, a JSON file will be written out to disk which contains details on the link relationships between pages.
+
+You can optionally supply a URL as a command line argument like so:
 
 ``` shell
 $ go run . -url monzo.com
