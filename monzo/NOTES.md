@@ -27,6 +27,18 @@ user    0m4.381s
 sys     0m2.462s
 ```
 
+Some further refactoring in various spots across the whole package gained some speed back:
+
+``` shell
+$ time go run . -url monzo.com
+Pages crawled: 1202
+Pages outside target 'https://monzo.com' domain: 8767
+
+real    0m4.982s
+user    0m4.058s
+sys     0m2.204s
+```
+
 ## References
 
 - [Golang.org](https://golang.org)
