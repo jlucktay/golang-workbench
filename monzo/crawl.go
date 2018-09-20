@@ -10,7 +10,7 @@ import (
 func crawl(urlTarget url.URL, domainFilter string) {
 	if urlTarget.Host != domainFilter {
 		log.Printf("'%+v' didn't pass the domain filter '%s', returning.\n", urlTarget.String(), domainFilter)
-		pageOutsideDomain++
+		pageOutsideDomain++ // Stats
 		return
 	}
 
@@ -79,5 +79,5 @@ func crawl(urlTarget url.URL, domainFilter string) {
 	}
 
 	log.Printf("Done with '%+v'.\n", urlTarget.String())
-	pageCrawled++
+	pageCrawled++ // Stats
 }

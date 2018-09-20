@@ -19,7 +19,7 @@ func getResponse(get url.URL) io.Reader {
 	res, resErr := http.DefaultClient.Do(req)
 	buf := new(bytes.Buffer)
 
-	// HTTP response errors and non-200 status codes will print to stdout and return an empty buffer
+	// HTTP response errors and non-200 status codes will 1) log to an error file, and 2) return an empty buffer
 	if resErr != nil {
 		errorLog.Printf("URL '%s': response error: %v\n", get.String(), resErr)
 		return buf
