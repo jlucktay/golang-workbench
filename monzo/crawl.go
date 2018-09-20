@@ -27,6 +27,7 @@ func crawl(urlTarget url.URL) {
 	doc, errRead := goquery.NewDocumentFromReader(getResponse(urlTarget))
 
 	// TODO: get errors passed back from my getResponse() func
+	// As of this writing, they are sent to an error log file
 	fetched.Lock()
 	fetched.m[urlTarget] = errRead
 	fetched.Unlock()
@@ -39,7 +40,7 @@ func crawl(urlTarget url.URL) {
 
 	// Get all links on this page, and store them for later reference
 	childResults := getLinks(urlTarget, doc)
-	// If there aren't any, or we've already crawled this page, we're done here
+	// If we've already crawled this page, we're done here
 	if childResults == nil {
 		return
 	}
