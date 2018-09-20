@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
@@ -15,10 +17,7 @@ var (
 	// Using two maps, with mutexes to protect them from concurrent updates
 	// - one to prevent double-fetching
 	// - one for persistent storage of parent/child relationships between pages
-	// TODO: time-permitting, either:
-	//    consolidate this down to one map, or
-	//    send the crawled relationships somewhere else
-	//       e.g. stream out to disk (marshal into a JSON dump), a document DB, etc
+	// TODO: time permitting, consolidate this down to one map
 
 	fetched = struct {
 		m map[url.URL]error
@@ -40,9 +39,7 @@ var (
 	logFileName   string
 	errorLog      *log.Logger
 	errorFileName string
-)
 
-var (
 	pageCrawled       uint
 	pageOutsideDomain uint
 )
@@ -91,4 +88,41 @@ func main() {
 
 	// Print stats to stdout
 	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n", pageCrawled, urlTarget.String(), pageOutsideDomain)
+
+	// Output the map of crawled URLs
+	// Create a custom type, for parent/child pages
+	type CrawledPage struct {
+		Parent   string
+		Children []string
+	}
+
+	// Range over the map, converting to string/string slices along the way, and copy into a slice of the custom type
+	cpSlice := make([]CrawledPage, 0)
+
+	for a, b := range crawled.m {
+		cpChildren := make([]string, 0)
+
+		for _, c := range b {
+			cpChildren = append(cpChildren, c.String())
+		}
+
+		cpSlice = append(cpSlice,
+			CrawledPage{
+				Parent:   a.String(),
+				Children: cpChildren,
+			})
+	}
+
+	// Marshal the slice of custom types into JSON
+	b, errMarshal := json.MarshalIndent(cpSlice, "", "  ")
+	if errMarshal != nil {
+		fmt.Println("error:", errMarshal)
+	}
+
+	// Emit the JSON to file
+	jsonFilename := timestamp + "." + flagURL + ".json"
+	errWrite := ioutil.WriteFile(jsonFilename, b, 0644)
+	if errWrite != nil {
+		fmt.Println("error:", errWrite)
+	}
 }
