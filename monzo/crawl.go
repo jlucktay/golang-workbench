@@ -9,7 +9,7 @@ import (
 
 func crawl(urlTarget url.URL, domainFilter string) {
 	if urlTarget.Host != domainFilter {
-		log.Printf("[genCrawl] '%+v' didn't pass the domain filter '%s', returning.\n", urlTarget.String(), domainFilter)
+		log.Printf("'%+v' didn't pass the domain filter '%s', returning.\n", urlTarget.String(), domainFilter)
 		pageOutsideDomain++
 		return
 	}
@@ -17,7 +17,7 @@ func crawl(urlTarget url.URL, domainFilter string) {
 	fetched.Lock()
 	if _, ok := fetched.m[urlTarget]; ok {
 		fetched.Unlock()
-		log.Printf("[genCrawl] Already fetched '%+v', returning.\n", urlTarget.String())
+		log.Printf("Already fetched '%+v', returning.\n", urlTarget.String())
 		return
 	}
 
@@ -32,16 +32,16 @@ func crawl(urlTarget url.URL, domainFilter string) {
 	fetched.Unlock()
 
 	if errRead != nil {
-		log.Fatalf("[genCrawl] %+v\n", errRead)
+		log.Fatalf("%+v\n", errRead)
 	}
 
-	log.Printf("[genCrawl] Fetched '%+v'.\n", urlTarget.String())
+	log.Printf("Fetched '%+v'.\n", urlTarget.String())
 
 	// Get all links on this page, and store them for later reference
 	crawled.Lock()
 	if _, ok := crawled.m[urlTarget]; ok {
 		crawled.Unlock()
-		log.Printf("[genCrawl] Already crawled '%+v', returning.\n", urlTarget)
+		log.Printf("Already crawled '%+v', returning.\n", urlTarget)
 		return
 	}
 
@@ -55,7 +55,7 @@ func crawl(urlTarget url.URL, domainFilter string) {
 		href := s.AttrOr("href", "")
 		urlHref := convertURL(href, domainFilter)
 
-		log.Printf("[genCrawl] '%+v' is a child of '%v'.\n", urlHref, urlTarget.String())
+		log.Printf("'%+v' is a child of '%v'.\n", urlHref, urlTarget.String())
 
 		children = append(children, *urlHref)
 	})
@@ -65,7 +65,7 @@ func crawl(urlTarget url.URL, domainFilter string) {
 	// Now start crawlers on all of this page's children
 	done := make(chan bool)
 	for b, c := range children {
-		log.Printf("[genCrawl] Crawling child %+v/%+v of %+v: '%+v'\n", b+1, len(children), urlTarget.String(), c.String())
+		log.Printf("Crawling child %+v/%+v of %+v: '%+v'\n", b+1, len(children), urlTarget.String(), c.String())
 
 		go func(u url.URL) {
 			crawl(u, domainFilter)
@@ -74,10 +74,10 @@ func crawl(urlTarget url.URL, domainFilter string) {
 	}
 
 	for x, y := range children {
-		log.Printf("[genCrawl] <- [%+v] %+v/%+v - waiting for child: %+v\n", urlTarget.String(), x+1, len(children), y.String())
+		log.Printf("<- [%+v] %+v/%+v - waiting for child: %+v\n", urlTarget.String(), x+1, len(children), y.String())
 		<-done
 	}
 
-	log.Printf("[genCrawl] Done with '%+v'.\n", urlTarget.String())
+	log.Printf("Done with '%+v'.\n", urlTarget.String())
 	pageCrawled++
 }

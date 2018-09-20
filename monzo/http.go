@@ -21,13 +21,13 @@ func getResponse(get url.URL) io.Reader {
 
 	// HTTP response errors and non-200 status codes will print to stdout and return an empty buffer
 	if resErr != nil {
-		errorLog.Printf("[getResponse] URL '%s' error: %v\n", get.String(), resErr)
+		errorLog.Printf("URL '%s': response error: %v\n", get.String(), resErr)
 		return buf
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		errorLog.Printf("[getResponse] URL '%s': status code error: [%d] %s\n", get.String(), res.StatusCode, res.Status)
+		errorLog.Printf("URL '%s': status code error: [%d] %s\n", get.String(), res.StatusCode, res.Status)
 		return buf
 	}
 
