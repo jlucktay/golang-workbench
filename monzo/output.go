@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -17,30 +16,30 @@ func outputToJSON() {
 	// Range over the map, converting to string/string slices along the way, and copy into a slice of the custom type
 	cpSlice := make([]CrawledPage, 0)
 
-	for a, b := range crawled.m {
-		cpChildren := make([]string, 0)
+	for parent, children := range crawled.m {
+		cpChildren := make([]string, len(children))
 
-		for _, c := range b {
-			cpChildren = append(cpChildren, c.String())
+		for _, child := range children {
+			cpChildren = append(cpChildren, child.String())
 		}
 
 		cpSlice = append(cpSlice,
 			CrawledPage{
-				Parent:   a.String(),
+				Parent:   parent.String(),
 				Children: cpChildren,
 			})
 	}
 
 	// Marshal the slice of custom types into JSON
-	b, errMarshal := json.MarshalIndent(cpSlice, "", "  ")
+	jsonBytes, errMarshal := json.MarshalIndent(cpSlice, "", "  ")
 	if errMarshal != nil {
-		fmt.Println("error:", errMarshal)
+		errorLog.Printf("Error marshaling JSON: %v\n", errMarshal)
 	}
 
 	// Emit the JSON to file
 	jsonFilename := timestamp + "." + flagURL + ".json"
-	errWrite := ioutil.WriteFile(jsonFilename, b, 0644)
+	errWrite := ioutil.WriteFile(jsonFilename, jsonBytes, 0644)
 	if errWrite != nil {
-		fmt.Println("error:", errWrite)
+		errorLog.Printf("Error writing to file '%s': %v\n", jsonFilename, errWrite)
 	}
 }
