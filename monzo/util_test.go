@@ -7,8 +7,9 @@ import (
 )
 
 func TestConvertURL(t *testing.T) {
-	// Domain filter given to each convertURL() call
-	domain := "monzo.com"
+	// Domain filter argument used in each convertURL() call
+	// This is normally initilised/parsed from CLI in: main.go > init()
+	flagURL = "monzo.com"
 
 	testCases := []struct {
 		href      string
@@ -16,19 +17,19 @@ func TestConvertURL(t *testing.T) {
 	}{
 		{
 			href:      "/",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/"},
 		},
 		{
 			href:      "/about",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/about"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/about"},
 		},
 		{
 			href:      "//monzo.com/about",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/about"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/about"},
 		},
 		{
 			href:      "http://monzo.com/about",
-			urlResult: url.URL{Scheme: "http", Host: domain, Path: "/about"},
+			urlResult: url.URL{Scheme: "http", Host: flagURL, Path: "/about"},
 		},
 		{
 			href:      "//facebook.com/about",
@@ -40,19 +41,19 @@ func TestConvertURL(t *testing.T) {
 		},
 		{
 			href:      "/fragment#foo",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/fragment", Fragment: "foo"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/fragment", Fragment: "foo"},
 		},
 		{
 			href:      "/query?foo=bar",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/query", RawQuery: "foo=bar"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/query", RawQuery: "foo=bar"},
 		},
 		{
 			href:      "monzo.com/bare-domain-same",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/bare-domain-same"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/bare-domain-same"},
 		},
 		{
 			href:      "monzo.com/bare/domain/same",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/bare/domain/same"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/bare/domain/same"},
 		},
 		{
 			href:      "twitter.com/bare-domain-different",
@@ -64,13 +65,13 @@ func TestConvertURL(t *testing.T) {
 		},
 		{
 			href:      "samelevel",
-			urlResult: url.URL{Scheme: "https", Host: domain, Path: "/samelevel"},
+			urlResult: url.URL{Scheme: "https", Host: flagURL, Path: "/samelevel"},
 		},
 	}
 	for _, tC := range testCases {
 		desc := fmt.Sprintf("[%s -> %s]", tC.href, tC.urlResult.String())
 		t.Run(desc, func(t *testing.T) {
-			actual := convertURL(tC.href, domain)
+			actual := convertURL(tC.href)
 			if *actual != tC.urlResult {
 				t.Errorf("Got '%q', want '%q'.\n[%#v]\n[%#v]\n", actual.String(), tC.urlResult.String(), actual, tC.urlResult)
 			}

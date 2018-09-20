@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func convertURL(input, domain string) *url.URL {
+func convertURL(input string) *url.URL {
 	// If they are just anchor links on the same page, disregard and return nil
 	if strings.HasPrefix(input, "#") {
 		return nil
@@ -20,7 +20,7 @@ func convertURL(input, domain string) *url.URL {
 		if strings.HasPrefix(input, "//") {
 			prefix = "https:"
 		} else {
-			prefix = fmt.Sprintf("https://%s", domain)
+			prefix = fmt.Sprintf("https://%s", flagURL)
 		}
 	}
 
@@ -35,7 +35,7 @@ func convertURL(input, domain string) *url.URL {
 		urlOut.Scheme = "https"
 
 		if len(split) < 2 {
-			urlOut.Host = domain
+			urlOut.Host = flagURL
 			urlOut.Path = "/" + split[0]
 		} else {
 			urlOut.Host = split[0]
