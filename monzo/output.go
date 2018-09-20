@@ -12,8 +12,10 @@ type CrawledPage struct {
 }
 
 func outputToJSON() {
-	// Output the map of crawled URLs to a JSON file with current timestamp and domain in its name
-	// Range over the map, converting to string/string slices along the way, and copy into a slice of the custom type
+	// Output the map of crawled URLs to a JSON file with current timestamp and
+	// domain in its name. Range over the map, converting to string/string
+	// slices along the way, and copy into a slice of the custom type before
+	// marshaling out to a JSON file.
 	var cpSlice []CrawledPage
 
 	for parent, children := range crawled.m {
@@ -40,6 +42,7 @@ func outputToJSON() {
 	jsonFilename := timestamp + "." + flagURL + ".json"
 	errWrite := ioutil.WriteFile(jsonFilename, jsonBytes, 0644)
 	if errWrite != nil {
-		errorLog.Printf("Error writing to file '%s': %v\n", jsonFilename, errWrite)
+		errorLog.Printf("Error writing to file '%s': %v\n",
+			jsonFilename, errWrite)
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func convertURL(base, input string) *url.URL {
-	// Found an odd youtube.com link when crawling google.com that started with a space 🤔
+	// Hit an odd youtube link on google.com that started with a space 🤔
 	input = strings.TrimSpace(input)
 
 	// If they are just anchor links on the same page, disregard and return nil
@@ -15,16 +15,18 @@ func convertURL(base, input string) *url.URL {
 		return nil
 	}
 
-	// We need a base URL to resolve potential relative links further down the line
+	// We need a base URL to resolve potential relative links further down
 	urlBase, errBaseParse := url.Parse(base)
 	if errBaseParse != nil {
-		errorLog.Printf("Error parsing base URL '%s': %v\n", base, errBaseParse)
+		errorLog.Printf("Error parsing base URL '%s': %v\n",
+			base, errBaseParse)
 		return nil
 	}
 
 	prefix := ""
 
-	// The assumption for relative URLs on the same domain is that they are all secure, hence prepending 'https'
+	// The assumption for relative URLs on the same domain is that they are all
+	// secure, hence prepending 'https'
 	if strings.HasPrefix(input, "/") {
 		if strings.HasPrefix(input, "//") {
 			if urlBase.IsAbs() {
@@ -43,7 +45,8 @@ func convertURL(base, input string) *url.URL {
 
 	urlOut, errParse := url.Parse(prefix + input)
 	if errParse != nil {
-		errorLog.Printf("Error parsing input '%s': %v\n", prefix+input, errParse)
+		errorLog.Printf("Error parsing input '%s': %v\n",
+			prefix+input, errParse)
 		return nil
 	}
 

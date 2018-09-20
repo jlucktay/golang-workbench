@@ -54,15 +54,16 @@ func main() {
 	flag.Parse()
 
 	// Set up log files with timestamp and URL in their names
-	// Use the same timestamp etc string for all log file names, so that they are grouped together
+	// Use the same prefix for all log file names, so that they are clustered
 	timestamp = time.Now().Format("20060102.150405.000000-0700")
 	logFileName = timestamp + "." + flagURL + ".log"
 	errorFileName = timestamp + "." + flagURL + ".error.log"
 	logFlags = log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 
 	// Set info and error logs to write out to their respective files
-	// TODO: refactor log file handling into a func, to make multiple streams easier to wrangle
-	f, errOpen := os.OpenFile(logFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	// TODO: refactor log file handling to make wrangling multiples easier
+	f, errOpen := os.OpenFile(logFileName,
+		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if errOpen != nil {
 		log.Fatalf("Error opening file: %v", errOpen)
 	}
@@ -71,7 +72,8 @@ func main() {
 	log.SetFlags(logFlags)
 	log.SetOutput(f)
 
-	e, errOpen := os.OpenFile(errorFileName, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	e, errOpen := os.OpenFile(errorFileName,
+		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if errOpen != nil {
 		log.Fatalf("Error opening file: %v", errOpen)
 	}
@@ -82,7 +84,8 @@ func main() {
 	// Parse optional URL from command line
 	urlTarget, errParse := url.Parse(fmt.Sprintf("https://%s", flagURL))
 	if errParse != nil {
-		errorLog.Printf("Starting URL '%s' couldn't parse: %v\n", flagURL, errParse)
+		errorLog.Printf("Starting URL '%s' couldn't parse: %v\n",
+			flagURL, errParse)
 		os.Exit(1)
 	}
 
@@ -90,7 +93,8 @@ func main() {
 	crawl(*urlTarget)
 
 	// Print stats to stdout
-	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n", pageCrawled, urlTarget.String(), pageOutsideDomain)
+	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n",
+		pageCrawled, urlTarget.String(), pageOutsideDomain)
 
 	// Print findings to JSON file
 	outputToJSON()
