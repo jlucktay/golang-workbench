@@ -18,8 +18,7 @@ func convertURL(base, input string) *url.URL {
 	// We need a base URL to resolve potential relative links further down
 	urlBase, errBaseParse := url.Parse(base)
 	if errBaseParse != nil {
-		errorLog.Printf("Error parsing base URL '%s': %v\n",
-			base, errBaseParse)
+		Error.Printf("Error parsing base URL '%s': %v\n", base, errBaseParse)
 		return nil
 	}
 
@@ -45,8 +44,7 @@ func convertURL(base, input string) *url.URL {
 
 	urlOut, errParse := url.Parse(prefix + input)
 	if errParse != nil {
-		errorLog.Printf("Error parsing input '%s': %v\n",
-			prefix+input, errParse)
+		Error.Printf("Error parsing input '%s': %v\n", prefix+input, errParse)
 		return nil
 	}
 

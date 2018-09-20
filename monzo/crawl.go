@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/url"
 
 	"github.com/PuerkitoBio/goquery"
@@ -9,7 +8,7 @@ import (
 
 func crawl(urlTarget url.URL) {
 	if urlTarget.Host != flagURL {
-		log.Printf("'%+v' didn't pass the domain filter '%s', returning.\n",
+		Info.Printf("'%+v' didn't pass the domain filter '%s', returning.\n",
 			urlTarget.String(), flagURL)
 		pageOutsideDomain++ // Stats
 		return
@@ -18,7 +17,7 @@ func crawl(urlTarget url.URL) {
 	fetched.Lock()
 	if _, ok := fetched.m[urlTarget]; ok {
 		fetched.Unlock()
-		log.Printf("Already fetched '%+v', returning.\n", urlTarget.String())
+		Info.Printf("Already fetched '%+v', returning.\n", urlTarget.String())
 		return
 	}
 
@@ -34,10 +33,10 @@ func crawl(urlTarget url.URL) {
 	fetched.Unlock()
 
 	if errRead != nil {
-		log.Fatalf("%+v\n", errRead)
+		Error.Fatalf("%+v\n", errRead)
 	}
 
-	log.Printf("Fetched '%+v'.\n", urlTarget.String())
+	Info.Printf("Fetched '%+v'.\n", urlTarget.String())
 
 	// Keeping the child URLs in a seperate slice like this is a bit of a hack
 	// I don't like it but it got me past some locking issues
@@ -51,7 +50,7 @@ func crawl(urlTarget url.URL) {
 	// Now start crawlers on all of this page's children
 	done := make(chan bool)
 	for b, c := range childResults {
-		log.Printf("Crawling child %+v/%+v of %+v: '%+v'\n",
+		Info.Printf("Crawling child %+v/%+v of %+v: '%+v'\n",
 			b+1, len(childResults), urlTarget.String(), c.String())
 
 		go func(u url.URL) {
@@ -61,12 +60,12 @@ func crawl(urlTarget url.URL) {
 	}
 
 	for x, y := range childResults {
-		log.Printf("<- [%+v] %+v/%+v - waiting for child: %+v\n",
+		Info.Printf("<- [%+v] %+v/%+v - waiting for child: %+v\n",
 			urlTarget.String(), x+1, len(childResults), y.String())
 		<-done
 	}
 
-	log.Printf("Done with '%+v'.\n", urlTarget.String())
+	Info.Printf("Done with '%+v'.\n", urlTarget.String())
 	pageCrawled++ // Stats
 }
 
@@ -76,7 +75,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 
 	if _, ok := crawled.m[urlTarget]; ok {
 		crawled.Unlock()
-		log.Printf("Already crawled '%+v', returning.\n", urlTarget)
+		Info.Printf("Already crawled '%+v', returning.\n", urlTarget)
 		return nil
 	}
 
@@ -87,7 +86,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 		urlHref := convertURL(urlTarget.String(), href)
 
 		if urlHref != nil && len(urlHref.String()) > 0 {
-			log.Printf("'%+v' is a child of '%v'.\n",
+			Info.Printf("'%+v' is a child of '%v'.\n",
 				urlHref, urlTarget.String())
 			children = append(children, *urlHref)
 		}
