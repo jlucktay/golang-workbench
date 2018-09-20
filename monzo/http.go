@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 )
@@ -11,7 +10,7 @@ import (
 func getResponse(get url.URL) io.Reader {
 	req, reqErr := http.NewRequest("GET", get.String(), nil)
 	if reqErr != nil {
-		log.Fatal(reqErr)
+		errorLog.Printf("URL '%s': request error: %v\n", get.String(), reqErr)
 	}
 
 	req.Header.Add("User-Agent", "jlucktay (monzo-crawler)")

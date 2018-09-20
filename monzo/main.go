@@ -82,7 +82,8 @@ func main() {
 	// Parse optional URL from command line
 	urlTarget, errParse := url.Parse(fmt.Sprintf("https://%s", flagURL))
 	if errParse != nil {
-		log.Fatal(errParse)
+		errorLog.Printf("Starting URL '%s' couldn't parse: %v\n", flagURL, errParse)
+		os.Exit(1)
 	}
 
 	// Start crawling with recursive function

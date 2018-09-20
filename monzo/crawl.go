@@ -81,7 +81,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		href := s.AttrOr("href", "")
-		urlHref := convertURL(href)
+		urlHref := convertURL(urlTarget.String(), href)
 
 		if urlHref != nil && len(urlHref.String()) > 0 {
 			log.Printf("'%+v' is a child of '%v'.\n", urlHref, urlTarget.String())
