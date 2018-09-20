@@ -77,7 +77,6 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 	// I don't like it but it got me past some locking issues
 	// TODO: learn more about locking and clean this up
 	children := make([]url.URL, 0)
-	crawled.m[urlTarget] = make([]url.URL, 0)
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		href := s.AttrOr("href", "")
