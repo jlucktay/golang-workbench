@@ -77,7 +77,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 		return nil
 	}
 
-	children := make([]url.URL, 0)
+	var children []url.URL
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		href := s.AttrOr("href", "")

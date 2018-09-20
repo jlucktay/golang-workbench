@@ -14,10 +14,10 @@ type CrawledPage struct {
 func outputToJSON() {
 	// Output the map of crawled URLs to a JSON file with current timestamp and domain in its name
 	// Range over the map, converting to string/string slices along the way, and copy into a slice of the custom type
-	cpSlice := make([]CrawledPage, 0)
+	var cpSlice []CrawledPage
 
 	for parent, children := range crawled.m {
-		cpChildren := make([]string, 0)
+		var cpChildren []string
 
 		for _, child := range children {
 			cpChildren = append(cpChildren, child.String())

@@ -37,3 +37,4 @@ sys     0m2.462s
 - [Go: Marshal and unmarshal JSON with time and URL data](https://ukiahsmith.com/blog/go-marshal-and-unmarshal-json-with-time-and-url-data/)
 - [Stack Overflow](https://stackoverflow.com)
   - Not going to list all of the specific pages, but check out [my recent upvotes](https://stackoverflow.com/users/380599/jlucktay?tab=votes) for a sample 😅
+  - Special mention to [this page](https://stackoverflow.com/questions/38362631/go-error-non-constant-array-bound) though, for detailing one issue I ran into when optimising
