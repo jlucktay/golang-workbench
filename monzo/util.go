@@ -2,31 +2,27 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 )
 
-// TODO: reinstate the error handling for the Parse() calls
-func convertURL(input, domain string) (urlOut *url.URL) {
-	// The assumption for relative URLs on the same domain are that they are all secure, hence prepending 'https'
+func convertURL(input, domain string) *url.URL {
+	prefix := ""
+
+	// The assumption for relative URLs on the same domain is that they are all secure, hence prepending 'https'
 	if strings.HasPrefix(input, "/") {
 		if strings.HasPrefix(input, "//") {
-			urlOut, _ = url.Parse(fmt.Sprintf("https:%s", input))
-			// if errOne != nil {
-			// 	log.Fatal(errOne)
-			// }
+			prefix = "https:"
 		} else {
-			urlOut, _ = url.Parse(fmt.Sprintf("https://%s%s", domain, input))
-			// if errTwo != nil {
-			// 	log.Fatal(errTwo)
-			// }
+			prefix = fmt.Sprintf("https://%s", domain)
 		}
-	} else {
-		urlOut, _ = url.Parse(input)
-		// if errThree != nil {
-		// 	log.Fatal(errThree)
-		// }
 	}
 
-	return
+	urlOut, errParse := url.Parse(prefix + input)
+	if errParse != nil {
+		log.Fatalf("Error parsing '%s': %v\n", prefix+input, errParse)
+	}
+
+	return urlOut
 }
