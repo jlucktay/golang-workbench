@@ -51,6 +51,18 @@ user    0m7.713s
 sys     0m4.701s
 ```
 
+Following some more refactoring around the error handling and locking section in `crawl()`:
+
+``` shell
+$ time go run . -url monzo.com
+Pages crawled: 2283
+Pages outside target 'https://monzo.com' domain: 16530
+
+real    0m8.934s
+user    0m7.990s
+sys     0m4.663s
+```
+
 ## References
 
 - [Golang.org](https://golang.org)

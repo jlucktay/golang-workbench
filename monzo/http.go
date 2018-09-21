@@ -2,37 +2,38 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 )
 
-func getResponse(get url.URL) io.Reader {
+func getResponse(get url.URL) (io.Reader, error) {
 	req, reqErr := http.NewRequest("GET", get.String(), nil)
 	if reqErr != nil {
 		Error.Printf("URL '%s': request error: %v\n", get.String(), reqErr)
+		return nil, reqErr
 	}
 
 	req.Header.Add("User-Agent", "jlucktay (monzo-crawler)")
-
 	res, resErr := http.DefaultClient.Do(req)
-	buf := new(bytes.Buffer)
 
 	// HTTP response errors and non-200 status codes will
 	// 1) log to an error file, and
 	// 2) return an empty buffer
 	if resErr != nil {
 		Error.Printf("URL '%s': response error: %v\n", get.String(), resErr)
-		return buf
+		return nil, resErr
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		Error.Printf("URL '%s': status code error: [%d] %s\n",
+		return nil, fmt.Errorf("URL '%s': status code error: [%d] %s",
 			get.String(), res.StatusCode, res.Status)
-		return buf
 	}
 
+	buf := new(bytes.Buffer)
 	buf.ReadFrom(res.Body)
-	return buf
+
+	return buf, nil
 }

@@ -24,16 +24,20 @@ func crawl(urlTarget url.URL) {
 	fetched.m[urlTarget] = errFetchInProgress
 	fetched.Unlock()
 
-	doc, errRead := goquery.NewDocumentFromReader(getResponse(urlTarget))
+	resp, errResp := getResponse(urlTarget)
+	if errResp != nil {
+		Error.Printf("Response: %+v\n", errResp)
+		return
+	}
 
-	// TODO: get errors passed back from my getResponse() func
-	// As of this writing, they are sent to an error log file
 	fetched.Lock()
-	fetched.m[urlTarget] = errRead
+	fetched.m[urlTarget] = errResp
 	fetched.Unlock()
 
+	doc, errRead := goquery.NewDocumentFromReader(resp)
 	if errRead != nil {
-		Error.Fatalf("%+v\n", errRead)
+		Error.Printf("Reading from response: %+v\n", errRead)
+		return
 	}
 
 	Info.Printf("Fetched '%+v'.\n", urlTarget.String())
