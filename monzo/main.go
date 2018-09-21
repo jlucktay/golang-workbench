@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -46,10 +47,24 @@ func main() {
 	flag.Parse()
 
 	// Parse optional URL from command line
-	urlTarget, errParse := url.Parse(fmt.Sprintf("https://%s", flagURL))
+	urlTarget, errParse := url.Parse(flagURL)
 	if errParse != nil {
 		Error.Printf("Couldn't parse URL '%s': %v\n", flagURL, errParse)
 		os.Exit(1)
+	}
+
+	// Fall back on HTTPS if no protocol was specified as an argument
+	if urlTarget.Scheme == "" {
+		urlTarget.Scheme = "https"
+	} else {
+		// Need to keep flagURL as just a domain only, without protocol/scheme
+		flagURL = strings.TrimPrefix(flagURL, urlTarget.Scheme+"://")
+	}
+
+	// If a bare domain is passed in without a protocol, the parser takes it as
+	// a path and not a domain/host name, so we need to swap them
+	if urlTarget.Host == "" && urlTarget.Path != "" {
+		urlTarget.Host, urlTarget.Path = urlTarget.Path, urlTarget.Host
 	}
 
 	// Set up log files with timestamp and URL in their names
@@ -75,6 +90,8 @@ func main() {
 	fmt.Printf("Pages crawled: %d\nPages outside target '%s' domain: %d\n",
 		pageCrawled, urlTarget.String(), pageOutsideDomain)
 
-	// Print findings to JSON file
-	outputToJSON()
+	// Print any findings to JSON file
+	if len(crawled.m) > 0 {
+		outputToJSON()
+	}
 }
