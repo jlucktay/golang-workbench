@@ -71,9 +71,11 @@ func main() {
 	fileTimestamp = time.Now().Format("20060102.150405.000000-0700")
 
 	// Use the same prefix for all log file names, so that they are clustered
-	infoFilename = fileTimestamp + "." + flagURL + ".info.log"
-	errorFilename = fileTimestamp + "." + flagURL + ".error.log"
-	jsonFilename = fileTimestamp + "." + flagURL + ".json"
+	filenamePrefix := fileTimestamp + "." + flagURL
+
+	infoFilename = filenamePrefix + ".info.log"
+	errorFilename = filenamePrefix + ".error.log"
+	jsonFilename := filenamePrefix + ".json"
 
 	// Set info and error logs to write out to their respective files
 	infoHandle := createLogFile(infoFilename)
@@ -92,6 +94,6 @@ func main() {
 
 	// Print any findings to JSON file
 	if len(crawled.m) > 0 {
-		outputToJSON()
+		outputToJSON(jsonFilename)
 	}
 }

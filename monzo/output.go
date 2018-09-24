@@ -5,17 +5,13 @@ import (
 	"io/ioutil"
 )
 
-var (
-	jsonFilename string
-)
-
 // CrawledPage is a custom type, for holding parent/child page relationships
 type CrawledPage struct {
 	Parent   string
 	Children []string
 }
 
-func outputToJSON() {
+func outputToJSON(jsonFilename string) {
 	// Output the map of crawled URLs to a JSON file with current timestamp and
 	// domain in its name. Range over the map, converting to strings and string
 	// slices along the way, and copy into a slice of the custom type before
