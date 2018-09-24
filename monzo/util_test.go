@@ -26,7 +26,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("http://%s", flagURL),
+			base: "http://" + flagURL,
 			href: "/",
 			urlResult: url.URL{
 				Scheme: "http",
@@ -35,7 +35,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "/",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -53,7 +53,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("http://%s", flagURL),
+			base: "http://" + flagURL,
 			href: "/about",
 			urlResult: url.URL{
 				Scheme: "http",
@@ -62,7 +62,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "/about",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -80,7 +80,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("http://%s", flagURL),
+			base: "http://" + flagURL,
 			href: fmt.Sprintf("//%s/about", flagURL),
 			urlResult: url.URL{
 				Scheme: "http",
@@ -89,7 +89,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: fmt.Sprintf("//%s/about", flagURL),
 			urlResult: url.URL{
 				Scheme: "https",
@@ -107,7 +107,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: fmt.Sprintf("http://%s/about", flagURL),
 			urlResult: url.URL{
 				Scheme: "http",
@@ -116,7 +116,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "//facebook.com/about",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -125,7 +125,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "http://twitter.com/monzo",
 			urlResult: url.URL{
 				Scheme: "http",
@@ -134,7 +134,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "/fragment#foo",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -143,7 +143,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "/query?foo=bar",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -152,8 +152,8 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
-			href: fmt.Sprintf("%s/bare-domain-same", flagURL),
+			base: "https://" + flagURL,
+			href: flagURL + "/bare-domain-same",
 			urlResult: url.URL{
 				Scheme: "https",
 				Host:   flagURL,
@@ -161,8 +161,8 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
-			href: fmt.Sprintf("%s/bare/domain/same", flagURL),
+			base: "https://" + flagURL,
+			href: flagURL + "/bare/domain/same",
 			urlResult: url.URL{
 				Scheme: "https",
 				Host:   flagURL,
@@ -170,7 +170,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "twitter.com/bare-domain-different",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -179,7 +179,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "twitter.com/bare/domain/different",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -188,7 +188,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "samelevel",
 			urlResult: url.URL{
 				Scheme: "https",
@@ -251,7 +251,7 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
-			base: fmt.Sprintf("https://%s", flagURL),
+			base: "https://" + flagURL,
 			href: "/double//slashes//in//the//path",
 			urlResult: url.URL{
 				Scheme: "https",
