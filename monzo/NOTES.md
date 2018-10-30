@@ -12,7 +12,6 @@ Pages outside target 'https://monzo.com' domain: 9477
 real    0m4.941s
 user    0m4.246s
 sys     0m2.553s
-$
 ```
 
 After adding unit test coverage to `convertURL()` and refactoring/adding logic:
