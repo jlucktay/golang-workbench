@@ -20,7 +20,7 @@ func getResponse(get url.URL) (io.Reader, error) {
 
 	// HTTP response errors and non-200 status codes will
 	// 1) log to an error file, and
-	// 2) return an empty buffer
+	// 2) return a nil buffer and the error from http.DefaultClient
 	if resErr != nil {
 		Error.Printf("URL '%s': response error: %v\n", get.String(), resErr)
 		return nil, resErr
