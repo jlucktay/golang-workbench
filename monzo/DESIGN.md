@@ -12,3 +12,8 @@
 
 - Add some kind of CLI filter, to filter URLs and see only their links
   - Can achieve this with the current JSON output using some `jq` wizardry
+- Double check `crawl()` for potential stack overflow(s), as it is recursive
+- Tidier `main()` func, as a lot of it is still dedicated to log/output setup
+- Stream JSON output realtime, rather than one big marshal operation at the end
+- Nail down some more edge cases in the ever-growing `convertURL()` func
+  - Alternatively, source an external library to handle URL parsing
