@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 )
 
@@ -43,4 +44,6 @@ func outputToJSON(jsonFilename string) {
 	if errWrite != nil {
 		Error.Printf("Error writing to file '%s': %v\n", jsonFilename, errWrite)
 	}
+
+	fmt.Println("Wrote page/link relationships to file:", jsonFilename)
 }
