@@ -37,12 +37,14 @@ func outputToJSON(jsonFilename string) {
 	jsonBytes, errMarshal := json.MarshalIndent(cpSlice, "", "  ")
 	if errMarshal != nil {
 		Error.Printf("Error marshaling JSON: %v\n", errMarshal)
+		return
 	}
 
 	// Emit the JSON to file
 	errWrite := ioutil.WriteFile(jsonFilename, jsonBytes, 0644)
 	if errWrite != nil {
 		Error.Printf("Error writing to file '%s': %v\n", jsonFilename, errWrite)
+		return
 	}
 
 	fmt.Println("Wrote page/link relationships to file:", jsonFilename)
