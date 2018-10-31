@@ -107,6 +107,15 @@ func TestConvertURL(t *testing.T) {
 			},
 		},
 		{
+			base: "http://" + flagURL,
+			href: fmt.Sprintf("http://%s/about", flagURL),
+			urlResult: url.URL{
+				Scheme: "http",
+				Host:   flagURL,
+				Path:   "/about",
+			},
+		},
+		{
 			base: "https://" + flagURL,
 			href: fmt.Sprintf("http://%s/about", flagURL),
 			urlResult: url.URL{
