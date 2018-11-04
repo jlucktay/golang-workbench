@@ -1,6 +1,6 @@
 // +build mage
 
-package mage
+package main
 
 import (
 	"github.com/magefile/mage/mg"
@@ -15,12 +15,15 @@ var (
 	Aliases = map[string]interface{}{
 		"b": Build,
 		"c": Clean,
+		"s": Serve,
 	}
 )
 
 // Def is assigned as the 'Default' target, so it builds.
 func Def() {
+	mg.Deps(Clean)
 	mg.Deps(Build)
+	mg.Deps(Serve)
 }
 
 // Build the web app using Hugo.
@@ -32,6 +35,7 @@ func Build() error {
 		},
 		"go",
 		"build",
+		"-a",
 		"-o",
 		"content/lib.wasm",
 		"content/content.go",
@@ -41,4 +45,9 @@ func Build() error {
 // Clean will delete various bits of cruft.
 func Clean() error {
 	return sh.RunV("rm", "-fv", "content/lib.wasm")
+}
+
+// Serve will run up the server locally.
+func Serve() error {
+	return sh.RunV("go", "run", "server/server.go", "--dir=content")
 }
