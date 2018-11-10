@@ -19,14 +19,14 @@ var (
 	}
 )
 
-// Def is assigned as the 'Default' target, so it builds.
+// Def cleans, builds, serves, in that order.
 func Def() {
 	mg.Deps(Clean)
 	mg.Deps(Build)
 	mg.Deps(Serve)
 }
 
-// Build the web app using Hugo.
+// Build the web app into webassembly.
 func Build() error {
 	return sh.RunWith(
 		map[string]string{
