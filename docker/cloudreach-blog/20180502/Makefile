@@ -5,13 +5,13 @@ all: lint build run
 build: build-1.0 build-1.1 build-1.2 show
 
 build-1.0:
-	docker build --tag hello-docker-main:1.0 -f 1.0-single/Dockerfile .
+	docker build --tag hello-docker-main:1.0 -f 1.0/Dockerfile .
 
 build-1.1:
-	docker build --tag hello-docker-main:1.1 -f 1.1-multi/Dockerfile .
+	docker build --tag hello-docker-main:1.1 -f 1.1/Dockerfile .
 
 build-1.2:
-	docker build --tag hello-docker-main:1.2 -f 1.2-scratch/Dockerfile .
+	docker build --tag hello-docker-main:1.2 -f 1.2/Dockerfile .
 
 show:
 	@docker images hello-docker-main
@@ -34,13 +34,13 @@ run-1.2:
 lint: lint-1.0 lint-1.1 lint-1.2
 
 lint-1.0:
-	hadolint 1.0-single/Dockerfile
+	hadolint 1.0/Dockerfile
 
 lint-1.1:
-	hadolint 1.1-multi/Dockerfile
+	hadolint 1.1/Dockerfile
 
 lint-1.2:
-	hadolint 1.2-scratch/Dockerfile
+	hadolint 1.2/Dockerfile
 
 ### Cleanup
 
