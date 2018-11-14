@@ -1,17 +1,17 @@
-all: build run
+all: lint build run
 
 ### Setup
 
 build: build-1.0 build-1.1 build-1.2 show
 
 build-1.0:
-	@cd 1.0-single && docker build --tag hello-docker-main:1.0 .
+	docker build --tag hello-docker-main:1.0 -f 1.0-single/Dockerfile .
 
 build-1.1:
-	@cd 1.1-multi && docker build --tag hello-docker-main:1.1 .
+	docker build --tag hello-docker-main:1.1 -f 1.1-multi/Dockerfile .
 
 build-1.2:
-	@cd 1.2-scratch && docker build --tag hello-docker-main:1.2 .
+	docker build --tag hello-docker-main:1.2 -f 1.2-scratch/Dockerfile .
 
 show:
 	@docker images hello-docker-main
@@ -47,10 +47,10 @@ lint-1.2:
 clean: clean-1.0 clean-1.1 clean-1.2
 
 clean-1.0:
-	@docker image rm --force hello-docker-main:1.0
+	docker image rm --force hello-docker-main:1.0
 
 clean-1.1:
-	@docker image rm --force hello-docker-main:1.1
+	docker image rm --force hello-docker-main:1.1
 
 clean-1.2:
-	@docker image rm --force hello-docker-main:1.2
+	docker image rm --force hello-docker-main:1.2

@@ -8,4 +8,5 @@ RUN go build -o main -a -installsuffix cgo -ldflags '-extldflags "-static"' .
 FROM scratch
 COPY --from=builder /build/main /app/
 WORKDIR /app
+ENV VERSION v1.2
 CMD ["./main"]
