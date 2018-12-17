@@ -112,7 +112,7 @@ func (c *crawl) shouldBeCrawledAsNode(u url.URL) bool {
 		return false
 	}
 
-	fileTypes := []string{".pdf", ".jpg", ".gif", ".js", ".css", ".png"}
+	fileTypes := []string{".pdf", ".jpg", ".gif", ".js", ".css", ".png", ".svg"}
 
 	for _, t := range fileTypes {
 		if strings.HasSuffix(u.Path, t) {
