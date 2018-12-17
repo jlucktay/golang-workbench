@@ -227,9 +227,9 @@ func (c *crawl) headRequest(u url.URL) {
 				http.StatusText(resp.StatusCode),
 			)
 		}
-
-		c.finalizeCrawl(u)
 	}
+
+	c.finalizeCrawl(u)
 }
 
 func (c *crawl) noteError(s string, args ...interface{}) {
