@@ -108,10 +108,6 @@ func (c *crawl) shouldBeCrawledAsNode(u url.URL) bool {
 		return false
 	}
 
-	if u.Scheme != c.domain.Scheme {
-		return false
-	}
-
 	fileTypes := []string{".pdf", ".jpg", ".gif", ".js", ".css", ".png", ".svg"}
 
 	for _, t := range fileTypes {
