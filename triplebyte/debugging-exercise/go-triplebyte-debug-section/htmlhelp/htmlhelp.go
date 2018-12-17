@@ -45,7 +45,7 @@ func paths(doc string) []string {
 	var ret []string
 
 	// patterns must have the url as the first capturing subgroup
-	aPattern := regexp.MustCompile(`<a [^>]*href="([^"]*)"`)
+	aPattern := regexp.MustCompile(`<a [^>]*href="([^"#]*)#?[^"]*"`)
 	scriptPattern := regexp.MustCompile(`<script [^>]*src="([^"]*)"`)
 	linkPattern := regexp.MustCompile(`<link [^>]*href="([^"]*)"`)
 
