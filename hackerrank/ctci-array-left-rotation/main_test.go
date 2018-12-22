@@ -14,6 +14,11 @@ func TestRotLeft(t *testing.T) {
 	}{
 		{
 			a:    []int32{1, 2, 3, 4, 5},
+			d:    1,
+			want: []int32{2, 3, 4, 5, 1},
+		},
+		{
+			a:    []int32{1, 2, 3, 4, 5},
 			d:    4,
 			want: []int32{5, 1, 2, 3, 4},
 		},

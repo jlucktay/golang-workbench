@@ -11,7 +11,15 @@ import (
 
 // Complete the rotLeft function below.
 func rotLeft(a []int32, d int32) []int32 {
-	return []int32{}
+	var popped int32
+
+	for d > 0 {
+		popped, a = a[0], a[1:]
+		a = append(a, popped)
+		d--
+	}
+
+	return a
 }
 
 func main() {
