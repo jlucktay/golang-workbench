@@ -5,13 +5,38 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 // Complete the hourglassSum function below.
 func hourglassSum(arr [][]int32) int32 {
-	return 0
+	hourglassSums := []int{}
+
+	for yIndex := 1; yIndex < len(arr)-1; yIndex++ {
+		for xIndex := 1; xIndex < len(arr[yIndex])-1; xIndex++ {
+			hourglassSums = append(hourglassSums, int(sumSingleHourglass(xIndex, yIndex, arr)))
+		}
+	}
+
+	sort.Ints(hourglassSums)
+
+	return int32(hourglassSums[len(hourglassSums)-1])
+}
+
+func sumSingleHourglass(x, y int, arr [][]int32) int32 {
+	sum := int32(0)
+
+	sum += arr[y-1][x-1]
+	sum += arr[y-1][x]
+	sum += arr[y-1][x+1]
+	sum += arr[y][x]
+	sum += arr[y+1][x-1]
+	sum += arr[y+1][x]
+	sum += arr[y+1][x+1]
+
+	return sum
 }
 
 func main() {
