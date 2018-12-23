@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -13,16 +14,16 @@ import (
 func minimumBribes(q []int32) {
 	bribeCount := 0
 
-	for i, x := range q {
-		if x > int32(i+3) {
+	for i := int32(len(q)) - 1; i >= 0; i-- {
+		if q[i]-(i+1) > 2 {
 			fmt.Println("Too chaotic")
 			return
 		}
 
-		if x > int32(i+2) {
-			bribeCount += 2
-		} else if x > int32(i+1) {
-			bribeCount++
+		for j := int32(math.Max(0, float64(q[i])-2)); j < i; j++ {
+			if q[j] > q[i] {
+				bribeCount++
+			}
 		}
 	}
 
