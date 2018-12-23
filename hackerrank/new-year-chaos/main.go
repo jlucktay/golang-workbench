@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -10,6 +11,22 @@ import (
 
 // Complete the minimumBribes function below.
 func minimumBribes(q []int32) {
+	bribeCount := 0
+
+	for i, x := range q {
+		if x > int32(i+3) {
+			fmt.Println("Too chaotic")
+			return
+		}
+
+		if x > int32(i+2) {
+			bribeCount += 2
+		} else if x > int32(i+1) {
+			bribeCount++
+		}
+	}
+
+	fmt.Println(bribeCount)
 }
 
 func main() {
