@@ -10,17 +10,27 @@ import (
 )
 
 // Complete the arrayManipulation function below.
-func arrayManipulation(n int32, queries [][]int32) int64 {
-	op := make([]int64, n+1)
-	max := int64(0)
+func arrayManipulation(n int32, qs [][]int32) int64 {
+	a := make([]int64, n+1)
 
-	for _, query := range queries {
-		for i := query[0]; i <= query[1]; i++ {
-			op[i] += int64(query[2])
+	for i := 0; i < len(qs); i++ {
+		p := int(qs[i][0])
+		q := qs[i][1]
+		sum := int64(qs[i][2])
+		a[p] += sum
 
-			if max < op[i] {
-				max = op[i]
-			}
+		if (q + 1) <= n {
+			a[q+1] -= sum
+		}
+	}
+
+	var x, max int64 = 0, 0
+
+	for i := 1; i <= int(n); i++ {
+		x += a[i]
+
+		if max < x {
+			max = x
 		}
 	}
 
