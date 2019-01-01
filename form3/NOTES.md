@@ -4,6 +4,12 @@
 
 - <https://github.com/avelino/awesome-go>
 
+``` golang
+mux := http.NewServeMux()
+mux.Handle("/dog/", d) // trailing slash so will also handle /dog/something/else
+mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
+```
+
 ## Design
 
 - [The Three Principles of Excellent API Design](https://nordicapis.com/the-three-principles-of-excellent-api-design/)
@@ -11,7 +17,8 @@
 
 ## Libraries
 
-- [Fast HTTP package for Go. Up to 10x faster than net/http](https://github.com/valyala/fasthttp)
+- [Fast HTTP package for Go. Up to 10x faster than net/http.](https://github.com/valyala/fasthttp)
+- Here is [a good third-party ServeMux](https://godoc.org/github.com/julienschmidt/httprouter) that allows easy access to methods for routing & path parameters.
 
 ## Security
 
