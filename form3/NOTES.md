@@ -57,6 +57,7 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 
 - [GoConvey](http://goconvey.co)
   - <https://github.com/smartystreets/goconvey>
+- [Learn Go with tests](https://github.com/quii/learn-go-with-tests)
 
 ## Documentation
 
