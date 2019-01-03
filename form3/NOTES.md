@@ -18,6 +18,8 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 ## Patterns
 
 - [Context](https://blog.golang.org/context)
+- [Aspects of a good Go library](https://medium.com/@cep21/aspects-of-a-good-go-library-7082beabb403)
+- [How I write Go HTTP services after seven years](https://medium.com/statuscode/how-i-write-go-http-services-after-seven-years-37c208122831)
 
 ## Libraries
 
@@ -38,6 +40,7 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 
 ## Examples
 
+- [Write and Deploy a Golang Web App](https://vpsranked.com/write-and-deploy-a-golang-web-app/)
 - [AWS DynamoDB with Go SDK](https://github.com/aws/aws-sdk-go-v2/tree/master/example/service/dynamodb)
 - [Serverless Reference Architecture: Vote Application](https://github.com/aws-samples/lambda-refarch-voteapp)
 - [Serverless Reference Architecture: Web Application](https://github.com/aws-samples/lambda-refarch-webapp)
