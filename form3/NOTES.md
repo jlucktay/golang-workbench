@@ -26,6 +26,10 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 - [Fast HTTP package for Go. Up to 10x faster than net/http.](https://github.com/valyala/fasthttp)
 - Here is [a good third-party ServeMux](https://godoc.org/github.com/julienschmidt/httprouter) that allows easy access to methods for routing & path parameters.
 
+### stdlib
+
+- [`func CanonicalHeaderKey`](https://golang.org/pkg/net/http/#CanonicalHeaderKey)
+
 ## Security
 
 - <https://github.com/shieldfy/API-Security-Checklist>
