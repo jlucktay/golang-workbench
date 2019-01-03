@@ -15,6 +15,10 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 - [The Three Principles of Excellent API Design](https://nordicapis.com/the-three-principles-of-excellent-api-design/)
 - [Using Golang to Build Microservices at The Economist: A Retrospective](https://www.infoq.com/articles/golang-the-economist)
 
+## Patterns
+
+- [Context](https://blog.golang.org/context)
+
 ## Libraries
 
 - [Fast HTTP package for Go. Up to 10x faster than net/http.](https://github.com/valyala/fasthttp)
@@ -46,3 +50,7 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 
 - [GoConvey](http://goconvey.co)
   - <https://github.com/smartystreets/goconvey>
+
+## Documentation
+
+- [swag](https://github.com/swaggo/swag)
