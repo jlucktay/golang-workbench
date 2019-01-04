@@ -56,7 +56,7 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 
 ## Testing
 
-- [Test Driven Development in Go](https://medium.com/@pierreprinetti/test-driven-development-in-go-baeab5adb468)
+- [Test-Driven Development in Go](https://medium.com/@pierreprinetti/test-driven-development-in-go-baeab5adb468)
 - [GoConvey](http://goconvey.co)
   - <https://github.com/smartystreets/goconvey>
 - [Learn Go with tests](https://github.com/quii/learn-go-with-tests)
