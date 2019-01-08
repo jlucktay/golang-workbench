@@ -10,6 +10,12 @@ mux.Handle("/dog/", d) // trailing slash so will also handle /dog/something/else
 mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 ```
 
+### Sample input data
+
+```sh
+curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f" --header Accept:application/json | jq
+```
+
 ## Design
 
 - [The Three Principles of Excellent API Design](https://nordicapis.com/the-three-principles-of-excellent-api-design/)
