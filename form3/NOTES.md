@@ -3,6 +3,7 @@
 ## General
 
 - <https://github.com/avelino/awesome-go>
+- [Writing Great Go Code](https://scene-si.org/2018/07/24/writing-great-go-code/)
 
 ``` golang
 mux := http.NewServeMux()
@@ -20,6 +21,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [The Three Principles of Excellent API Design](https://nordicapis.com/the-three-principles-of-excellent-api-design/)
 - [Using Golang to Build Microservices at The Economist: A Retrospective](https://www.infoq.com/articles/golang-the-economist)
+- [Notes on API design in Go](https://xyrillian.de/thoughts/posts/golang-api-design.html)
 
 ## Patterns
 
@@ -36,6 +38,12 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [`func CanonicalHeaderKey`](https://golang.org/pkg/net/http/#CanonicalHeaderKey)
 
+## Internals
+
+- [How the Go runtime implements maps efficiently (without generics)](https://dave.cheney.net/2018/05/29/how-the-go-runtime-implements-maps-efficiently-without-generics)
+- [Computing and plotting π with Gonum and a zest of Monte Carlo](https://blog.gopheracademy.com/advent-2018/montecarlo/)
+- [Avoiding high GC overhead with large heaps](https://blog.gopheracademy.com/advent-2018/avoid-gc-overhead-large-heaps/)
+
 ## Security
 
 - <https://github.com/shieldfy/API-Security-Checklist>
@@ -43,6 +51,19 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 ### Auth
 
 - [Ask HN: What do you use for authentication and authorization?](https://news.ycombinator.com/item?id=18767767)
+
+## Stability
+
+- [Gracefully restarting a Golang web server](https://tomaz.lovrec.eu/posts/graceful-server-restart/)
+
+## Performance
+
+- [go-perfbook](https://github.com/dgryski/go-perfbook)
+
+## Database
+
+- [MongoDB - Go Migration Guide](https://www.mongodb.com/blog/post/go-migration-guide)
+- [In MySQL, never use “utf8”. Use “utf8mb4”.](https://medium.com/@adamhooper/in-mysql-never-use-utf8-use-utf8mb4-11761243e434)
 
 ## Versioning
 
@@ -54,6 +75,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [AWS DynamoDB with Go SDK](https://github.com/aws/aws-sdk-go-v2/tree/master/example/service/dynamodb)
 - [Serverless Reference Architecture: Vote Application](https://github.com/aws-samples/lambda-refarch-voteapp)
 - [Serverless Reference Architecture: Web Application](https://github.com/aws-samples/lambda-refarch-webapp)
+- [Serverless Golang API With AWS Lambda](https://dzone.com/articles/serverless-golang-api-with-aws-lambda)
 
 ### Idempotency
 
@@ -66,6 +88,14 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [GoConvey](http://goconvey.co)
   - <https://github.com/smartystreets/goconvey>
 - [Learn Go with tests](https://github.com/quii/learn-go-with-tests)
+- [mkcert: Valid HTTPS certificates for localhost](https://blog.filippo.io/mkcert-valid-https-certificates-for-localhost/)
+- [When Writing Unit Tests, Don’t Use Mocks](https://sendgrid.com/blog/when-writing-unit-tests-dont-use-mocks/)
+- [Unit testing and interfaces](https://blog.andreiavram.ro/golang-unit-testing-interfaces/)
+
+## Error handling
+
+- [errorx](https://github.com/joomcode/errorx)
+- [Exploring Error Handling Patterns in Go](https://8thlight.com/blog/kyle-krull/2018/08/13/exploring-error-handling-patterns-in-go.html)
 
 ## Documentation
 
