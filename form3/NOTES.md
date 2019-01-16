@@ -92,6 +92,10 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [When Writing Unit Tests, Don’t Use Mocks](https://sendgrid.com/blog/when-writing-unit-tests-dont-use-mocks/)
 - [Unit testing and interfaces](https://blog.andreiavram.ro/golang-unit-testing-interfaces/)
 
+### Examples
+
+- [Testable Examples in Go](https://blog.golang.org/examples)
+
 ## Error handling
 
 - [errorx](https://github.com/joomcode/errorx)
