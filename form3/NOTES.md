@@ -5,7 +5,7 @@
 - <https://github.com/avelino/awesome-go>
 - [Writing Great Go Code](https://scene-si.org/2018/07/24/writing-great-go-code/)
 
-``` golang
+``` go
 mux := http.NewServeMux()
 mux.Handle("/dog/", d) // trailing slash so will also handle /dog/something/else
 mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
@@ -13,7 +13,7 @@ mux.Handle("/cat", c) // no trailing slash; /cat/something will 404
 
 ### Sample input data
 
-```sh
+``` shell
 curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f" --header Accept:application/json | jq
 ```
 
