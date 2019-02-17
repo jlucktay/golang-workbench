@@ -90,7 +90,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [Versioning your API in Go](https://dev.to/geosoft1/versioning-your-api-in-go-1g4h)
 
-## Examples
+## Examples
 
 - [Write and Deploy a Golang Web App](https://vpsranked.com/write-and-deploy-a-golang-web-app/)
 - [AWS DynamoDB with Go SDK](https://github.com/aws/aws-sdk-go-v2/tree/master/example/service/dynamodb)
@@ -109,18 +109,19 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [GoConvey](http://goconvey.co)
   - <https://github.com/smartystreets/goconvey>
 - [mockify](https://github.com/brianmoran/mockify)
+  - [Testing and mocking - what clicked for me](https://javorszky.co.uk/2019/02/09/testing-and-mocking-what-clicked-for-me/)
 - [Learn Go with tests](https://github.com/quii/learn-go-with-tests)
   - [Learn Go with tests - Context](https://dev.to/quii/learn-go-with-tests---context-mi)
 - [mkcert: Valid HTTPS certificates for localhost](https://blog.filippo.io/mkcert-valid-https-certificates-for-localhost/)
 - [When Writing Unit Tests, Don’t Use Mocks](https://sendgrid.com/blog/when-writing-unit-tests-dont-use-mocks/)
 - [Unit testing and interfaces](https://blog.andreiavram.ro/golang-unit-testing-interfaces/)
 
-### Examples
+### Testing Examples
 
 - [Testable Examples in Go](https://blog.golang.org/examples)
 - [Adhere to this table!](https://www.restapitutorial.com/lessons/httpmethods.html)
 
-## Error handling
+## Error handling
 
 - [errorx](https://github.com/joomcode/errorx)
 - [Exploring Error Handling Patterns in Go](https://8thlight.com/blog/kyle-krull/2018/08/13/exploring-error-handling-patterns-in-go.html)
@@ -129,6 +130,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - <https://goswagger.io/>
 - [swag](https://github.com/swaggo/swag)
+  - [[Golang] – How to generate swagger API doc from the source code](https://dev4devs.com/2019/02/08/golang-how-to-generate-swagger-api-doc-from-the-source-code/)
 
 ## Notes
 
