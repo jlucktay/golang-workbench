@@ -1,4 +1,4 @@
-package main
+package pilot_test
 
 import (
 	"testing"
@@ -110,7 +110,7 @@ func TestUpdate(t *testing.T) {
 			desc:     "Update an existing payment",
 			path:     "/payments/1234-5678-abcd",
 			verb:     "PUT",
-			expected: 200,
+			expected: 204, // update is OK, but response has no body/content
 		},
 		{
 			desc:     "Update a non-existent payment at a valid ID",
