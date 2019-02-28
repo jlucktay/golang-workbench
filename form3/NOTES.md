@@ -4,6 +4,7 @@
 
 - <https://github.com/avelino/awesome-go>
 - [Writing Great Go Code](https://scene-si.org/2018/07/24/writing-great-go-code/)
+- [Practical Go: Real world advice for writing maintainable Go programs](https://dave.cheney.net/practical-go/presentations/qcon-china.html)
 
 ``` go
 mux := http.NewServeMux()
@@ -44,6 +45,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [How the Go runtime implements maps efficiently (without generics)](https://dave.cheney.net/2018/05/29/how-the-go-runtime-implements-maps-efficiently-without-generics)
 - [Computing and plotting π with Gonum and a zest of Monte Carlo](https://blog.gopheracademy.com/advent-2018/montecarlo/)
+- [A visual guide to Go Memory Allocator from scratch (Golang)](https://blog.learngoprogramming.com/a-visual-guide-to-golang-memory-allocator-from-ground-up-e132258453ed)
 
 ### Garbage Collection
 
@@ -54,6 +56,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 ### Interfaces
 
 - [Go Pointers: Why I Use Interfaces (in Go)](https://medium.com/@kent.rancourt/go-pointers-why-i-use-interfaces-in-go-338ae0bdc9e4)
+- [Go interfaces and type assertions](https://marcofranssen.nl/go-interfaces-and-type-assertions/)
 
 ### Concurrency
 
@@ -63,6 +66,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - <https://github.com/shieldfy/API-Security-Checklist>
 - [How to Hash and Verify Passwords With Argon2 in Go](https://www.alexedwards.net/blog/how-to-hash-and-verify-passwords-with-argon2-in-go)
+- [Automate your Go TLS certificates with Vault PKI](https://talks.godoc.org/github.com/johanbrandhorst/presentations/certify/certify.slide)
 
 ### Auth
 
@@ -97,11 +101,22 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [Serverless Reference Architecture: Vote Application](https://github.com/aws-samples/lambda-refarch-voteapp)
 - [Serverless Reference Architecture: Web Application](https://github.com/aws-samples/lambda-refarch-webapp)
 - [Serverless Golang API With AWS Lambda](https://dzone.com/articles/serverless-golang-api-with-aws-lambda)
+- [Ultimate Service](https://github.com/ardanlabs/service)
+- [Web Service Architecture for Golang Developers](https://boobo94.xyz/web-service/webservice-architecture-golang/)
+- [Developing A RESTful API With Golang And A MongoDB NoSQL Database](https://www.thepolyglotdeveloper.com/2019/02/developing-restful-api-golang-mongodb-nosql-database/)
 
 ### Idempotency
 
 - [Cloud Functions pro tips: Building idempotent functions](https://cloud.google.com/blog/products/serverless/cloud-functions-pro-tips-building-idempotent-functions)
 - [Idempotency key](https://stripe.com/blog/idempotency)
+
+## Frameworks
+
+- [Building a Web App With Go, Gin and React](https://hakaselogs.me/2018-04-20/building-a-web-app-with-go-gin-and-react/)
+
+## Modules
+
+- [This is my 2019 development setup for Go](https://medium.com/@pettersenkim/a-2019-example-of-a-go-development-environment-with-go-modules-f4a4c188b3c2)
 
 ## Testing
 
@@ -125,6 +140,10 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [errorx](https://github.com/joomcode/errorx)
 - [Exploring Error Handling Patterns in Go](https://8thlight.com/blog/kyle-krull/2018/08/13/exploring-error-handling-patterns-in-go.html)
+
+## Containerisation
+
+- [Containerize a golang app using private GitHub repos as import packages](https://medium.com/@anuragdhingra/containerize-a-golang-app-using-private-github-repos-as-import-packages-51e993afe394)
 
 ## Documentation
 
