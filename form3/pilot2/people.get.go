@@ -17,13 +17,20 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 
 	var people []Person
 
+	fmt.Println("GetPeopleEndpoint - before client.Database().Collection()")
 	collection := client.Database("thepolyglotdeveloper").Collection("people")
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	fmt.Println("GetPeopleEndpoint - after client.Database().Collection()")
 
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
+	fmt.Println("GetPeopleEndpoint - before context.WithTimeout()")
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	fmt.Println("GetPeopleEndpoint - after context.WithTimeout()")
+
+	fmt.Println("GetPeopleEndpoint - before collection.Find()")
+	cursor, errFind := collection.Find(ctx, bson.M{})
+	fmt.Println("GetPeopleEndpoint - after collection.Find()")
+	if errFind != nil {
 		response.WriteHeader(http.StatusInternalServerError)
-		_, errWrite := response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
+		_, errWrite := response.Write([]byte(`{ "message": "` + errFind.Error() + `" }`))
 		if errWrite != nil {
 			log.Fatal(errWrite)
 		}
@@ -43,9 +50,9 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 	}
 	fmt.Println("GetPeopleEndpoint - after cursor.Next()")
 
-	if err := cursor.Err(); err != nil {
+	if errCursor := cursor.Err(); errCursor != nil {
 		response.WriteHeader(http.StatusInternalServerError)
-		_, errWrite := response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
+		_, errWrite := response.Write([]byte(`{ "message": "` + errCursor.Error() + `" }`))
 		if errWrite != nil {
 			log.Fatal(errWrite)
 		}
