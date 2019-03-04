@@ -103,6 +103,10 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [Serverless Golang API With AWS Lambda](https://dzone.com/articles/serverless-golang-api-with-aws-lambda)
 - [Ultimate Service](https://github.com/ardanlabs/service)
 - [Web Service Architecture for Golang Developers](https://boobo94.xyz/web-service/webservice-architecture-golang/)
+- [🔥 Idiomatic Golang Restful Starter Kit](https://github.com/ribice/gorsk)
+- [Droplets is a platform for Gophers](https://github.com/spy16/droplets)
+  - start from [graceful.Server](https://github.com/spy16/droplets/blob/master/pkg/graceful/graceful.go)
+- [WTF Dial - A tour of building a silly app in Go](https://medium.com/wtf-dial)
 
 - ~~[Developing A RESTful API With Golang And A MongoDB NoSQL Database](https://www.thepolyglotdeveloper.com/2019/02/developing-restful-api-golang-mongodb-nosql-database/)~~
 
