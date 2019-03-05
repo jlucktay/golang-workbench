@@ -8,6 +8,6 @@ func newApiServer() (a *apiServer) {
 	a = &apiServer{
 		router: httprouter.New(),
 	}
-	a.routes()
+	a.setupRoutes()
 	return
 }

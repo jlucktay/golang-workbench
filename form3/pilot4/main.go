@@ -7,6 +7,5 @@ import (
 
 func main() {
 	a := newApiServer()
-
 	log.Fatal(http.ListenAndServe(":8080", a.router))
 }

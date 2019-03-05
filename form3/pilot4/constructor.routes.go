@@ -1,12 +1,12 @@
 package main
 
-func (a *apiServer) routes() {
+func (a *apiServer) setupRoutes() {
 	// C
 	// s.router.POST("/payments")
 
 	// R
-	a.router.GET("/payments", a.handleGetAllPayments())
-	a.router.GET("/payments/:id", a.handleGetSinglePayment())
+	a.router.GET("/payments", a.getAllPayments())
+	a.router.GET("/payments/:id", a.getSinglePayment())
 
 	// U
 	// s.router.PUT("/payments", nil)

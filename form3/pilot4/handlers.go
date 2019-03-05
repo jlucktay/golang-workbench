@@ -6,21 +6,14 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (a *apiServer) handleIndex() http.HandlerFunc {
-	// thing := prepareThing()
-	return func(w http.ResponseWriter, r *http.Request) {
-		// use thing
-	}
-}
-
-func (a *apiServer) handleGetAllPayments() httprouter.Handle {
+func (a *apiServer) getAllPayments() httprouter.Handle {
 	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// use thing
 	}
 }
 
-func (a *apiServer) handleGetSinglePayment() httprouter.Handle {
+func (a *apiServer) getSinglePayment() httprouter.Handle {
 	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// use thing
@@ -37,5 +30,41 @@ func (a *apiServer) adminOnly(h http.HandlerFunc) http.HandlerFunc {
 		}
 		h(w, r)
 	}
+}
+*/
+
+/*
+// Handler-specific type(s)
+func (s *server) handleSomething() http.HandlerFunc {
+    type request struct {
+        Name string
+    }
+    type response struct {
+        Greeting string `json:"greeting"`
+    }
+    return func(w http.ResponseWriter, r *http.Request) {
+        ...
+    }
+}
+*/
+
+/*
+// sync.Once to setup dependencies
+func (s *server) handleTemplate(files string...) http.HandlerFunc {
+    var (
+        init sync.Once
+        tpl  *template.Template
+        err  error
+    )
+    return func(w http.ResponseWriter, r *http.Request) {
+        init.Do(func(){
+            tpl, err = template.ParseFiles(files...)
+        })
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        // use tpl
+    }
 }
 */
