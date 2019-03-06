@@ -9,6 +9,7 @@ import (
 )
 
 func TestStatusCode(t *testing.T) {
+	// Arrange
 	testCases := []struct {
 		desc     string
 		path     string
@@ -79,7 +80,7 @@ func TestStatusCode(t *testing.T) {
 			desc:     "Update an existing payment",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodPut,
-			expected: http.StatusNoContent, // update is OK, but response has no body/content
+			expected: http.StatusNoContent,
 		},
 		{
 			desc:     "Update a non-existent payment at a valid ID",
@@ -118,10 +119,13 @@ func TestStatusCode(t *testing.T) {
 			expected: http.StatusNotFound,
 		},
 	}
+
+	srv := newApiServer()
+
+	// Act & Assert
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			is := is.New(t)
-			srv := newApiServer()
 			req, err := http.NewRequest(tC.verb, tC.path, nil)
 			is.NoErr(err)
 			w := httptest.NewRecorder()

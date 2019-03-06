@@ -2,17 +2,17 @@ package main
 
 func (a *apiServer) setupRoutes() {
 	// C
-	// s.router.POST("/payments")
+	a.router.POST("/payments", a.createPayment())
 
 	// R
-	a.router.GET("/payments", a.getAllPayments())
-	a.router.GET("/payments/:id", a.getSinglePayment())
+	a.router.GET("/payments", a.readAllPayments())
+	a.router.GET("/payments/:id", a.readSinglePayment())
 
 	// U
-	// s.router.PUT("/payments", nil)
+	a.router.PUT("/payments", a.updatePayment())
 
 	// D
-	// s.router.DELETE("/payments", nil)
+	a.router.DELETE("/payments", a.deletePayment())
 
 	/*
 		// Middleware
