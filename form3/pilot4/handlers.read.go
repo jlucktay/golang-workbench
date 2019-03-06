@@ -7,7 +7,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-func (a *apiServer) readAllPayments() httprouter.Handle {
+func (a *apiServer) readPayments() httprouter.Handle {
 	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// use thing
@@ -15,7 +15,7 @@ func (a *apiServer) readAllPayments() httprouter.Handle {
 	}
 }
 
-func (a *apiServer) readSinglePayment() httprouter.Handle {
+func (a *apiServer) readPaymentById() httprouter.Handle {
 	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// use thing
