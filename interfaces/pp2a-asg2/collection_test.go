@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bytes"
+	"math/rand"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
 const (
-	FAILURE = iota
-	SUCCESS
+	SUCCESS = iota
+	FAILURE
 )
 
 func TestDriver(t *testing.T) {
@@ -40,13 +43,17 @@ func TestDriver(t *testing.T) {
 			t.Logf("Collection contains %d names\n", tC.collection.SizeCollection())
 
 			t.Log("The following names are in the Collection:")
-			tC.collection.DisplayCollection()
+			b := new(bytes.Buffer)
+			tC.collection.DisplayCollection(b)
+			t.Logf("DisplayCollection buffer:\n%s", b)
 
-			t.Log(`Searching for "Sathish": `)
-			if result := tC.collection.SearchCollection("Sathish"); result == SUCCESS {
+			rand.Seed(time.Now().UnixNano())
+			needle := names[rand.Intn(len(names))]
+			t.Logf(`Searching for "%s": `, needle)
+			if result := tC.collection.SearchCollection(needle); result == SUCCESS {
 				t.Log("FOUND")
 			} else {
-				t.Log("NOT FOUND")
+				t.Fatal("NOT FOUND")
 			}
 
 			tC.collection.FreeCollection()

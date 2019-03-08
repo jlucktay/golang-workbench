@@ -2,8 +2,8 @@
 package ord_array_binary
 
 const (
-	FAILURE = iota
-	SUCCESS
+	SUCCESS = iota
+	FAILURE
 )
 
 const WCSIZE = 250000

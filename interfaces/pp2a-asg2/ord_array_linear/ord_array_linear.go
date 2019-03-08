@@ -1,11 +1,14 @@
 // ord_array_linear is an ordered slice with linear search
 package ord_array_linear
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
 const (
-	FAILURE = iota
-	SUCCESS
+	SUCCESS = iota
+	FAILURE
 )
 
 const WCSIZE = 250000
@@ -47,14 +50,8 @@ func (o *OrdArrayLinear) FreeCollection() {
 func (o *OrdArrayLinear) AddCollection(word string) int {
 	i := o.size
 
-	fmt.Printf("Inserting '%s'...\n", word)
-	fmt.Println("i:", i)
-
+	// Find the right index to insert at
 	for i > 0 && o.words[i-1] > word {
-		fmt.Println("i:", i)
-		fmt.Println("o.words[i]:", o.words[i])
-		fmt.Println("o.words[i-1]:", o.words[i-1])
-		o.words[i] = o.words[i-1]
 		i--
 	}
 
@@ -96,8 +93,8 @@ func (o *OrdArrayLinear) SizeCollection() int {
  * DisplayCollection prints the contents of the WordCollection given as the
  * parameter to standard output.
  */
-func (o *OrdArrayLinear) DisplayCollection() {
+func (o *OrdArrayLinear) DisplayCollection(w io.Writer) {
 	for i := 0; i < o.size; i++ {
-		fmt.Printf("Element %d:\t%s\n", i, o.words[i])
+		fmt.Fprintf(w, "Element %d:\t%s\n", i, o.words[i])
 	}
 }
