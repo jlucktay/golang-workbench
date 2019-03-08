@@ -60,3 +60,14 @@ func TestDriver(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkOAL(b *testing.B) {
+	benchmarkCollection(&ord_array_linear.OrdArrayLinear{}, b)
+}
+
+func benchmarkCollection(wc WordCollection, b *testing.B) {
+	b.Logf("Implementation: %s\n", reflect.TypeOf(wc))
+
+	for i := 0; i < b.N; i++ {
+	}
+}
