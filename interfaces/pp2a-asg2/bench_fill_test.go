@@ -5,19 +5,24 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"time"
 
 	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
 )
 
 func BenchmarkFillOAL(b *testing.B) {
+	b.StopTimer()
 	for i := 0; i < b.N; i++ {
 		wc := &p2.OrdArrayLinear{}
-		fillCollection(
-			wc,
-			mustOpen(dictionary),
-			b,
-		)
+		fillCollection(wc, mustOpen(dictionary), b)
+		wc.FreeCollection()
+	}
+}
+
+func BenchmarkFillOAB(b *testing.B) {
+	b.StopTimer()
+	for i := 0; i < b.N; i++ {
+		wc := &p2.OrdArrayBinary{}
+		fillCollection(wc, mustOpen(dictionary), b)
 		wc.FreeCollection()
 	}
 }
@@ -37,8 +42,7 @@ func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 		b.Fatal("Unable to initialise WordCollection")
 	}
 
-	b.Logf("Reading '%s' (inserting)...", dictionary.Name())
-	startTime := time.Now().UnixNano()
+	b.StartTimer() // code to be timed begins below here
 
 	scanner := bufio.NewScanner(dictionary)
 	scanner.Split(bufio.ScanWords)
@@ -51,8 +55,5 @@ func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 		b.Fatal(errScan)
 	}
 
-	stopTime := time.Now().UnixNano()
-	finalTime := stopTime - startTime
-
-	b.Logf("%d inserts in %dμs", wc.SizeCollection(), finalTime/1e3)
+	b.StopTimer() // timing ends here
 }
