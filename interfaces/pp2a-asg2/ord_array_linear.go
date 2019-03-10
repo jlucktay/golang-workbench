@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-// OrdArrayLinear is an ordered slice with linear search
+// OrdArrayLinear is an ordered slice with linear insert and search
 type OrdArrayLinear struct {
 	words []string
 	size  int
