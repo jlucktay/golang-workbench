@@ -27,8 +27,9 @@ func BenchmarkFillOAL(b *testing.B) {
 // 2) a pointer to an open text file descriptor
 // 3) a pointer to a testing benchmark struct
 //
-// It fills the WordCollection with the words from the text file, and logs some
-// timings of its own, in addition to the standard benchmark timings.
+// fillCollection fills the WordCollection with the words from the text file,
+// and logs some timings of its own, in addition to the standard benchmark
+// timings.
 func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 	defer dictionary.Close()
 

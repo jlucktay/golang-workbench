@@ -25,6 +25,16 @@ func BenchmarkSearchOAL(b *testing.B) {
 	wc.FreeCollection()
 }
 
+// searchCollection takes three arguments:
+// 1) an initialised WordCollection containing dictionary words
+// 2) a pointer to an open text file descriptor
+// 3) a pointer to a testing benchmark struct
+//
+// searchCollection searches the WordCollection for each of the words in the
+// text file, where a 'word' is defined as what is delimited/tokenised on each
+// line by the 'delims' constant and split() function.
+// searchCollection also logs some timings of its own, in addition to the
+// standard benchmark timings.
 func searchCollection(wc p2.WordCollection, book *os.File, b *testing.B) {
 	defer book.Close()
 
