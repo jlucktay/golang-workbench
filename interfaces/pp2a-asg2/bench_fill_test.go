@@ -12,11 +12,13 @@ import (
 
 func BenchmarkFillOAL(b *testing.B) {
 	for i := 0; i < b.N; i++ {
+		wc := &p2.OrdArrayLinear{}
 		fillCollection(
-			&p2.OrdArrayLinear{},
+			wc,
 			mustOpen(dictionary),
 			b,
 		)
+		wc.FreeCollection()
 	}
 }
 
@@ -51,5 +53,5 @@ func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 	stopTime := time.Now().UnixNano()
 	finalTime := stopTime - startTime
 
-	b.Logf("%d inserts in %dms", wc.SizeCollection(), finalTime/1e3)
+	b.Logf("%d inserts in %dμs", wc.SizeCollection(), finalTime/1e3)
 }

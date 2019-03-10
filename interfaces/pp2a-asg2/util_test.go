@@ -2,6 +2,7 @@ package collection_test
 
 import (
 	"os"
+	"strings"
 )
 
 const (
@@ -21,6 +22,12 @@ const (
 	// Frankenstein, by Mary Wollstonecraft (Godwin) Shelley
 	book3 = "84-0.txt"
 )
+
+const delims = " \t\n!@#$%^*()_+-={}[]|;:',/<>?`~\"."
+
+func split(r rune) bool {
+	return strings.ContainsRune(delims, r)
+}
 
 // mustOpen helps with inlining benchmark functions
 func mustOpen(filename string) (fp *os.File) {
