@@ -1,4 +1,4 @@
-package main
+package collection_test
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
 	"github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
@@ -19,7 +20,7 @@ func TestDriver(t *testing.T) {
 	names := []string{"Peter", "Sathish", "Wade", "Don", "Indrajit", "Rahul", "Sam", "Kevin"}
 	testCases := []struct {
 		desc       string
-		collection WordCollection
+		collection p2.WordCollection
 	}{
 		{
 			desc:       "Ordered slice with linear search",
