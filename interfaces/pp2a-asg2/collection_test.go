@@ -21,6 +21,10 @@ func TestDriver(t *testing.T) {
 			collection: &p2.OrdArrayLinear{},
 		},
 		{
+			desc:       "Ordered linked list with linear search",
+			collection: &p2.OrdLinkedList{},
+		},
+		{
 			desc:       "Ordered slice with binary search",
 			collection: &p2.OrdArrayBinary{},
 		},
