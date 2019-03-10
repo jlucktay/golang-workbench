@@ -24,7 +24,7 @@ func TestDriver(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			t.Logf("Current implementation based on: %s\n", reflect.TypeOf(tC.collection))
+			t.Logf("Current implementation based on: %s", reflect.TypeOf(tC.collection))
 
 			if tC.collection.MakeCollection() == FAILURE {
 				t.Fatal("Unable to initialise WordCollection")
@@ -36,7 +36,7 @@ func TestDriver(t *testing.T) {
 				}
 			}
 
-			t.Logf("Collection contains %d names\n", tC.collection.SizeCollection())
+			t.Logf("Collection contains %d names", tC.collection.SizeCollection())
 
 			t.Log("The following names are in the Collection:")
 			b := new(bytes.Buffer)
