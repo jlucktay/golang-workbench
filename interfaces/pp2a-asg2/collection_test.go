@@ -11,11 +11,6 @@ import (
 	"github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
-const (
-	SUCCESS = iota
-	FAILURE
-)
-
 func TestDriver(t *testing.T) {
 	names := []string{"Peter", "Sathish", "Wade", "Don", "Indrajit", "Rahul", "Sam", "Kevin"}
 	testCases := []struct {
@@ -59,16 +54,5 @@ func TestDriver(t *testing.T) {
 
 			tC.collection.FreeCollection()
 		})
-	}
-}
-
-func BenchmarkOAL(b *testing.B) {
-	benchmarkCollection(&ord_array_linear.OrdArrayLinear{}, b)
-}
-
-func benchmarkCollection(wc WordCollection, b *testing.B) {
-	b.Logf("Implementation: %s\n", reflect.TypeOf(wc))
-
-	for i := 0; i < b.N; i++ {
 	}
 }
