@@ -8,13 +8,12 @@ import (
 	"time"
 
 	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
-	oal "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
 func BenchmarkFillOAL(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		fillCollection(
-			&oal.OrdArrayLinear{},
+			&p2.OrdArrayLinear{},
 			mustOpen(dictionary),
 			b,
 		)

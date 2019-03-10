@@ -2,6 +2,13 @@ package collection
 
 import "io"
 
+const (
+	SUCCESS = iota
+	FAILURE
+)
+
+const WCSIZE = 250000
+
 type WordCollection interface {
 	MakeCollection() int
 	FreeCollection()

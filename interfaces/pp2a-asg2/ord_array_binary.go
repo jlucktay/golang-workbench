@@ -1,13 +1,6 @@
-// ord_array_binary is an ordered slice with binary search
-package ord_array_binary
+package collection
 
-const (
-	SUCCESS = iota
-	FAILURE
-)
-
-const WCSIZE = 250000
-
+// OrdArrayBinary is an ordered slice with binary search
 type OrdArrayBinary struct {
 	words []string
 	size  uint

@@ -1,18 +1,11 @@
-// ord_array_linear is an ordered slice with linear search
-package ord_array_linear
+package collection
 
 import (
 	"fmt"
 	"io"
 )
 
-const (
-	SUCCESS = iota
-	FAILURE
-)
-
-const WCSIZE = 250000
-
+// OrdArrayLinear is an ordered slice with linear search
 type OrdArrayLinear struct {
 	words []string
 	size  int

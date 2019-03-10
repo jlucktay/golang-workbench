@@ -8,7 +8,6 @@ import (
 	"time"
 
 	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
-	"github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
 func TestDriver(t *testing.T) {
@@ -19,7 +18,7 @@ func TestDriver(t *testing.T) {
 	}{
 		{
 			desc:       "Ordered slice with linear search",
-			collection: &ord_array_linear.OrdArrayLinear{},
+			collection: &p2.OrdArrayLinear{},
 		},
 	}
 	for _, tC := range testCases {

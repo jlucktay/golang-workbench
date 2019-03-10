@@ -6,11 +6,10 @@ import (
 	"testing"
 
 	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
-	oal "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2/ord_array_linear"
 )
 
 func BenchmarkSearchOAL(b *testing.B) {
-	wc := &oal.OrdArrayLinear{}
+	wc := &p2.OrdArrayLinear{}
 	fillCollection(wc, mustOpen(dictionary), b)
 	b.ResetTimer()
 
