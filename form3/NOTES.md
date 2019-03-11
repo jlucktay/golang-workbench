@@ -5,6 +5,7 @@
 - <https://github.com/avelino/awesome-go>
 - [Writing Great Go Code](https://scene-si.org/2018/07/24/writing-great-go-code/)
 - [Practical Go: Real world advice for writing maintainable Go programs](https://dave.cheney.net/practical-go/presentations/qcon-china.html)
+- [Learning Resources for Go](https://www.stuartellis.name/articles/golang-learning-resources/)
 
 ``` go
 mux := http.NewServeMux()
