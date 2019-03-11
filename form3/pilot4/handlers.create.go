@@ -21,6 +21,6 @@ func (a *apiServer) createPaymentById() httprouter.Handle {
 			http.Error(w, "invalid ID", http.StatusNotFound) // 404
 			return
 		}
-		w.WriteHeader(http.StatusConflict)
+		http.Error(w, "cannot specify an ID for payment creation", http.StatusConflict) // 409
 	}
 }
