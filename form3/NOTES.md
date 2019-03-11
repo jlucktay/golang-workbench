@@ -91,6 +91,10 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [In MySQL, never use “utf8”. Use “utf8mb4”.](https://medium.com/@adamhooper/in-mysql-never-use-utf8-use-utf8mb4-11761243e434)
 - [DynamoDB, explained.](https://www.dynamodbguide.com)
 
+## Logging
+
+- [Logrus is a structured logger for Go (golang), completely API compatible with the standard library logger](https://github.com/Sirupsen/logrus)
+
 ## Versioning
 
 - [Versioning your API in Go](https://dev.to/geosoft1/versioning-your-api-in-go-1g4h)
