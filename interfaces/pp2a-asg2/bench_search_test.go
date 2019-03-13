@@ -55,7 +55,6 @@ func runSearchBenchmark(wc p2.WordCollection, b *testing.B) {
 func searchCollection(wc p2.WordCollection, book *os.File, b *testing.B) {
 	defer book.Close()
 
-	found, notFound, wordTotal, lineTotal := 0, 0, 0, 0
 	scanner := bufio.NewScanner(book)
 	scanner.Split(bufio.ScanLines)
 	b.StartTimer() // code to be timed begins below here
@@ -64,19 +63,12 @@ func searchCollection(wc p2.WordCollection, book *os.File, b *testing.B) {
 		words := strings.FieldsFunc(strings.ToLower(scanner.Text()), split)
 
 		for _, needle := range words {
-			if wc.SearchCollection(needle) == SUCCESS {
-				found++
-			} else {
-				notFound++
-			}
-			wordTotal++
+			wc.SearchCollection(needle)
 		}
-		lineTotal++
 	}
 	if errScan := scanner.Err(); errScan != nil {
 		b.Fatal(errScan)
 	}
 
 	b.StopTimer() // timing ends here
-	b.Logf("%d words found on %d lines, %d words not found (total %d)", found, lineTotal, notFound, wordTotal)
 }
