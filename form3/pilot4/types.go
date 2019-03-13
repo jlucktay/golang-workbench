@@ -1,6 +1,9 @@
 package main
 
-import "github.com/julienschmidt/httprouter"
+import (
+	"github.com/julienschmidt/httprouter"
+	"github.com/shopspring/decimal"
+)
 
 type apiServer struct {
 	// db     *someDatabase
@@ -9,7 +12,7 @@ type apiServer struct {
 }
 
 type Payment struct {
-	Amount               string             `json:"amount"`
+	Amount               decimal.Decimal    `json:"amount"`
 	BeneficiaryParty     BeneficiaryParty   `json:"beneficiary_party"`
 	ChargesInformation   ChargesInformation `json:"charges_information"`
 	Currency             string             `json:"currency"`
@@ -38,12 +41,12 @@ type BeneficiaryParty struct {
 	Name              string `json:"name"`
 }
 type SenderCharges struct {
-	Amount   string `json:"amount"`
-	Currency string `json:"currency"`
+	Amount   decimal.Decimal `json:"amount"`
+	Currency string          `json:"currency"`
 }
 type ChargesInformation struct {
 	BearerCode              string          `json:"bearer_code"`
-	ReceiverChargesAmount   string          `json:"receiver_charges_amount"`
+	ReceiverChargesAmount   decimal.Decimal `json:"receiver_charges_amount"`
 	ReceiverChargesCurrency string          `json:"receiver_charges_currency"`
 	SenderCharges           []SenderCharges `json:"sender_charges"`
 }
@@ -57,10 +60,10 @@ type DebtorParty struct {
 	Name              string `json:"name"`
 }
 type Fx struct {
-	ContractReference string `json:"contract_reference"`
-	ExchangeRate      string `json:"exchange_rate"`
-	OriginalAmount    string `json:"original_amount"`
-	OriginalCurrency  string `json:"original_currency"`
+	ContractReference string          `json:"contract_reference"`
+	ExchangeRate      string          `json:"exchange_rate"`
+	OriginalAmount    decimal.Decimal `json:"original_amount"`
+	OriginalCurrency  string          `json:"original_currency"`
 }
 type SponsorParty struct {
 	AccountNumber string `json:"account_number"`
