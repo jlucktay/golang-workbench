@@ -152,7 +152,11 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 - [errorx](https://github.com/joomcode/errorx)
 - [Exploring Error Handling Patterns in Go](https://8thlight.com/blog/kyle-krull/2018/08/13/exploring-error-handling-patterns-in-go.html)
 
-## Containerisation
+## Tools
+
+- [JSON-to-Go - Convert JSON to Go struct](https://mholt.github.io/json-to-go/)
+
+### Containerisation
 
 - [Containerize a golang app using private GitHub repos as import packages](https://medium.com/@anuragdhingra/containerize-a-golang-app-using-private-github-repos-as-import-packages-51e993afe394)
 
