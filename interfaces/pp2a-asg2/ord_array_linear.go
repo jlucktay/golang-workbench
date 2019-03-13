@@ -52,11 +52,11 @@ func (o *OrdArrayLinear) AddCollection(word string) int {
 // SearchCollection searches for the string given by the parameter in the
 // WordCollection. This utilises a linear search algorithm, and returns SUCCESS
 // or FAILURE depending upon the outcome of the search.
-func (o *OrdArrayLinear) SearchCollection(word string) int {
+func (o *OrdArrayLinear) SearchCollection(needle string) int {
 	for i := 0; i < o.size; i++ {
-		if o.words[i] == word {
+		if o.words[i] == needle {
 			return SUCCESS
-		} else if o.words[i] > word {
+		} else if o.words[i] > needle {
 			return FAILURE
 		}
 	}
