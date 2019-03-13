@@ -29,6 +29,10 @@ func TestDriver(t *testing.T) {
 			desc:       "Ordered slice with binary search",
 			collection: &p2.OrdArrayBinary{},
 		},
+		{
+			desc:       "Unbalanced binary search tree",
+			collection: &p2.UnbalBinarySearchTree{},
+		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
