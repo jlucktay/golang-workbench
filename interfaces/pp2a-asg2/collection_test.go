@@ -8,6 +8,7 @@ import (
 	"time"
 
 	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
+	"github.com/matryer/is"
 )
 
 func TestDriver(t *testing.T) {
@@ -32,18 +33,16 @@ func TestDriver(t *testing.T) {
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			t.Logf("Current implementation based on: %s", reflect.TypeOf(tC.collection))
+			i := is.New(t)
 
-			if tC.collection.MakeCollection() == FAILURE {
-				t.Fatal("Unable to initialise WordCollection")
-			}
+			i.Equal(tC.collection.MakeCollection(), SUCCESS)
 
 			for _, name := range names {
-				if tC.collection.AddCollection(name) == FAILURE {
-					t.Fatal("AddCollection failed")
-				}
+				i.Equal(tC.collection.AddCollection(name), SUCCESS)
 			}
 
 			t.Logf("Collection contains %d names", tC.collection.SizeCollection())
+			i.Equal(len(names), tC.collection.SizeCollection())
 
 			t.Log("The following names are in the Collection:")
 			b := new(bytes.Buffer)
@@ -52,12 +51,8 @@ func TestDriver(t *testing.T) {
 
 			rand.Seed(time.Now().UnixNano())
 			needle := names[rand.Intn(len(names))]
-			t.Logf(`Searching for "%s": `, needle)
-			if result := tC.collection.SearchCollection(needle); result == SUCCESS {
-				t.Log("FOUND")
-			} else {
-				t.Fatal("NOT FOUND")
-			}
+			t.Logf(`Searching for "%s"...`, needle)
+			i.Equal(tC.collection.SearchCollection(needle), SUCCESS)
 
 			tC.collection.FreeCollection()
 		})
