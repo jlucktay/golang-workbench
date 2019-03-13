@@ -24,6 +24,11 @@ func BenchmarkSearchOLL(b *testing.B) {
 	runSearchBenchmark(&p2.OrdLinkedList{}, b)
 }
 
+func BenchmarkSearchUBST(b *testing.B) {
+	b.StopTimer()
+	runSearchBenchmark(&p2.UnbalBinarySearchTree{}, b)
+}
+
 func runSearchBenchmark(wc p2.WordCollection, b *testing.B) {
 	fillCollection(wc, mustOpen(dictionary), b)
 	b.ResetTimer()
