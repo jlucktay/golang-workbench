@@ -52,21 +52,20 @@ func searchCollection(wc p2.WordCollection, book *os.File, b *testing.B) {
 
 	found, notFound, wordTotal, lineTotal := 0, 0, 0, 0
 	scanner := bufio.NewScanner(book)
+	scanner.Split(bufio.ScanLines)
 	b.StartTimer() // code to be timed begins below here
 
 	for scanner.Scan() {
 		words := strings.FieldsFunc(strings.ToLower(scanner.Text()), split)
 
-		for _, w := range words {
-			if wc.SearchCollection(w) == SUCCESS {
+		for _, needle := range words {
+			if wc.SearchCollection(needle) == SUCCESS {
 				found++
 			} else {
 				notFound++
 			}
-
 			wordTotal++
 		}
-
 		lineTotal++
 	}
 	if errScan := scanner.Err(); errScan != nil {

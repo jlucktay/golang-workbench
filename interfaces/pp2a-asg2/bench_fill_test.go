@@ -52,7 +52,6 @@ func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 	}
 
 	b.StartTimer() // code to be timed begins below here
-
 	scanner := bufio.NewScanner(dictionary)
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
@@ -63,6 +62,5 @@ func fillCollection(wc p2.WordCollection, dictionary *os.File, b *testing.B) {
 	if errScan := scanner.Err(); errScan != nil {
 		b.Fatal(errScan)
 	}
-
 	b.StopTimer() // timing ends here
 }
