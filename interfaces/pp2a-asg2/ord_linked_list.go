@@ -7,14 +7,14 @@ import (
 
 // OrdLinkedList is an ordered linked list with linear insert and search
 type OrdLinkedList struct {
-	head *ordLinkedListNode
+	head *listNode
 	size int
 }
 
-// ordLinkedListNode is a node used in OrdLinkedList
-type ordLinkedListNode struct {
+// listNode is a node used in OrdLinkedList
+type listNode struct {
 	word string
-	next *ordLinkedListNode
+	next *listNode
 }
 
 // MakeCollection initialises the WordCollection with one initial nil entry. It
@@ -35,9 +35,9 @@ func (o *OrdLinkedList) FreeCollection() {
 // AddCollection adds the string given by the parameter to the WordCollection.
 // The string is added so that the WordCollection is in alphabetical order.
 func (o *OrdLinkedList) AddCollection(word string) int {
-	newNode := &ordLinkedListNode{}
+	newNode := &listNode{}
 	current := o.head
-	var previous *ordLinkedListNode
+	var previous *listNode
 
 	for current != nil && current.word < word {
 		previous = current
