@@ -36,6 +36,15 @@ func BenchmarkFillOLL(b *testing.B) {
 	}
 }
 
+func BenchmarkFillUBST(b *testing.B) {
+	b.StopTimer()
+	for i := 0; i < b.N; i++ {
+		wc := &p2.UnbalBinarySearchTree{}
+		fillCollection(wc, mustOpen(dictionary), b)
+		wc.FreeCollection()
+	}
+}
+
 // fillCollection takes three arguments:
 // 1) a brand new uninitialised WordCollection
 // 2) a pointer to an open text file descriptor
