@@ -8,64 +8,62 @@ type apiServer struct {
 	router *httprouter.Router
 }
 
-/*
-{
-    "amount": "100.21",
-    "beneficiary_party": {
-        "account_name": "W Owens",
-        "account_number": "31926819",
-        "account_number_code": "BBAN",
-        "account_type": 0,
-        "address": "1 The Beneficiary Localtown SE2",
-        "bank_id": "403000",
-        "bank_id_code": "GBDSC",
-        "name": "Wilfred Jeremiah Owens"
-    },
-    "charges_information": {
-        "bearer_code": "SHAR",
-        "receiver_charges_amount": "1.00",
-        "receiver_charges_currency": "USD",
-        "sender_charges": [
-            {
-                "amount": "5.00",
-                "currency": "GBP"
-            },
-            {
-                "amount": "10.00",
-                "currency": "USD"
-            }
-        ]
-    },
-    "currency": "GBP",
-    "debtor_party": {
-        "account_name": "EJ Brown Black",
-        "account_number": "GB29XABC10161234567801",
-        "account_number_code": "IBAN",
-        "address": "10 Debtor Crescent Sourcetown NE1",
-        "bank_id": "203301",
-        "bank_id_code": "GBDSC",
-        "name": "Emelia Jane Brown"
-    },
-    "end_to_end_reference": "Wil piano Jan",
-    "fx": {
-        "contract_reference": "FX123",
-        "exchange_rate": "2.00000",
-        "original_amount": "200.42",
-        "original_currency": "USD"
-    },
-    "numeric_reference": "1002001",
-    "payment_id": "123456789012345678",
-    "payment_purpose": "Paying for goods/services",
-    "payment_scheme": "FPS",
-    "payment_type": "Credit",
-    "processing_date": "2017-01-18",
-    "reference": "Payment for Em's piano lessons",
-    "scheme_payment_sub_type": "InternetBanking",
-    "scheme_payment_type": "ImmediatePayment",
-    "sponsor_party": {
-        "account_number": "56781234",
-        "bank_id": "123123",
-        "bank_id_code": "GBDSC"
-    }
+type Payment struct {
+	Amount               string             `json:"amount"`
+	BeneficiaryParty     BeneficiaryParty   `json:"beneficiary_party"`
+	ChargesInformation   ChargesInformation `json:"charges_information"`
+	Currency             string             `json:"currency"`
+	DebtorParty          DebtorParty        `json:"debtor_party"`
+	EndToEndReference    string             `json:"end_to_end_reference"`
+	Fx                   Fx                 `json:"fx"`
+	NumericReference     string             `json:"numeric_reference"`
+	PaymentID            string             `json:"payment_id"`
+	PaymentPurpose       string             `json:"payment_purpose"`
+	PaymentScheme        string             `json:"payment_scheme"`
+	PaymentType          string             `json:"payment_type"`
+	ProcessingDate       string             `json:"processing_date"`
+	Reference            string             `json:"reference"`
+	SchemePaymentSubType string             `json:"scheme_payment_sub_type"`
+	SchemePaymentType    string             `json:"scheme_payment_type"`
+	SponsorParty         SponsorParty       `json:"sponsor_party"`
 }
-*/
+type BeneficiaryParty struct {
+	AccountName       string `json:"account_name"`
+	AccountNumber     string `json:"account_number"`
+	AccountNumberCode string `json:"account_number_code"`
+	AccountType       int    `json:"account_type"`
+	Address           string `json:"address"`
+	BankID            string `json:"bank_id"`
+	BankIDCode        string `json:"bank_id_code"`
+	Name              string `json:"name"`
+}
+type SenderCharges struct {
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"`
+}
+type ChargesInformation struct {
+	BearerCode              string          `json:"bearer_code"`
+	ReceiverChargesAmount   string          `json:"receiver_charges_amount"`
+	ReceiverChargesCurrency string          `json:"receiver_charges_currency"`
+	SenderCharges           []SenderCharges `json:"sender_charges"`
+}
+type DebtorParty struct {
+	AccountName       string `json:"account_name"`
+	AccountNumber     string `json:"account_number"`
+	AccountNumberCode string `json:"account_number_code"`
+	Address           string `json:"address"`
+	BankID            string `json:"bank_id"`
+	BankIDCode        string `json:"bank_id_code"`
+	Name              string `json:"name"`
+}
+type Fx struct {
+	ContractReference string `json:"contract_reference"`
+	ExchangeRate      string `json:"exchange_rate"`
+	OriginalAmount    string `json:"original_amount"`
+	OriginalCurrency  string `json:"original_currency"`
+}
+type SponsorParty struct {
+	AccountNumber string `json:"account_number"`
+	BankID        string `json:"bank_id"`
+	BankIDCode    string `json:"bank_id_code"`
+}
