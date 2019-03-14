@@ -2,7 +2,7 @@ package main
 
 func (a *apiServer) setupRoutes() {
 	// C
-	a.router.POST("/payments", a.createPayment())
+	a.router.POST("/payments", a.createPayments())
 	a.router.POST("/payments/:id", a.createPaymentById())
 
 	// R
@@ -10,10 +10,12 @@ func (a *apiServer) setupRoutes() {
 	a.router.GET("/payments/:id", a.readPaymentById())
 
 	// U
-	a.router.PUT("/payments", a.updatePayment())
+	a.router.PUT("/payments", a.updatePayments())
+	a.router.PUT("/payments/:id", a.updatePaymentById())
 
 	// D
-	a.router.DELETE("/payments", a.deletePayment())
+	a.router.DELETE("/payments", a.deletePayments())
+	a.router.DELETE("/payments/:id", a.deletePaymentById())
 
 	/*
 		// Middleware
