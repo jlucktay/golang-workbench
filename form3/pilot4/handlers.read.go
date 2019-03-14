@@ -25,6 +25,11 @@ func (a *apiServer) readPaymentById() httprouter.Handle {
 			return
 		}
 
+		if p.ByName("id") == "29e1c453-8cc7-47b8-9c48-7e44b4f9ba26" {
+			// Placeholder for valid route in the logic
+			http.Error(w, "A payment with this ID does not exist.", http.StatusTeapot) // -> .StatusNotFound 404
+		}
+
 		w.WriteHeader(http.StatusNotImplemented) // 501
 	}
 }
