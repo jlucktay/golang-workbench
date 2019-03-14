@@ -54,7 +54,7 @@ func TestStatusCode(t *testing.T) {
 		},
 		{
 			desc:     "Read a single existing payment",
-			path:     "/payments/1234-5678-abcd",
+			path:     "/payments/2c2a4c63-67a3-43a9-bce1-7fd5268486e2s",
 			verb:     http.MethodGet,
 			expected: http.StatusOK,
 		},
@@ -78,7 +78,7 @@ func TestStatusCode(t *testing.T) {
 		},
 		{
 			desc:     "Update an existing payment",
-			path:     "/payments/1234-5678-abcd",
+			path:     "/payments/67191210-3e30-40c9-af61-3f2abb110363",
 			verb:     http.MethodPut,
 			expected: http.StatusNoContent,
 		},
