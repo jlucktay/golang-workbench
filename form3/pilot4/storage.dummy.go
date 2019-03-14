@@ -28,7 +28,7 @@ func (ds *dummyStorage) Read(id uuid.UUID) (Payment, error) {
 	if p, ok := ds.store[id]; ok {
 		return p, nil
 	}
-	return Payment{}, &ReadError{id}
+	return Payment{}, &NotFoundError{id}
 }
 
 func (ds *dummyStorage) Update(id uuid.UUID, p Payment) error {

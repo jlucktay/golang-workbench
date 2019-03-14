@@ -14,10 +14,10 @@ type PaymentStorage interface {
 	Delete(uuid.UUID) error
 }
 
-type ReadError struct {
+type NotFoundError struct {
 	id uuid.UUID
 }
 
-func (re *ReadError) Error() string {
+func (re *NotFoundError) Error() string {
 	return fmt.Sprintf("Payment ID '%s' not found.", re.id)
 }
