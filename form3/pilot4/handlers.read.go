@@ -11,7 +11,7 @@ func (a *apiServer) readPayments() httprouter.Handle {
 	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		// use thing
-		w.WriteHeader(http.StatusNotImplemented)
+		w.WriteHeader(http.StatusNotImplemented) // 501
 	}
 }
 
@@ -21,11 +21,11 @@ func (a *apiServer) readPaymentById() httprouter.Handle {
 		// use thing
 
 		if uuid.FromStringOrNil(p.ByName("id")) == uuid.Nil {
-			http.Error(w, "invalid ID", http.StatusNotFound) // 404
+			http.Error(w, "Invalid ID.", http.StatusNotFound) // 404
 			return
 		}
 
-		w.WriteHeader(http.StatusNotImplemented)
+		w.WriteHeader(http.StatusNotImplemented) // 501
 	}
 }
 

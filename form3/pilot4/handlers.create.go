@@ -18,9 +18,10 @@ func (a *apiServer) createPayments() httprouter.Handle {
 func (a *apiServer) createPaymentById() httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		if uuid.FromStringOrNil(p.ByName("id")) == uuid.Nil {
-			http.Error(w, "invalid ID", http.StatusNotFound) // 404
+			http.Error(w, "Invalid ID.", http.StatusNotFound) // 404
 			return
 		}
-		http.Error(w, "cannot specify an ID for payment creation", http.StatusConflict) // 409
+		http.Error(w, `Cannot specify an ID for payment creation.
+One will be generated for you.`, http.StatusNotFound) // 404
 	}
 }
