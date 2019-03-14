@@ -16,9 +16,4 @@ func (a *apiServer) setupRoutes() {
 	// D
 	a.router.DELETE("/payments", a.deletePayments())
 	a.router.DELETE("/payments/:id", a.deletePaymentById())
-
-	/*
-		// Middleware
-		s.router.HandleFunc("/admin", s.adminOnly(s.handleAdminIndex()))
-	*/
 }
