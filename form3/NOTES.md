@@ -151,6 +151,7 @@ curl --silent --get "http://mockbin.org/bin/41ca3269-d8c4-4063-9fd5-f306814ff03f
 
 - [errorx](https://github.com/joomcode/errorx)
 - [Exploring Error Handling Patterns in Go](https://8thlight.com/blog/kyle-krull/2018/08/13/exploring-error-handling-patterns-in-go.html)
+- [Return nil or custom error in Go](https://stackoverflow.com/questions/46022517/return-nil-or-custom-error-in-go/46022840)
 
 ## Tools
 
