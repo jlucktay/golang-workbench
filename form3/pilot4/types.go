@@ -8,8 +8,7 @@ import (
 type apiServer struct {
 	// db     *someDatabase
 
-	router  *httprouter.Router
-	storage *PaymentStorage
+	router *httprouter.Router
 }
 
 type Payment struct {
