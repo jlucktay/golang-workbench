@@ -133,7 +133,7 @@ func TestStatusCode(t *testing.T) {
 
 			actual := w.Result().StatusCode
 			if actual == http.StatusTeapot {
-				t.Logf("'%s %s' is still a teapot and not quite finished yet", tC.verb, tC.path)
+				t.Logf("This is still a teapot and not quite finished yet.\n%s %s", tC.verb, tC.path)
 			} else {
 				i.Equal(tC.expected, actual)
 			}
