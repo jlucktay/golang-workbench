@@ -47,7 +47,7 @@ func TestCreate(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
+			t.Fatalf("not yet implemented")
 		})
 	}
 }
@@ -152,7 +152,7 @@ func TestUpdate(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
+			t.Fatalf("not yet implemented")
 		})
 	}
 }
@@ -191,7 +191,7 @@ func TestDelete(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
+			t.Fatalf("not yet implemented")
 		})
 	}
 }
