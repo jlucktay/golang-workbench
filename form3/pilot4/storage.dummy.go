@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -25,24 +23,24 @@ func (ds *dummyStorage) Create(p Payment) (uuid.UUID, error) {
 }
 
 func (ds *dummyStorage) Read(id uuid.UUID) (Payment, error) {
-	if p, ok := ds.store[id]; ok {
+	if p, exists := ds.store[id]; exists {
 		return p, nil
 	}
 	return Payment{}, &NotFoundError{id}
 }
 
 func (ds *dummyStorage) Update(id uuid.UUID, p Payment) error {
-	if _, ok := ds.store[id]; ok {
+	if _, exists := ds.store[id]; exists {
 		ds.store[id] = p
 		return nil
 	}
-	return fmt.Errorf("Payment ID '%s' not found.", id)
+	return &NotFoundError{id}
 }
 
 func (ds *dummyStorage) Delete(id uuid.UUID) error {
-	if _, ok := ds.store[id]; ok {
+	if _, exists := ds.store[id]; exists {
 		delete(ds.store, id)
 		return nil
 	}
-	return fmt.Errorf("Payment ID '%s' not found.", id)
+	return &NotFoundError{id}
 }
