@@ -7,9 +7,7 @@ import (
 )
 
 func (a *apiServer) deletePaymentById() httprouter.Handle {
-	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		// use thing
 		w.WriteHeader(http.StatusNotImplemented)
 	}
 }

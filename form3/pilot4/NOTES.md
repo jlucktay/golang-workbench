@@ -13,6 +13,18 @@ const (
 )
 ```
 
+## Closure to prepare thing once and use many times
+
+``` go
+func (a *apiServer) readPayments() httprouter.Handle {
+  // thing := prepareThing()
+  return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    // use thing
+    w.WriteHeader(http.StatusNotImplemented) // 501
+  }
+}
+```
+
 ## Middleware
 
 ``` go

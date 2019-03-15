@@ -8,9 +8,7 @@ import (
 )
 
 func (a *apiServer) createPayments() httprouter.Handle {
-	// thing := prepareThing()
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		// use thing
 		w.WriteHeader(http.StatusNotImplemented)
 	}
 }
@@ -22,8 +20,8 @@ func (a *apiServer) createPaymentById() httprouter.Handle {
 			return
 		}
 
+		// Placeholder for valid route in the logic
 		if p.ByName("id") == "b2e3ccaa-ac37-45e0-b889-1e6acadf31c8" {
-			// Placeholder for valid route in the logic
 			http.Error(w, "A payment with this ID already exists.", http.StatusTeapot) // -> .StatusConflict) // 409
 		}
 
