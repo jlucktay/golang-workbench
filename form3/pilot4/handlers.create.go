@@ -9,7 +9,7 @@ import (
 
 func (a *apiServer) createPayments() httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		w.WriteHeader(http.StatusNotImplemented)
+		w.WriteHeader(http.StatusNotImplemented) // 501
 	}
 }
 
