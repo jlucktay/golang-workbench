@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -22,12 +24,20 @@ func (a *apiServer) readPaymentById() httprouter.Handle {
 			return
 		}
 
-		// Placeholder for valid route in the logic:
-		// -> Read a non-existent payment at a valid ID
-		if id.String() == "29e1c453-8cc7-47b8-9c48-7e44b4f9ba26" {
-			http.Error(w, (&NotFoundError{id}).Error(), http.StatusTeapot) // -> .StatusNotFound 404
+		if payRead, errRead := a.storage.Read(id); errRead == nil {
+			payBytes, errMarshal := json.Marshal(payRead)
+			if errMarshal != nil {
+				log.Fatal(errMarshal)
+			}
+
+			w.WriteHeader(http.StatusOK) // 200
+			w.Header().Set("Content-Type", "application/json")
+			if _, errWrite := w.Write(payBytes); errWrite != nil {
+				log.Fatal(errWrite)
+			}
+			return
 		}
 
-		w.WriteHeader(http.StatusNotImplemented) // 501
+		http.Error(w, (&NotFoundError{id}).Error(), http.StatusNotFound) // 404
 	}
 }
