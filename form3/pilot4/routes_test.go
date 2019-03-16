@@ -93,7 +93,7 @@ func TestRead(t *testing.T) {
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			is := is.New(t)
-			srv := newApiServer()
+			srv := newApiServer(InMemory)
 			req, err := http.NewRequest(tC.verb, tC.path, nil)
 			is.NoErr(err)
 			w := httptest.NewRecorder()

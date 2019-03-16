@@ -120,7 +120,7 @@ func TestStatusCode(t *testing.T) {
 		},
 	}
 
-	srv := newApiServer()
+	srv := newApiServer(InMemory)
 
 	// Act & Assert
 	for _, tC := range testCases {
