@@ -36,6 +36,7 @@ type Payment struct {
 	SchemePaymentType    string             `json:"scheme_payment_type"`
 	SponsorParty         SponsorParty       `json:"sponsor_party"`
 }
+
 type BeneficiaryParty struct {
 	AccountName       string `json:"account_name"`
 	AccountNumber     string `json:"account_number"`
@@ -46,16 +47,19 @@ type BeneficiaryParty struct {
 	BankIDCode        string `json:"bank_id_code"`
 	Name              string `json:"name"`
 }
+
 type SenderCharges struct {
 	Amount   decimal.Decimal `json:"amount"`
 	Currency string          `json:"currency"`
 }
+
 type ChargesInformation struct {
 	BearerCode              string          `json:"bearer_code"`
 	ReceiverChargesAmount   decimal.Decimal `json:"receiver_charges_amount"`
 	ReceiverChargesCurrency string          `json:"receiver_charges_currency"`
 	SenderCharges           []SenderCharges `json:"sender_charges"`
 }
+
 type DebtorParty struct {
 	AccountName       string `json:"account_name"`
 	AccountNumber     string `json:"account_number"`
@@ -65,12 +69,14 @@ type DebtorParty struct {
 	BankIDCode        string `json:"bank_id_code"`
 	Name              string `json:"name"`
 }
+
 type Fx struct {
 	ContractReference string          `json:"contract_reference"`
 	ExchangeRate      string          `json:"exchange_rate"`
 	OriginalAmount    decimal.Decimal `json:"original_amount"`
 	OriginalCurrency  string          `json:"original_currency"`
 }
+
 type SponsorParty struct {
 	AccountNumber string `json:"account_number"`
 	BankID        string `json:"bank_id"`
