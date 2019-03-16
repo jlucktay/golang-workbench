@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -8,8 +12,31 @@ import (
 )
 
 func (a *apiServer) createPayments() httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		w.WriteHeader(http.StatusNotImplemented) // 501
+	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		if r.ContentLength == 0 {
+			http.Error(w, "Empty request body.", http.StatusBadRequest) // 400
+			return
+		}
+
+		bodyBytes, errRead := ioutil.ReadAll(r.Body)
+		if errRead != nil {
+			log.Fatal(errRead)
+		}
+		defer r.Body.Close()
+
+		var p Payment
+		errUm := json.Unmarshal(bodyBytes, &p)
+		if errUm != nil {
+			log.Fatal(errUm)
+		}
+
+		id, errCreate := a.storage.Create(p)
+		if errCreate != nil {
+			log.Fatal(errCreate)
+		}
+
+		w.Header().Set("Location", fmt.Sprintf("/payments/%s", id))
+		w.WriteHeader(http.StatusCreated) // 201
 	}
 }
 
@@ -22,10 +49,10 @@ func (a *apiServer) createPaymentById() httprouter.Handle {
 			return
 		}
 
-		// Placeholder for valid route in the logic:
-		// -> Create a new payment on a pre-existing ID
-		if id.String() == "b2e3ccaa-ac37-45e0-b889-1e6acadf31c8" {
-			http.Error(w, (&AlreadyExistsError{id}).Error(), http.StatusTeapot) // -> .StatusConflict 409
+		_, errRead := a.storage.Read(id)
+		if errRead == nil {
+			http.Error(w, (&AlreadyExistsError{id}).Error(), http.StatusConflict) // 409
+			return
 		}
 
 		http.Error(w, `Cannot specify an ID for payment creation.
