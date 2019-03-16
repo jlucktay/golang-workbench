@@ -10,7 +10,7 @@ type apiServer struct {
 	storage PaymentStorage
 }
 
-type StorageType int
+type StorageType byte
 
 const (
 	InMemory StorageType = iota
