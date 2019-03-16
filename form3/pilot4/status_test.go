@@ -132,11 +132,7 @@ func TestStatusCode(t *testing.T) {
 			srv.router.ServeHTTP(w, req)
 
 			actual := w.Result().StatusCode
-			if actual == http.StatusTeapot {
-				t.Logf("This is still a teapot and not quite finished yet.\n%s %s", tC.verb, tC.path)
-			} else {
-				i.Equal(tC.expected, actual)
-			}
+			i.Equal(tC.expected, actual)
 		})
 	}
 }
