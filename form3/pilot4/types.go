@@ -6,9 +6,8 @@ import (
 )
 
 type apiServer struct {
-	// db     *someDatabase
-
-	router *httprouter.Router
+	router  *httprouter.Router
+	storage PaymentStorage
 }
 
 type StorageType int
