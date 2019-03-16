@@ -11,6 +11,13 @@ type apiServer struct {
 	router *httprouter.Router
 }
 
+type StorageType int
+
+const (
+	InMemory StorageType = iota
+	Mongo
+)
+
 type Payment struct {
 	Amount               decimal.Decimal    `json:"amount"`
 	BeneficiaryParty     BeneficiaryParty   `json:"beneficiary_party"`
