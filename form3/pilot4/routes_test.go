@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -8,6 +10,7 @@ import (
 
 	"github.com/matryer/is"
 	uuid "github.com/satori/go.uuid"
+	"github.com/shopspring/decimal"
 )
 
 func TestCreateEmptyBody(t *testing.T) {
@@ -60,29 +63,61 @@ func TestCreateEmptyBody(t *testing.T) {
 	}
 }
 
+func TestCreatePaymentBody(t *testing.T) {
+	testCases := []struct {
+		desc     string
+		path     string
+		verb     string
+		body     *Payment
+		expected int
+	}{
+		{
+			desc:     "Create a new payment with a Payment request body",
+			path:     "/payments",
+			verb:     http.MethodPost,
+			body:     &Payment{Amount: decimal.NewFromFloat(123.45)},
+			expected: http.StatusCreated, // 201
 		},
 		{
 			desc:     "Create a new payment on a pre-existing ID with a Payment request body",
 			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
+			body:     &Payment{Amount: decimal.NewFromFloat(123.45)},
 			expected: http.StatusConflict, // 409
 		},
 		{
 			desc:     "Create a new payment on a non-existent valid ID with a Payment request body",
 			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
+			body:     &Payment{Amount: decimal.NewFromFloat(123.45)},
 			expected: http.StatusNotFound, // 404
 		},
 		{
 			desc:     "Create a new payment on an invalid ID with a Payment request body",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPost,
+			body:     &Payment{Amount: decimal.NewFromFloat(123.45)},
 			expected: http.StatusNotFound, // 404
 		},
 	}
+
+	srv := newApiServer(InMemory)
+
 	for _, tC := range testCases {
+		w := httptest.NewRecorder()
+
 		t.Run(tC.desc, func(t *testing.T) {
-			t.Fatalf("not yet implemented")
+			i := is.New(t)
+
+			var buf bytes.Buffer
+			errEncode := json.NewEncoder(&buf).Encode(tC.body)
+			i.NoErr(errEncode)
+
+			req, err := http.NewRequest(tC.verb, tC.path, &buf)
+			i.NoErr(err)
+
+			srv.router.ServeHTTP(w, req)
+			i.Equal(tC.expected, w.Result().StatusCode)
 		})
 	}
 }
