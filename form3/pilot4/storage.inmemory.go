@@ -14,10 +14,7 @@ func (ims *inMemoryStorage) Init() error {
 }
 
 func (ims *inMemoryStorage) Create(p Payment) (uuid.UUID, error) {
-	newId, errNew := uuid.NewV4()
-	if errNew != nil {
-		return uuid.Nil, errNew
-	}
+	newId := uuid.Must(uuid.NewV4())
 	ims.store[newId] = p
 	return newId, nil
 }

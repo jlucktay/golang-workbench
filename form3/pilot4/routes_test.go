@@ -79,7 +79,7 @@ func TestRead(t *testing.T) {
 		},
 		{
 			desc:     "Read a non-existent payment at a valid ID",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodGet,
 			expected: http.StatusNotFound, // 404
 		},
