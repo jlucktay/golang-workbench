@@ -25,13 +25,13 @@ func TestCreateEmptyBody(t *testing.T) {
 		},
 		{
 			desc:     "Create a new payment on a pre-existing ID with an empty request body",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
 			expected: http.StatusConflict, // 409
 		},
 		{
 			desc:     "Create a new payment on a non-existent valid ID with an empty request body",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
 			expected: http.StatusNotFound, // 404
 		},
@@ -62,19 +62,19 @@ func TestCreateEmptyBody(t *testing.T) {
 
 		},
 		{
-			desc:     "Create a new payment on a pre-existing ID",
-			path:     "/payments/1234-5678-abcd",
+			desc:     "Create a new payment on a pre-existing ID with a Payment request body",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
 			expected: http.StatusConflict, // 409
 		},
 		{
-			desc:     "Create a new payment on a non-existent valid ID",
-			path:     "/payments/1234-5678-abcd",
+			desc:     "Create a new payment on a non-existent valid ID with a Payment request body",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPost,
 			expected: http.StatusNotFound, // 404
 		},
 		{
-			desc:     "Create a new payment on an invalid ID",
+			desc:     "Create a new payment on an invalid ID with a Payment request body",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPost,
 			expected: http.StatusNotFound, // 404
@@ -108,7 +108,7 @@ func TestRead(t *testing.T) {
 		},
 		{
 			desc:     "Read a single existing payment",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodGet,
 			expected: http.StatusOK, // 200
 		},
@@ -158,13 +158,13 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			desc:     "Update an existing payment",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPut,
 			expected: http.StatusNoContent, // 204; update is OK, but response has no body/content
 		},
 		{
 			desc:     "Update a non-existent payment at a valid ID",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodPut,
 			expected: http.StatusNotFound, // 404
 		},
@@ -197,13 +197,13 @@ func TestDelete(t *testing.T) {
 		},
 		{
 			desc:     "Delete an existing payment at a valid ID",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodDelete,
 			expected: http.StatusOK, // 200
 		},
 		{
 			desc:     "Delete a non-existent payment at a valid ID",
-			path:     "/payments/1234-5678-abcd",
+			path:     fmt.Sprintf("/payments/%s", uuid.Must(uuid.NewV4())),
 			verb:     http.MethodDelete,
 			expected: http.StatusNotFound, // 404
 		},
