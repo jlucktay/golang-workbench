@@ -90,30 +90,20 @@ func TestRead(t *testing.T) {
 			expected: http.StatusNotFound, // 404
 		},
 	}
+
+	srv := newApiServer(InMemory)
+
 	for _, tC := range testCases {
+		w := httptest.NewRecorder()
+
 		t.Run(tC.desc, func(t *testing.T) {
-			is := is.New(t)
-			srv := newApiServer(InMemory)
+			i := is.New(t)
+
 			req, err := http.NewRequest(tC.verb, tC.path, nil)
-			is.NoErr(err)
-			w := httptest.NewRecorder()
+			i.NoErr(err)
+
 			srv.router.ServeHTTP(w, req)
-			is.Equal(tC.expected, w.Result().StatusCode)
-
-			// p := struct {
-			// 	Name string `json:"name"`
-			// }{
-			// 	Name: "Mat Ryer",
-			// }
-			// var buf bytes.Buffer
-			// if err := json.NewEncoder(&buf).Encode(p); err != nil {
-			// 	t.Fatal(err)
-			// }
-			// req, err := http.NewRequest(http.MethodPost, "/greet", &buf)
-			// if err != nil {
-			// 	t.Fatal(err)
-			// }
-
+			i.Equal(tC.expected, w.Result().StatusCode)
 		})
 	}
 }
