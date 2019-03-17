@@ -19,7 +19,7 @@ func TestCreate(t *testing.T) {
 			desc:     "Create a new payment",
 			path:     "/payments",
 			verb:     http.MethodPost,
-			expected: 201,
+			expected: http.StatusCreated, // 201
 			/*
 				## Notes
 
@@ -30,19 +30,19 @@ func TestCreate(t *testing.T) {
 			desc:     "Create a new payment on a pre-existing ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodPost,
-			expected: 409,
+			expected: http.StatusConflict, // 409
 		},
 		{
 			desc:     "Create a new payment on a non-existent valid ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodPost,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 		{
 			desc:     "Create a new payment on an invalid ID",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPost,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 	}
 	for _, tC := range testCases {
@@ -63,31 +63,31 @@ func TestRead(t *testing.T) {
 			desc:     "Read the entire collection of existing payments",
 			path:     "/payments",
 			verb:     http.MethodGet,
-			expected: 200,
+			expected: http.StatusOK, // 200
 		},
 		{
 			desc:     "Read a limited collection of existing payments",
 			path:     "/payments?offset=2&limit=2",
 			verb:     http.MethodGet,
-			expected: 200,
+			expected: http.StatusOK, // 200
 		},
 		{
 			desc:     "Read a single existing payment",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodGet,
-			expected: 200,
+			expected: http.StatusOK, // 200
 		},
 		{
 			desc:     "Read a non-existent payment at a valid ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodGet,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 		{
 			desc:     "Read a non-existent payment at an invalid ID",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodGet,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 	}
 	for _, tC := range testCases {
@@ -129,25 +129,25 @@ func TestUpdate(t *testing.T) {
 			desc:     "Update all existing payments",
 			path:     "/payments",
 			verb:     http.MethodPut,
-			expected: 405,
+			expected: http.StatusMethodNotAllowed, // 405
 		},
 		{
 			desc:     "Update an existing payment",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodPut,
-			expected: 204, // update is OK, but response has no body/content
+			expected: http.StatusNoContent, // 204; update is OK, but response has no body/content
 		},
 		{
 			desc:     "Update a non-existent payment at a valid ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodPut,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 		{
 			desc:     "Update a non-existent payment at an invalid ID",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPut,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 	}
 	for _, tC := range testCases {
@@ -168,25 +168,25 @@ func TestDelete(t *testing.T) {
 			desc:     "Delete all existing payments",
 			path:     "/payments",
 			verb:     http.MethodDelete,
-			expected: 405,
+			expected: http.StatusMethodNotAllowed, // 405
 		},
 		{
 			desc:     "Delete an existing payment at a valid ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodDelete,
-			expected: 200,
+			expected: http.StatusOK, // 200
 		},
 		{
 			desc:     "Delete a non-existent payment at a valid ID",
 			path:     "/payments/1234-5678-abcd",
 			verb:     http.MethodDelete,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 		{
 			desc:     "Delete a non-existent payment at an invalid ID",
 			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodDelete,
-			expected: 404,
+			expected: http.StatusNotFound, // 404
 		},
 	}
 	for _, tC := range testCases {
