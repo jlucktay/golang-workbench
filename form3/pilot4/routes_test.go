@@ -40,7 +40,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			desc:     "Create a new payment on an invalid ID",
-			path:     "/payments/my-payment-id",
+			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPost,
 			expected: 404,
 		},
@@ -85,7 +85,7 @@ func TestRead(t *testing.T) {
 		},
 		{
 			desc:     "Read a non-existent payment at an invalid ID",
-			path:     "/payments/my-payment-id",
+			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodGet,
 			expected: 404,
 		},
@@ -145,7 +145,7 @@ func TestUpdate(t *testing.T) {
 		},
 		{
 			desc:     "Update a non-existent payment at an invalid ID",
-			path:     "/payments/1234-5678-abcd",
+			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodPut,
 			expected: 404,
 		},
@@ -184,7 +184,7 @@ func TestDelete(t *testing.T) {
 		},
 		{
 			desc:     "Delete a non-existent payment at an invalid ID",
-			path:     "/payments/my-payment-id",
+			path:     "/payments/not-a-valid-v4-uuid",
 			verb:     http.MethodDelete,
 			expected: 404,
 		},
