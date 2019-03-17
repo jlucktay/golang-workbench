@@ -124,15 +124,16 @@ func TestStatusCode(t *testing.T) {
 
 	// Act & Assert
 	for _, tC := range testCases {
+		w := httptest.NewRecorder()
+
 		t.Run(tC.desc, func(t *testing.T) {
 			i := is.New(t)
+
 			req, err := http.NewRequest(tC.verb, tC.path, nil)
 			i.NoErr(err)
-			w := httptest.NewRecorder()
-			srv.router.ServeHTTP(w, req)
 
-			actual := w.Result().StatusCode
-			i.Equal(tC.expected, actual)
+			srv.router.ServeHTTP(w, req)
+			i.Equal(tC.expected, w.Result().StatusCode)
 		})
 	}
 }
