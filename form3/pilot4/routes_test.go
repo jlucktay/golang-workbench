@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/matryer/is"
+	uuid "github.com/satori/go.uuid"
 )
 
 func TestCreateEmptyBody(t *testing.T) {
