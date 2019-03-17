@@ -8,7 +8,7 @@ import (
 	"github.com/matryer/is"
 )
 
-func TestCreate(t *testing.T) {
+func TestCreateEmptyBody(t *testing.T) {
 	testCases := []struct {
 		desc     string
 		path     string
@@ -16,15 +16,48 @@ func TestCreate(t *testing.T) {
 		expected int
 	}{
 		{
-			desc:     "Create a new payment",
+			desc:     "Create a new payment with an empty request body",
 			path:     "/payments",
 			verb:     http.MethodPost,
-			expected: http.StatusCreated, // 201
-			/*
-				## Notes
+			expected: http.StatusBadRequest, // 400
+		},
+		{
+			desc:     "Create a new payment on a pre-existing ID with an empty request body",
+			path:     "/payments/1234-5678-abcd",
+			verb:     http.MethodPost,
+			expected: http.StatusConflict, // 409
+		},
+		{
+			desc:     "Create a new payment on a non-existent valid ID with an empty request body",
+			path:     "/payments/1234-5678-abcd",
+			verb:     http.MethodPost,
+			expected: http.StatusNotFound, // 404
+		},
+		{
+			desc:     "Create a new payment on an invalid ID with an empty request body",
+			path:     "/payments/not-a-valid-v4-uuid",
+			verb:     http.MethodPost,
+			expected: http.StatusNotFound, // 404
+		},
+	}
 
-				- If your API uses POST to create a resource, be sure to include a Location header in the response that includes the URL of the newly-created resource, along with a 201 status code — that is part of the HTTP standard.
-			*/
+	srv := newApiServer(InMemory)
+
+	for _, tC := range testCases {
+		w := httptest.NewRecorder()
+
+		t.Run(tC.desc, func(t *testing.T) {
+			i := is.New(t)
+
+			req, err := http.NewRequest(tC.verb, tC.path, nil)
+			i.NoErr(err)
+
+			srv.router.ServeHTTP(w, req)
+			i.Equal(tC.expected, w.Result().StatusCode)
+		})
+	}
+}
+
 		},
 		{
 			desc:     "Create a new payment on a pre-existing ID",
