@@ -4,6 +4,9 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
+
+	"github.com/kennygrant/sanitize"
 )
 
 var (
@@ -13,27 +16,24 @@ var (
 	// Error logs ERROR events to '<timestamp>.<domain>.error.log'
 	Error *log.Logger
 
-	fileTimestamp string
-	infoFilename  string
-	errorFilename string
-	logFlags      int
+	logFlags int
 )
 
 func init() {
 	logFlags = log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 }
 
-func setupLogs(infoHandle io.WriteCloser, errorHandle io.WriteCloser) {
-	// Set info and error logs to write out to their respective handles
-	Info = log.New(infoHandle, "INFO: ", logFlags)
-	Error = log.New(errorHandle, "ERROR: ", logFlags)
-}
+// Sets logs to write out to their respective handles
+func createLogFile(urlScheme, logType string) (io.WriteCloser, *log.Logger) {
+	filename := sanitize.Name(fileTimestamp + "." + urlScheme + "-" + flagURL +
+		"." + logType + ".log")
 
-func createLogFile(filename string) io.WriteCloser {
 	f, errOpen := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if errOpen != nil {
 		log.Fatalf("Error opening file: %v", errOpen)
 	}
 
-	return f
+	logger := log.New(f, strings.ToUpper(logType)+": ", logFlags)
+
+	return f, &logger
 }

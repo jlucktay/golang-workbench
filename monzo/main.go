@@ -37,10 +37,15 @@ var (
 
 	pageCrawled       uint
 	pageOutsideDomain uint
+
+	fileTimestamp string
 )
 
 func init() {
 	flag.StringVar(&flagURL, "url", "jameslucktaylor.info", "a URL to crawl")
+
+	// Set up all output files with the same timestamp in their names
+	fileTimestamp = time.Now().Format("20060102.150405.000000-0700")
 }
 
 func main() {
@@ -67,23 +72,18 @@ func main() {
 		urlTarget.Host, urlTarget.Path = urlTarget.Path, urlTarget.Host
 	}
 
-	// Set up log files with timestamp and URL in their names
-	fileTimestamp = time.Now().Format("20060102.150405.000000-0700")
-
-	// Use the same prefix for all log file names, so that they are clustered
-	filenamePrefix := fileTimestamp + "." + flagURL
-
-	infoFilename = filenamePrefix + ".info.log"
-	errorFilename = filenamePrefix + ".error.log"
-	jsonFilename := filenamePrefix + ".json"
-
 	// Set info and error logs to write out to their respective files
-	infoHandle := createLogFile(infoFilename)
+	infoHandle, Info := createLogFile(urlTarget.Scheme, "info")
 	defer infoHandle.Close()
-	errorHandle := createLogFile(errorFilename)
+	errorHandle, Error := createLogFile(urlTarget.Scheme, "error")
 	defer errorHandle.Close()
 
-	setupLogs(infoHandle, errorHandle)
+	//
+
+	Info.Flags()
+	Error.Flags()
+
+	//
 
 	// Start crawling with recursive function
 	crawl(*urlTarget)
@@ -94,6 +94,6 @@ func main() {
 
 	// Print any findings to JSON file
 	if len(crawled.m) > 0 {
-		outputToJSON(jsonFilename)
+		outputToJSON(urlTarget.Scheme)
 	}
 }
