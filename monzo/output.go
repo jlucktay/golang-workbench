@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
+	"github.com/kennygrant/sanitize"
 )
 
 // CrawledPage is a custom type, for holding parent/child page relationships
@@ -12,7 +14,7 @@ type CrawledPage struct {
 	Children []string
 }
 
-func outputToJSON(jsonFilename string) {
+func outputToJSON(urlScheme string) {
 	// Output the map of crawled URLs to a JSON file with current timestamp and
 	// domain in its name. Range over the map, converting to strings and string
 	// slices along the way, and copy into a slice of the custom type before
@@ -40,12 +42,14 @@ func outputToJSON(jsonFilename string) {
 		return
 	}
 
+	filename := sanitize.Name(fileTimestamp + "." + urlScheme + "-" + flagURL +
+		".json")
+
 	// Emit the JSON to file
-	errWrite := ioutil.WriteFile(jsonFilename, jsonBytes, 0644)
+	errWrite := ioutil.WriteFile(filename, jsonBytes, 0644)
 	if errWrite != nil {
-		Error.Printf("Error writing to file '%s': %v\n", jsonFilename, errWrite)
-		return
+		Error.Printf("Error writing to file '%s': %v\n", filename, errWrite)
 	}
 
-	fmt.Println("Wrote page/link relationships to file:", jsonFilename)
+	fmt.Println("Wrote page/link relationships to file:", filename)
 }
