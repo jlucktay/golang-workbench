@@ -271,14 +271,13 @@ func TestConvertURL(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
-		desc := fmt.Sprintf("[%s + %s -> %s]",
-			tC.base, tC.href, tC.urlResult.String())
+		tC := tC // pin!
+		desc := fmt.Sprintf("[%s + %s -> %s]", tC.base, tC.href, tC.urlResult.String())
 		t.Run(desc, func(t *testing.T) {
 			actual := convertURL(tC.base, tC.href)
 			if *actual != tC.urlResult {
 				t.Errorf("Got '%q', want '%q'.\n[%#v]\n[%#v]\n",
-					actual.String(), tC.urlResult.String(),
-					actual, tC.urlResult)
+					actual.String(), tC.urlResult.String(), actual, tC.urlResult)
 			}
 		})
 	}

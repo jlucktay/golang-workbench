@@ -17,7 +17,7 @@ func outputToJSON(jsonFilename string) {
 	// domain in its name. Range over the map, converting to strings and string
 	// slices along the way, and copy into a slice of the custom type before
 	// marshaling out to a JSON file.
-	var cpSlice []CrawledPage
+	cpSlice := make([]CrawledPage, 0)
 
 	for parent, children := range crawled.m {
 		var cpChildren []string

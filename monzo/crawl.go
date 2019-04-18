@@ -42,7 +42,7 @@ func crawl(urlTarget url.URL) {
 
 	Info.Printf("Fetched '%+v'.\n", urlTarget.String())
 
-	// Keeping the child URLs in a seperate slice like this is a bit of a hack
+	// Keeping the child URLs in a separate slice like this is a bit of a hack
 	// I don't like it but it got me past some locking issues
 	// TODO: learn more about locking and clean this up
 	childResults := getLinks(urlTarget, doc)
