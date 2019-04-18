@@ -35,5 +35,5 @@ func createLogFile(urlScheme, logType string) (io.WriteCloser, *log.Logger) {
 
 	logger := log.New(f, strings.ToUpper(logType)+": ", logFlags)
 
-	return f, &logger
+	return f, logger
 }
