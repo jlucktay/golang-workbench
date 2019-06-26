@@ -2,7 +2,7 @@
 
 Flatten will take an arbitrarily nested slice of ints (and interfaces) and return a flat, single-dimensional slice.
 
-[![GoDoc](https://godoc.org/github.com/jlucktay/golang-workbench/flatten?status.svg)][badge-godoc]
+[![GoDoc][godoc-svg]][badge-godoc]
 
 ## Installation
 
@@ -48,7 +48,7 @@ The `Flatten()` func can then be called:
 flatten.Flatten([]int{[]int{1},2,3})
 ```
 
-Further details are [available on godoc.org](https://godoc.org/github.com/jlucktay/golang-workbench/flatten/pkg/flatten).
+Further details are [available on godoc.org][flatten-godoc].
 
 ## Testing
 
@@ -72,4 +72,6 @@ ok      github.com/jlucktay/golang-workbench/flatten/pkg/flatten        0.024s
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+[godoc-svg]: https://godoc.org/github.com/jlucktay/golang-workbench/flatten?status.svg
 [badge-godoc]: https://godoc.org/github.com/jlucktay/golang-workbench/flatten
+[flatten-godoc]: https://godoc.org/github.com/jlucktay/golang-workbench/flatten/pkg/flatten
