@@ -1,3 +1,4 @@
+// Package flatten provides a Flatten() func for flattenning out nested slices of ints.
 package flatten
 
 import "fmt"
