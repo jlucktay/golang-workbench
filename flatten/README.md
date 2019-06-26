@@ -56,6 +56,7 @@ Further details are [available on godoc.org](https://godoc.org/github.com/jluckt
 - From the [Go wiki](https://github.com/golang/go/wiki):
   - [Interface slice](https://github.com/golang/go/wiki/InterfaceSlice)
   - [Slice tricks](https://github.com/golang/go/wiki/SliceTricks)
+- From the [Go blog](https://blog.golang.org): [Testable Examples in Go](https://blog.golang.org/examples)
 
 ## License
 
