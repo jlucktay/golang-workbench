@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	input := []interface{}{
+	start := []interface{}{
 		[]interface{}{
 			1,
 			2,
@@ -16,5 +16,8 @@ func main() {
 		4,
 	}
 
-	fmt.Printf("%#v\n", flatten.Flatten(input))
+	finish := flatten.Flatten(start)
+
+	fmt.Printf("Started with: %#v\n", start)
+	fmt.Printf("Finished with: %#v\n", finish)
 }

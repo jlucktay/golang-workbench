@@ -26,7 +26,8 @@ Launching the demo binary:
 
 ``` shell
 $ flatten
-[]int{1, 2, 3, 4}
+Started with: []interface {}{[]interface {}{1, 2, []int{3}}, 4}
+Finished with: []int{1, 2, 3, 4}
 ```
 
 ### Importing the package
