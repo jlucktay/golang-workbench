@@ -23,6 +23,27 @@ func TestFlatten(t *testing.T) {
 			},
 			expected: []int{1, 2, 3, 4},
 		},
+		"Nested": {
+			input: []interface{}{
+				[]interface{}{
+					1,
+					[]int{2},
+					[]interface{}{
+						3,
+						[]int{4, 5},
+						[]interface{}{
+							6,
+							[]int{7, 8},
+							9, 10,
+						},
+						11,
+					},
+					12,
+				},
+				13, 14,
+			},
+			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14},
+		},
 	}
 	for desc, tC := range testCases {
 		tC := tC // pin!

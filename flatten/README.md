@@ -50,6 +50,16 @@ flatten.Flatten([]int{[]int{1},2,3})
 
 Further details are [available on godoc.org](https://godoc.org/github.com/jlucktay/golang-workbench/flatten/pkg/flatten).
 
+## Testing
+
+From the `$GOPATH/src/github.com/jlucktay/golang-workbench/flatten/` directory, run `go test ./...`:
+
+``` shell
+$ go test ./...
+?       github.com/jlucktay/golang-workbench/flatten/cmd/flatten        [no test files]
+ok      github.com/jlucktay/golang-workbench/flatten/pkg/flatten        0.024s
+```
+
 ## References and inspirations
 
 - [The Go Programming Language Specification](https://golang.org/ref/spec)
