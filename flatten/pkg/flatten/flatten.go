@@ -2,6 +2,7 @@ package flatten
 
 import "fmt"
 
+// Flatten will take a slice of arbitrarily nested (slices of) interfaces and/or ints, and return a flat slice of ints.
 func Flatten(input interface{}) []int {
 	result := make([]int, 0)
 

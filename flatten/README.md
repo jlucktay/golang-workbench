@@ -2,6 +2,8 @@
 
 Flatten will take an arbitrarily nested slice of ints and return a flat, single-dimensional slice
 
+[![GoDoc](https://godoc.org/github.com/jlucktay/golang-workbench/flatten?status.svg)][badge-godoc]
+
 ## Installation
 
 ### Prerequisites
@@ -56,3 +58,5 @@ flatten.Flatten([]int{[]int{1},2,3})
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+[badge-godoc]: https://godoc.org/github.com/jlucktay/golang-workbench/flatten
