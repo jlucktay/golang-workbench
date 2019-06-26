@@ -1,6 +1,6 @@
 # Flatten
 
-Flatten will take an arbitrarily nested slice of ints and return a flat, single-dimensional slice
+Flatten will take an arbitrarily nested slice of ints (and interfaces) and return a flat, single-dimensional slice.
 
 [![GoDoc](https://godoc.org/github.com/jlucktay/golang-workbench/flatten?status.svg)][badge-godoc]
 
@@ -15,7 +15,7 @@ You should have a [working Go environment](https://golang.org/doc/install) and h
 To download the source, compile, and install the demo binary, run:
 
 ``` shell
-go get github.com/jlucktay/golang-workbench/flatten/cmd/...
+go get github.com/jlucktay/golang-workbench/flatten/...
 ```
 
 The source code will be located in `$GOPATH/src/github.com/jlucktay/golang-workbench/flatten/`.
@@ -47,6 +47,8 @@ The `Flatten()` func can then be called:
 ``` go
 flatten.Flatten([]int{[]int{1},2,3})
 ```
+
+Further details are [available on godoc.org](https://godoc.org/github.com/jlucktay/golang-workbench/flatten/pkg/flatten).
 
 ## References and inspirations
 
