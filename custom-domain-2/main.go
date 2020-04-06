@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	fmt.Println(cd.HelloCustomDomain)
+	fmt.Println(cd.HelloCustomDomain())
 }
