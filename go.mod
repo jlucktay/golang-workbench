@@ -1,3 +1,3 @@
-module go.jameslucktaylor.info/golang-workbench
+module go.jlucktay.dev/golang-workbench
 
 go 1.14

@@ -1,4 +1,4 @@
-module github.com/jlucktay/golang-workbench/github.com/manifoldco/promptui
+module go.jlucktay.dev/golang-workbench/github.com/manifoldco/promptui
 
 go 1.14
 
