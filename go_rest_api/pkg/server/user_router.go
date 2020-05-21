@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
 type userRouter struct {

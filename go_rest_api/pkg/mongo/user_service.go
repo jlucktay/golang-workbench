@@ -4,7 +4,7 @@ package mongo
 import (
 	"log"
 
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

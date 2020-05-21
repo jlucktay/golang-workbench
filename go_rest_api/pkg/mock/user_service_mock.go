@@ -2,7 +2,7 @@
 package mock
 
 import (
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
 // UserService has some mock functions.

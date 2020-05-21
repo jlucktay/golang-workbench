@@ -4,7 +4,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/jlucktay/stringutil"
+	"go.jlucktay.dev/stringutil"
 )
 
 func main() {

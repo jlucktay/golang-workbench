@@ -1,6 +1,6 @@
 package main
 
-import "github.com/jlucktay/golang-workbench/secrets"
+import "go.jlucktay.dev/golang-workbench/secrets"
 
 var (
 	ghpaToken = secrets.ReadTokenFromSecrets("./secrets.json")

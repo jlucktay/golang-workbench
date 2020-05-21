@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/jlucktay/golang-workbench/aws2tf/aws2tf"
+	"go.jlucktay.dev/golang-workbench/aws2tf/aws2tf"
 )
 
 func main() {

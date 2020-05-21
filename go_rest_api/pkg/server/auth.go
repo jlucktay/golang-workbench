@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
 type claims struct {

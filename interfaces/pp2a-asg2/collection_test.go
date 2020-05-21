@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
 	"github.com/matryer/is"
+	p2 "go.jlucktay.dev/golang-workbench/interfaces/pp2a-asg2"
 )
 
 func TestDriver(t *testing.T) {

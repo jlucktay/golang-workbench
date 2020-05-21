@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/jlucktay/golang-workbench/flatten/pkg/flatten"
+	"go.jlucktay.dev/golang-workbench/flatten/pkg/flatten"
 )
 
 func TestFlatten(t *testing.T) {

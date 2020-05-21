@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/jlucktay/golang-workbench/flatten/pkg/flatten"
+	"go.jlucktay.dev/golang-workbench/flatten/pkg/flatten"
 )
 
 func main() {

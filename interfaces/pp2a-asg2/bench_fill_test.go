@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	p2 "github.com/jlucktay/golang-workbench/interfaces/pp2a-asg2"
+	p2 "go.jlucktay.dev/golang-workbench/interfaces/pp2a-asg2"
 )
 
 func BenchmarkFillOAL(b *testing.B) {

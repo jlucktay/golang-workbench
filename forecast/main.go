@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jlucktay/golang-workbench/secrets"
 	"github.com/joefitzgerald/forecast"
+	"go.jlucktay.dev/golang-workbench/secrets"
 )
 
 func main() {

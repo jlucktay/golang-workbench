@@ -13,8 +13,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/mock"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
+	"go.jlucktay.dev/golang-workbench/go_rest_api/pkg/mock"
 )
 
 //createUserHandler tests

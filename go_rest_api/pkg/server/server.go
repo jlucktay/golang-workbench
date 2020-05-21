@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg"
+	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
 // Server holds a router.

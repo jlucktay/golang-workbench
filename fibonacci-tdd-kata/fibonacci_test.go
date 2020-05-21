@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 
-	. "github.com/jlucktay/golang-workbench/fibonacci-tdd-kata"
+	. "go.jlucktay.dev/golang-workbench/fibonacci-tdd-kata"
 )
 
 var _ = Describe("Fibonacci", func() {

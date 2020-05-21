@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/mongo"
-	"github.com/jlucktay/golang-workbench/go_rest_api/pkg/server"
+	"go.jlucktay.dev/golang-workbench/go_rest_api/pkg/mongo"
+	"go.jlucktay.dev/golang-workbench/go_rest_api/pkg/server"
 )
 
 // App has a server and a Mongo session.
