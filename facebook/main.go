@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	raw, errRead := ioutil.ReadFile("./message_1.json")
+	raw, errRead := ioutil.ReadFile("message_1.json")
 	if errRead != nil {
 		panic(errRead)
 	}
