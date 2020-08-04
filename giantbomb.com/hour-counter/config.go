@@ -12,7 +12,7 @@ const (
 	envPrefix = "gbhc"
 )
 
-func gatherConfig() error {
+func gatherConfig(arguments []string) error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.SetDefault("api-key", "")
 	viper.SetConfigName(envPrefix)
@@ -28,10 +28,15 @@ func gatherConfig() error {
 	viper.SetEnvPrefix(envPrefix)
 	viper.AutomaticEnv()
 
-	pflag.String("api-key", "", "Your Giant Bomb API key")
-	pflag.Parse()
+	fs := pflag.NewFlagSet(envPrefix, pflag.ContinueOnError)
 
-	if errBind := viper.BindPFlags(pflag.CommandLine); errBind != nil {
+	fs.String("api-key", "", "Your Giant Bomb API key")
+
+	if errParse := fs.Parse(arguments); errParse != nil {
+		return errParse
+	}
+
+	if errBind := viper.BindPFlags(fs); errBind != nil {
 		return errBind
 	}
 
