@@ -10,7 +10,7 @@ import (
 
 const (
 	// exitFail is the exit code if the program fails.
-	exitFail = 1
+	exitFail = iota
 )
 
 const (

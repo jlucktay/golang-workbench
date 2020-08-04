@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/spf13/pflag"
@@ -31,6 +33,7 @@ func gatherConfig(arguments []string) error {
 	fs := pflag.NewFlagSet(envPrefix, pflag.ContinueOnError)
 
 	fs.String("api-key", "", "Your Giant Bomb API key")
+	fs.Bool("help", false, "Help with usage")
 
 	if errParse := fs.Parse(arguments); errParse != nil {
 		return errParse
@@ -40,11 +43,20 @@ func gatherConfig(arguments []string) error {
 		return errBind
 	}
 
+	if viper.GetBool("help") {
+		buf := bytes.NewBufferString(fmt.Sprintf("Usage of '%s':\n", arguments[0]))
+		fs.SetOutput(buf)
+		fs.PrintDefaults()
+
+		return errors.New(buf.String())
+	}
+
 	if viper.Get("api-key") == "" {
-		return errors.New(`No API key was provided. You can solve this by doing one of the following:
-		- Set it in your 'gbhc.json' config file
-		- Set a GBHC_APIKEY environment variable
-		- Invoke the application with the --api-key=<your key> flag`)
+		return errors.New(
+			`No API key was provided. You can solve this by doing one of the following:
+  - Invoke the application with the '--api-key="<value>"' flag
+  - Set a GBHC_API_KEY environment variable
+  - Set the 'api-key' string in your 'gbhc.json' config file`)
 	}
 
 	return nil

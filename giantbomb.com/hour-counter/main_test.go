@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/matryer/is"
@@ -13,7 +14,8 @@ func TestRun(t *testing.T) {
 	is := is.New(t)
 	buf := &bytes.Buffer{}
 
-	is.NoErr(hc.Run([]string{"--api-key='example'"}, buf))
+	is.NoErr(hc.Run([]string{`--api-key="example"`}, buf))
+	is.True(strings.Contains(buf.String(), "example"))
 }
 
 func TestRunError(t *testing.T) {
