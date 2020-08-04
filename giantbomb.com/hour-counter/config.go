@@ -14,6 +14,11 @@ const (
 	envPrefix = "gbhc"
 )
 
+var ErrAPIKey = errors.New(`no API key was provided; you can solve this by doing one of the following:
+  - invoke the application with the '--api-key="<value>"' flag
+  - set a GBHC_API_KEY environment variable
+  - set the 'api-key' string in your 'gbhc.json' config file`)
+
 func gatherConfig(arguments []string) error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.SetDefault("api-key", "")
@@ -48,15 +53,11 @@ func gatherConfig(arguments []string) error {
 		fs.SetOutput(buf)
 		fs.PrintDefaults()
 
-		return errors.New(buf.String())
+		return errors.New(buf.String()) //nolint:goerr113 // Must be dynamic based on defined flags
 	}
 
 	if viper.Get("api-key") == "" {
-		return errors.New(
-			`No API key was provided. You can solve this by doing one of the following:
-  - Invoke the application with the '--api-key="<value>"' flag
-  - Set a GBHC_API_KEY environment variable
-  - Set the 'api-key' string in your 'gbhc.json' config file`)
+		return ErrAPIKey
 	}
 
 	return nil
