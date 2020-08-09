@@ -44,31 +44,7 @@ func Run(args []string, stdout io.Writer) error {
 		return errGVR
 	}
 
-	wg := sync.WaitGroup{}
-	results := sync.Map{}
-
-	for page := 0; page <= (vr.NumberOfTotalResults/pageSize)+1; page++ {
-		wg.Add(1)
-
-		go func(p int) {
-			defer wg.Done()
-
-			fmt.Fprintf(stdout, "/%d", p)
-
-			got, errGVR := getVideoResults("id,name,length_seconds", p)
-			if errGVR != nil {
-				return
-			}
-
-			results.Store(p, got.Results)
-
-			fmt.Fprintf(stdout, `\%d`, p)
-		}(page)
-
-		time.Sleep(50 * time.Millisecond)
-	}
-
-	wg.Wait()
+	results := paraGet(stdout, (vr.NumberOfTotalResults/pageSize)+1)
 
 	totalLength := 0
 
@@ -119,11 +95,41 @@ func getVideoResults(fieldList string, page int) (*VideosResult, error) {
 		return nil, fmt.Errorf("%w: %d %s", ErrResponseStatus, resp.StatusCode, resp.Status)
 	}
 
-	vr := &VideosResult{}
+	ret := &VideosResult{}
 
-	if errDecode := json.NewDecoder(resp.Body).Decode(&vr); errDecode != nil {
+	if errDecode := json.NewDecoder(resp.Body).Decode(&ret); errDecode != nil {
 		return nil, errDecode
 	}
 
-	return vr, nil
+	return ret, nil
+}
+
+func paraGet(stdout io.Writer, pageLimit int) *sync.Map {
+	wg := sync.WaitGroup{}
+	results := sync.Map{}
+
+	for page := 0; page <= pageLimit; page++ {
+		wg.Add(1)
+
+		go func(p int) {
+			defer wg.Done()
+
+			fmt.Fprintf(stdout, "/%d", p)
+
+			got, errGVR := getVideoResults("id,name,length_seconds", p)
+			if errGVR != nil {
+				return
+			}
+
+			results.Store(p, got.Results)
+
+			fmt.Fprintf(stdout, `\%d`, p)
+		}(page)
+
+		time.Sleep(50 * time.Millisecond)
+	}
+
+	wg.Wait()
+
+	return &results
 }
