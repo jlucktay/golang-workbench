@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-redis/redis/v7"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -26,7 +27,8 @@ const (
 	baseURL  = "https://www.giantbomb.com/api/videos/?format=json&sort=id:asc&field_list=%s"
 	pageSize = 100
 
-	delayBetweenRequests = 100 * time.Millisecond
+	delayBetweenRequests = 200 * time.Millisecond
+	keyExpiration        = 24 * time.Hour * 30
 )
 
 var ErrResponseStatus = errors.New("status code not OK")
@@ -60,29 +62,30 @@ func parseResults(stdout io.Writer, results *sync.Map, expectedCount int) error 
 	videoCount := 0
 	totalLength := 0
 
-	results.Range(func(key, value interface{}) bool {
-		xResults, ok := value.([]Results)
+	rdb := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
+
+	results.Range(func(_, value interface{}) bool {
+		xVideos, ok := value.([]Video)
 		if !ok {
 			return false
 		}
 
-		for _, res := range xResults {
+		for _, video := range xVideos {
 			videoCount++
-			totalLength += res.LengthSeconds
-		}
+			totalLength += video.LengthSeconds
 
-		xrm, errMarshal := json.MarshalIndent(xResults, "", "  ")
-		if errMarshal != nil {
-			return false
-		}
-
-		filename := fmt.Sprintf("%d.json", key)
-		if errWrite := ioutil.WriteFile(filename, xrm, 0600); errWrite != nil {
-			return false
+			rKey := fmt.Sprintf("video-id:%d", video.ID)
+			if rdb.Set(rKey, video.LengthSeconds, keyExpiration).Err() != nil {
+				continue
+			}
 		}
 
 		return true
 	})
+
+	if errClose := rdb.Close(); errClose != nil {
+		return errClose
+	}
 
 	dur, errPD := time.ParseDuration(fmt.Sprintf("%ds", totalLength))
 	if errPD != nil {
