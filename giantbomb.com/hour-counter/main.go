@@ -56,7 +56,7 @@ func Run(args []string, stdout io.Writer) error {
 	videoCount := 0
 	totalLength := 0
 
-	results.Range(func(_, value interface{}) bool {
+	results.Range(func(key, value interface{}) bool {
 		xResults, ok := value.([]Results)
 		if !ok {
 			return false
@@ -65,6 +65,16 @@ func Run(args []string, stdout io.Writer) error {
 		for _, res := range xResults {
 			videoCount++
 			totalLength += res.LengthSeconds
+		}
+
+		xrm, errMarshal := json.MarshalIndent(xResults, "", "  ")
+		if errMarshal != nil {
+			return false
+		}
+
+		filename := fmt.Sprintf("%d.json", key)
+		if errWrite := ioutil.WriteFile(filename, xrm, 0600); errWrite != nil {
+			return false
 		}
 
 		return true
