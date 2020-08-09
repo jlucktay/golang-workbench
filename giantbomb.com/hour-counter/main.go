@@ -23,7 +23,7 @@ const (
 )
 
 const (
-	baseURL  = "https://www.giantbomb.com/api/videos/?format=json&field_list=%s"
+	baseURL  = "https://www.giantbomb.com/api/videos/?format=json&sort=id:asc&field_list=%s"
 	pageSize = 100
 
 	delayBetweenRequests = 100 * time.Millisecond
