@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -45,11 +46,12 @@ func Run(args []string, stdout io.Writer) error {
 		return errGVR
 	}
 
-	results, errPG := paraGet(stdout, (vr.NumberOfTotalResults/pageSize)+1)
+	results, errPG := paraGet(stdout, vr.NumberOfTotalResults/pageSize)
 	if errPG != nil {
 		return errPG
 	}
 
+	videoCount := 0
 	totalLength := 0
 
 	results.Range(func(_, value interface{}) bool {
@@ -59,6 +61,7 @@ func Run(args []string, stdout io.Writer) error {
 		}
 
 		for _, res := range xResults {
+			videoCount++
 			totalLength += res.LengthSeconds
 		}
 
@@ -70,7 +73,7 @@ func Run(args []string, stdout io.Writer) error {
 		return errPD
 	}
 
-	fmt.Fprintf(stdout, "\nTotal length: %s (raw: %d seconds)\n", dur, totalLength)
+	fmt.Fprintf(stdout, "\nTotal length: %s (raw: %d seconds) from %d videos.\n", dur, totalLength, videoCount)
 
 	return nil
 }
@@ -96,7 +99,8 @@ func getVideoResults(fieldList string, page int) (*VideosResult, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%w: %d %s", ErrResponseStatus, resp.StatusCode, resp.Status)
+		respBody, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("%w: %d '%s'\n%s", ErrResponseStatus, resp.StatusCode, resp.Status, respBody)
 	}
 
 	ret := &VideosResult{}
@@ -130,7 +134,7 @@ func paraGet(stdout io.Writer, pageLimit int) (*sync.Map, error) {
 			return nil
 		})
 
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
 	if err := g.Wait(); err != nil {
