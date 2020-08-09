@@ -22,12 +22,12 @@ type Results struct {
 	Premium         bool              `json:"premium,omitempty"`
 	PublishDate     string            `json:"publish_date,omitempty"`
 	SiteDetailURL   string            `json:"site_detail_url,omitempty"`
-	Image           Image             `json:"image,omitempty"`
+	Image           *Image            `json:"image,omitempty"`
 	User            string            `json:"user,omitempty"`
 	Hosts           string            `json:"hosts,omitempty"`
 	Crew            string            `json:"crew,omitempty"`
 	VideoType       string            `json:"video_type,omitempty"`
-	VideoShow       VideoShow         `json:"video_show,omitempty"`
+	VideoShow       *VideoShow        `json:"video_show,omitempty"`
 	VideoCategories []VideoCategories `json:"video_categories,omitempty"`
 	SavedTime       interface{}       `json:"saved_time,omitempty"`
 	YoutubeID       string            `json:"youtube_id,omitempty"`
@@ -64,8 +64,8 @@ type VideoShow struct {
 	Title         string `json:"title,omitempty"`
 	Position      int    `json:"position,omitempty"`
 	SiteDetailURL string `json:"site_detail_url,omitempty"`
-	Image         Image  `json:"image,omitempty"`
-	Logo          Logo   `json:"logo,omitempty"`
+	Image         *Image `json:"image,omitempty"`
+	Logo          *Logo  `json:"logo,omitempty"`
 }
 
 type Logo struct {
