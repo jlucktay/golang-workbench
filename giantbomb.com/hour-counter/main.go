@@ -73,7 +73,13 @@ func Run(args []string, stdout io.Writer) error {
 		return errPD
 	}
 
-	fmt.Fprintf(stdout, "\nTotal length: %s (raw: %d seconds) from %d videos.\n", dur, totalLength, videoCount)
+	countMatches := '❌'
+	if vr.NumberOfTotalResults == videoCount {
+		countMatches = '✅'
+	}
+
+	fmt.Fprintf(stdout, "\nTotal length: %s (raw: %d seconds) from %d videos %c\n",
+		dur, totalLength, videoCount, countMatches)
 
 	return nil
 }
