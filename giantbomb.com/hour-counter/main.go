@@ -99,7 +99,11 @@ func getVideoResults(fieldList string, page int) (*VideosResult, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		respBody, _ := ioutil.ReadAll(resp.Body)
+		respBody, errReadBod := ioutil.ReadAll(resp.Body)
+		if errReadBod != nil {
+			return nil, errReadBod
+		}
+
 		return nil, fmt.Errorf("%w: %d '%s'\n%s", ErrResponseStatus, resp.StatusCode, resp.Status, respBody)
 	}
 
