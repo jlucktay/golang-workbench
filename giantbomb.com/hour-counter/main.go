@@ -25,6 +25,8 @@ const (
 const (
 	baseURL  = "https://www.giantbomb.com/api/videos/?format=json&field_list=%s"
 	pageSize = 100
+
+	delayBetweenRequests = 100 * time.Millisecond
 )
 
 var ErrResponseStatus = errors.New("status code not OK")
@@ -144,7 +146,7 @@ func paraGet(stdout io.Writer, pageLimit int) (*sync.Map, error) {
 			return nil
 		})
 
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(delayBetweenRequests)
 	}
 
 	if err := g.Wait(); err != nil {
