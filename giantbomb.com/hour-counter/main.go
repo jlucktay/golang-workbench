@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
+	"sync"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -19,7 +21,8 @@ const (
 )
 
 const (
-	baseURL = "https://www.giantbomb.com/api/videos/?format=json&field_list=id,name,length_seconds"
+	baseURL  = "https://www.giantbomb.com/api/videos/?format=json&field_list=%s"
+	pageSize = 100
 )
 
 var ErrResponseStatus = errors.New("status code not OK")
@@ -36,36 +39,91 @@ func Run(args []string, stdout io.Writer) error {
 		return errConf
 	}
 
-	getURL := fmt.Sprintf("%s&api_key=%s", baseURL, viper.GetString("api-key"))
+	vr, errGVR := getVideoResults("id", 0)
+	if errGVR != nil {
+		return errGVR
+	}
+
+	wg := sync.WaitGroup{}
+	results := sync.Map{}
+
+	for page := 0; page <= (vr.NumberOfTotalResults/pageSize)+1; page++ {
+		wg.Add(1)
+
+		go func(p int) {
+			defer wg.Done()
+
+			fmt.Fprintf(stdout, "/%d", p)
+
+			got, errGVR := getVideoResults("id,name,length_seconds", p)
+			if errGVR != nil {
+				return
+			}
+
+			results.Store(p, got.Results)
+
+			fmt.Fprintf(stdout, `\%d`, p)
+		}(page)
+
+		time.Sleep(50 * time.Millisecond)
+	}
+
+	wg.Wait()
+
+	totalLength := 0
+
+	results.Range(func(_, value interface{}) bool {
+		xResults, ok := value.([]Results)
+		if !ok {
+			return false
+		}
+
+		for _, res := range xResults {
+			totalLength += res.LengthSeconds
+		}
+
+		return true
+	})
+
+	dur, errPD := time.ParseDuration(fmt.Sprintf("%ds", totalLength))
+	if errPD != nil {
+		return errPD
+	}
+
+	fmt.Fprintf(stdout, "\nTotal length: %s (raw: %d seconds)\n", dur, totalLength)
+
+	return nil
+}
+
+func getVideoResults(fieldList string, page int) (*VideosResult, error) {
+	withFields := fmt.Sprintf(baseURL, fieldList)
+	getURL := fmt.Sprintf("%s&api_key=%s&offset=%d", withFields, viper.GetString("api-key"), page*pageSize)
 
 	u, errParse := url.Parse(getURL)
 	if errParse != nil {
-		return errParse
+		return nil, errParse
 	}
 
 	req, errReq := http.NewRequestWithContext(context.TODO(), http.MethodGet, u.String(), nil)
 	if errReq != nil {
-		return errReq
+		return nil, errReq
 	}
 
 	resp, errGet := http.DefaultClient.Do(req)
 	if errGet != nil {
-		return errGet
+		return nil, errGet
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("%w: %d %s", ErrResponseStatus, resp.StatusCode, resp.Status)
+		return nil, fmt.Errorf("%w: %d %s", ErrResponseStatus, resp.StatusCode, resp.Status)
 	}
 
-	bod, errReadAll := ioutil.ReadAll(resp.Body)
-	if errReadAll != nil {
-		return errReadAll
+	vr := &VideosResult{}
+
+	if errDecode := json.NewDecoder(resp.Body).Decode(&vr); errDecode != nil {
+		return nil, errDecode
 	}
 
-	if errWrite := ioutil.WriteFile("output.json", bod, 0600); errWrite != nil {
-		return errWrite
-	}
-
-	return nil
+	return vr, nil
 }
