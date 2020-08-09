@@ -53,6 +53,10 @@ func Run(args []string, stdout io.Writer) error {
 		return errPG
 	}
 
+	return parseResults(stdout, results, vr.NumberOfTotalResults)
+}
+
+func parseResults(stdout io.Writer, results *sync.Map, expectedCount int) error {
 	videoCount := 0
 	totalLength := 0
 
@@ -86,7 +90,7 @@ func Run(args []string, stdout io.Writer) error {
 	}
 
 	countMatches := '❌'
-	if vr.NumberOfTotalResults == videoCount {
+	if expectedCount == videoCount {
 		countMatches = '✅'
 	}
 
