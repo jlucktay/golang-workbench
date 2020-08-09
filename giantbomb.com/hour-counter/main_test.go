@@ -23,5 +23,6 @@ func TestRunError(t *testing.T) {
 	buf := &bytes.Buffer{}
 
 	errRun := hc.Run([]string{}, buf)
+	t.Logf("errRun: '%#v'", errRun)
 	is.True(errRun != nil)
 }
