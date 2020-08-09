@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -44,7 +45,10 @@ func Run(args []string, stdout io.Writer) error {
 		return errGVR
 	}
 
-	results := paraGet(stdout, (vr.NumberOfTotalResults/pageSize)+1)
+	results, errPG := paraGet(stdout, (vr.NumberOfTotalResults/pageSize)+1)
+	if errPG != nil {
+		return errPG
+	}
 
 	totalLength := 0
 
@@ -104,32 +108,34 @@ func getVideoResults(fieldList string, page int) (*VideosResult, error) {
 	return ret, nil
 }
 
-func paraGet(stdout io.Writer, pageLimit int) *sync.Map {
-	wg := sync.WaitGroup{}
+func paraGet(stdout io.Writer, pageLimit int) (*sync.Map, error) {
+	g := errgroup.Group{}
 	results := sync.Map{}
 
 	for page := 0; page <= pageLimit; page++ {
-		wg.Add(1)
+		page := page
 
-		go func(p int) {
-			defer wg.Done()
+		g.Go(func() error {
+			fmt.Fprintf(stdout, "/%d", page)
 
-			fmt.Fprintf(stdout, "/%d", p)
-
-			got, errGVR := getVideoResults("id,name,length_seconds", p)
+			got, errGVR := getVideoResults("id,name,length_seconds", page)
 			if errGVR != nil {
-				return
+				return errGVR
 			}
 
-			results.Store(p, got.Results)
+			results.Store(page, got.Results)
 
-			fmt.Fprintf(stdout, `\%d`, p)
-		}(page)
+			fmt.Fprintf(stdout, `\%d`, page)
+
+			return nil
+		})
 
 		time.Sleep(50 * time.Millisecond)
 	}
 
-	wg.Wait()
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
 
-	return &results
+	return &results, nil
 }
