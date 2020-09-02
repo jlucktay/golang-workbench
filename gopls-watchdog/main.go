@@ -53,7 +53,8 @@ func main() {
 			procStart := time.Unix(procCreate/msToS, 0)
 
 			if time.Since(procStart) < 3*intervals*time.Second { // give new processes a chance to warm up
-				fmt.Printf("%s [%d] is new (started: %v)\n", processName, pid, procStart)
+				fmt.Printf("%s [%d] is new (started %v ago at %v)\n", processName, pid,
+					time.Since(procStart).Truncate(time.Second), procStart)
 
 				continue
 			}
@@ -89,19 +90,23 @@ func main() {
 				sum += usage
 			}
 
-			if sum >= intervals*10 {
+			if sum >= intervals*50 {
 				osp, errFind := os.FindProcess(pid)
 				if errFind != nil {
 					log.Printf("error finding process %d: %v", pid, errFind)
 
-					return
+					continue
 				}
+
+				fmt.Printf("%s [%d] will be killed... ", processName, pid)
 
 				if errKill := osp.Kill(); errKill != nil {
 					log.Printf("error killing process %d: %v", pid, errFind)
 
-					return
+					continue
 				}
+
+				fmt.Println("done.")
 
 				delete(usages, pid)
 			}
