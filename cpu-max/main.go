@@ -5,9 +5,14 @@ package main
 import (
 	"runtime"
 	"time"
+
+	"github.com/spf13/pflag"
 )
 
 func main() {
+	dur := pflag.DurationP("duration", "d", 5*time.Minute, "how long to max CPU(s) for")
+	pflag.Parse()
+
 	done := make(chan int)
 
 	for i := 0; i < runtime.NumCPU(); i++ {
@@ -22,6 +27,6 @@ func main() {
 		}()
 	}
 
-	time.Sleep(time.Minute * 5)
+	time.Sleep(*dur)
 	close(done)
 }
