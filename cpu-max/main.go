@@ -3,13 +3,19 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"runtime"
 	"time"
 
+	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/pflag"
 )
 
-const defaultDuration = 5 * time.Minute
+const (
+	defaultDuration     = 5 * time.Minute
+	progressGranularity = 100
+)
 
 func main() {
 	dur := pflag.DurationP("duration", "d", defaultDuration, "how long to max CPU(s) for")
@@ -29,6 +35,23 @@ func main() {
 		}()
 	}
 
-	time.Sleep(*dur)
+	bar := progressbar.NewOptions(progressGranularity,
+		progressbar.OptionSetDescription(fmt.Sprintf("Maxing %d CPU(s)...", runtime.NumCPU())),
+		progressbar.OptionSetItsString("core(s) cooked"),
+		progressbar.OptionSetRenderBlankState(true),
+		progressbar.OptionShowIts(),
+		progressbar.OptionSetTheme(progressbar.Theme{
+			BarStart: "[", BarEnd: "]", Saucer: "🔥", SaucerHead: "😡", SaucerPadding: "  ",
+		}))
+
+	for i := 0; i < progressGranularity; i++ {
+		if err := bar.Add(1); err != nil {
+			fmt.Fprintf(os.Stderr, "error adding to progress bar: %v", err)
+		}
+
+		time.Sleep(*dur / progressGranularity)
+	}
+
+	fmt.Println()
 	close(done)
 }
