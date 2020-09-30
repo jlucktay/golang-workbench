@@ -9,8 +9,10 @@ import (
 	"github.com/spf13/pflag"
 )
 
+const defaultDuration = 5 * time.Minute
+
 func main() {
-	dur := pflag.DurationP("duration", "d", 5*time.Minute, "how long to max CPU(s) for")
+	dur := pflag.DurationP("duration", "d", defaultDuration, "how long to max CPU(s) for")
 	pflag.Parse()
 
 	done := make(chan int)
@@ -21,7 +23,7 @@ func main() {
 				select {
 				case <-done:
 					return
-				default:
+				default: //nolint:staticcheck // That's the whole point! 😅
 				}
 			}
 		}()
