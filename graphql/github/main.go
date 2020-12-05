@@ -13,21 +13,45 @@ func main() {
 	src := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
 	)
-	httpClient := oauth2.NewClient(context.Background(), src)
-
+	httpClient := oauth2.NewClient(context.TODO(), src)
 	client := githubv4.NewClient(httpClient)
-
-	if err := client.Query(context.Background(), &query, nil); err != nil {
-		fmt.Fprintf(os.Stderr, "couldn't run query: %v", err)
+	queryVariables := map[string]interface{}{
+		"login": githubv4.String("jlucktay"),
 	}
 
-	fmt.Println("    Login:", query.Viewer.Login)
-	fmt.Println("CreatedAt:", query.Viewer.CreatedAt)
+	if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
+		fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
+		return
+	}
+
+	if query.RepositoryOwner != nil {
+		if query.RepositoryOwner.Repositories != nil {
+			fmt.Printf("TotalCount: %d\n", query.RepositoryOwner.Repositories.TotalCount)
+
+			if query.RepositoryOwner.Repositories.Edges != nil {
+				for i := range query.RepositoryOwner.Repositories.Edges {
+					if query.RepositoryOwner.Repositories.Edges[i].Node != nil {
+						fmt.Printf("%d\t", i)
+						fmt.Printf("CreatedAt: '%s'\t", query.RepositoryOwner.Repositories.Edges[i].Node.CreatedAt)
+						fmt.Printf("Name: '%s'\n", query.RepositoryOwner.Repositories.Edges[i].Node.Name)
+					}
+				}
+			}
+		}
+	}
 }
 
-var query struct {
-	Viewer struct {
-		Login     githubv4.String
-		CreatedAt githubv4.String
-	}
+var query *struct {
+	RepositoryOwner *struct {
+		Login        githubv4.String
+		Repositories *struct {
+			TotalCount githubv4.Int
+			Edges []*struct {
+				Node *struct {
+					CreatedAt githubv4.String
+					Name      githubv4.String
+				}
+			}
+		} `graphql:"repositories(affiliations: OWNER, first: 10, orderBy: {field: CREATED_AT, direction: ASC})"`
+	} `graphql:"repositoryOwner(login: $login)"`
 }

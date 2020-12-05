@@ -2,7 +2,7 @@
 
 ## Goal
 
-Get a list of all of my repositories from GitHub, alongside and/or sorted by creation date.
+Get a list of all of repositories owned by me from GitHub, alongside and/or sorted by creation date.
 
 ## From the Explorer
 
@@ -21,3 +21,7 @@ Get a list of all of my repositories from GitHub, alongside and/or sorted by cre
   }
 }
 ```
+
+## TODO
+
+- Pagination (starter limit is 100 and we're almost there already)
