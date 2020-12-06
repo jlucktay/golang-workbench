@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
@@ -12,6 +13,7 @@ import (
 const (
 	envToken    = "GITHUB_TOKEN"
 	githubLogin = "jlucktay"
+	perPage     = 10
 )
 
 func main() {
@@ -24,41 +26,77 @@ func main() {
 	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	httpClient := oauth2.NewClient(context.TODO(), src)
 	client := githubv4.NewClient(httpClient)
-	queryVariables := map[string]interface{}{"login": githubv4.String(githubLogin)}
-
-	if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
-		fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
-		return
+	queryVariables := map[string]interface{}{
+		"login":     githubv4.String(githubLogin),
+		"perPage":   githubv4.Int(perPage),
+		"endCursor": (*githubv4.String)(nil), // Null the 'after' argument to get first page.
 	}
 
-	if query.RepositoryOwner != nil {
-		if query.RepositoryOwner.Repositories != nil {
-			fmt.Printf("TotalCount: %d\n", query.RepositoryOwner.Repositories.TotalCount)
+	var (
+		query      queryOwnedRepos
+		ownedRepos []string
+	)
 
-			if query.RepositoryOwner.Repositories.Edges != nil {
-				for i := range query.RepositoryOwner.Repositories.Edges {
-					if query.RepositoryOwner.Repositories.Edges[i].Node != nil {
-						fmt.Printf("%d\t", i)
-						fmt.Printf("CreatedAt: '%s'\t", query.RepositoryOwner.Repositories.Edges[i].Node.CreatedAt)
-						fmt.Printf("Name: '%s'\n", query.RepositoryOwner.Repositories.Edges[i].Node.Name)
+	for {
+		fmt.Printf("query with variables: '%v'...", queryVariables)
+
+		if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
+			fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
+			return
+		}
+
+		fmt.Printf(" query returned\n")
+
+		tmpRepos, hasNextPage, endCursor := process(query)
+
+		ownedRepos = append(ownedRepos, tmpRepos...)
+
+		if !hasNextPage {
+			break
+		}
+
+		queryVariables["endCursor"] = githubv4.String(endCursor)
+	}
+
+	fmt.Printf("%d owned repos:\n%s\n", len(ownedRepos), strings.Join(ownedRepos, "\n"))
+}
+
+type queryOwnedRepos *struct {
+	RepositoryOwner *struct {
+		Repositories *struct {
+			TotalCount int
+			PageInfo   *struct {
+				HasNextPage bool
+				EndCursor   string
+			}
+			Edges []*struct {
+				Node *struct {
+					Name string
+				}
+			}
+		} `graphql:"repositories(affiliations: OWNER, after: $endCursor, first: $perPage, orderBy: {field: CREATED_AT, direction: ASC})"`
+	} `graphql:"repositoryOwner(login: $login)"`
+}
+
+func process(qor queryOwnedRepos) (ownedRepos []string, hasNextPage bool, endCursor string) {
+	if qor.RepositoryOwner != nil {
+		if qor.RepositoryOwner.Repositories != nil {
+			if qor.RepositoryOwner.Repositories.PageInfo != nil {
+				hasNextPage = qor.RepositoryOwner.Repositories.PageInfo.HasNextPage
+				endCursor = qor.RepositoryOwner.Repositories.PageInfo.EndCursor
+			}
+
+			if qor.RepositoryOwner.Repositories.Edges != nil {
+				ownedRepos = make([]string, 0)
+
+				for i := range qor.RepositoryOwner.Repositories.Edges {
+					if qor.RepositoryOwner.Repositories.Edges[i].Node != nil {
+						ownedRepos = append(ownedRepos, qor.RepositoryOwner.Repositories.Edges[i].Node.Name)
 					}
 				}
 			}
 		}
 	}
-}
 
-var query *struct {
-	RepositoryOwner *struct {
-		Login        githubv4.String
-		Repositories *struct {
-			TotalCount githubv4.Int
-			Edges []*struct {
-				Node *struct {
-					CreatedAt githubv4.String
-					Name      githubv4.String
-				}
-			}
-		} `graphql:"repositories(affiliations: OWNER, first: 10, orderBy: {field: CREATED_AT, direction: ASC})"`
-	} `graphql:"repositoryOwner(login: $login)"`
+	return
 }
