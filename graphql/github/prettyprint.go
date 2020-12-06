@@ -37,4 +37,6 @@ func prettyPrint(input []string) {
 
 		fmt.Println()
 	}
+
+	fmt.Println()
 }
