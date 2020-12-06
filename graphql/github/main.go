@@ -38,19 +38,16 @@ func main() {
 	)
 
 	for {
-		fmt.Printf("query with variables: '%v'...", queryVariables)
+		fmt.Printf("Querying with variables: '%v'...", queryVariables)
 
 		if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
 			return
 		}
 
-		fmt.Printf(" query returned\n")
+		fmt.Printf(" returned OK.\n")
 
-		tmpRepos, hasNextPage, endCursor := process(query)
-
-		ownedRepos = append(ownedRepos, tmpRepos...)
-
+		hasNextPage, endCursor := process(query, &ownedRepos)
 		if !hasNextPage {
 			break
 		}
@@ -58,7 +55,7 @@ func main() {
 		queryVariables["endCursor"] = githubv4.String(endCursor)
 	}
 
-	fmt.Printf("%d owned repos:\n%s\n", len(ownedRepos), strings.Join(ownedRepos, "\n"))
+	fmt.Printf("\n%d owned repo(s):\n%s\n", len(ownedRepos), strings.Join(ownedRepos, "\n"))
 }
 
 type queryOwnedRepos *struct {
@@ -78,7 +75,7 @@ type queryOwnedRepos *struct {
 	} `graphql:"repositoryOwner(login: $login)"`
 }
 
-func process(qor queryOwnedRepos) (ownedRepos []string, hasNextPage bool, endCursor string) {
+func process(qor queryOwnedRepos, ownedRepos *[]string) (hasNextPage bool, endCursor string) {
 	if qor.RepositoryOwner != nil {
 		if qor.RepositoryOwner.Repositories != nil {
 			if qor.RepositoryOwner.Repositories.PageInfo != nil {
@@ -87,11 +84,9 @@ func process(qor queryOwnedRepos) (ownedRepos []string, hasNextPage bool, endCur
 			}
 
 			if qor.RepositoryOwner.Repositories.Edges != nil {
-				ownedRepos = make([]string, 0)
-
 				for i := range qor.RepositoryOwner.Repositories.Edges {
 					if qor.RepositoryOwner.Repositories.Edges[i].Node != nil {
-						ownedRepos = append(ownedRepos, qor.RepositoryOwner.Repositories.Edges[i].Node.Name)
+						*ownedRepos = append(*ownedRepos, qor.RepositoryOwner.Repositories.Edges[i].Node.Name)
 					}
 				}
 			}
