@@ -9,15 +9,22 @@ import (
 	"golang.org/x/oauth2"
 )
 
+const (
+	envToken    = "GITHUB_TOKEN"
+	githubLogin = "jlucktay"
+)
+
 func main() {
-	src := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
-	)
+	token, tokenSet := os.LookupEnv(envToken)
+	if !tokenSet {
+		fmt.Fprintf(os.Stderr, "token not set in environment: %s\n", envToken)
+		return
+	}
+
+	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	httpClient := oauth2.NewClient(context.TODO(), src)
 	client := githubv4.NewClient(httpClient)
-	queryVariables := map[string]interface{}{
-		"login": githubv4.String("jlucktay"),
-	}
+	queryVariables := map[string]interface{}{"login": githubv4.String(githubLogin)}
 
 	if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
 		fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
