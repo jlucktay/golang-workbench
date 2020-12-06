@@ -7,7 +7,6 @@ import (
 
 	"github.com/shurcooL/githubv4"
 	"golang.org/x/oauth2"
-	"golang.org/x/term"
 )
 
 const (
@@ -27,9 +26,9 @@ func main() {
 	httpClient := oauth2.NewClient(context.TODO(), src)
 	client := githubv4.NewClient(httpClient)
 	queryVariables := map[string]interface{}{
+		"endCursor": (*githubv4.String)(nil), // Null the 'after' argument to get first page.
 		"login":     githubv4.String(githubLogin),
 		"perPage":   githubv4.Int(perPage),
-		"endCursor": (*githubv4.String)(nil), // Null the 'after' argument to get first page.
 	}
 
 	var (
@@ -38,7 +37,7 @@ func main() {
 	)
 
 	for {
-		fmt.Printf("Querying with variables: '%v'...", queryVariables)
+		fmt.Printf("Querying with variables: %v...", queryVariables)
 
 		if err := client.Query(context.TODO(), &query, queryVariables); err != nil {
 			fmt.Fprintf(os.Stderr, "couldn't run query: %v\n", err)
@@ -57,74 +56,4 @@ func main() {
 	}
 
 	prettyPrint(ownedRepos)
-}
-
-func prettyPrint(input []string) {
-	fmt.Printf("%d owned repo(s):\n", len(input))
-
-	// get terminal width
-	tw, _, errTGS := term.GetSize(int(os.Stdout.Fd()))
-	if errTGS != nil {
-		fmt.Fprintf(os.Stderr, "couldn't get terminal size: %v\n", errTGS)
-		return
-	}
-
-	// get longest repo name
-	longestRepoName := 0
-	for i := range input {
-		if len(input[i]) > longestRepoName {
-			longestRepoName = len(input[i])
-		}
-	}
-
-	// do math to divide lines evenly across width
-	longestRepoName++ // add a single padding space
-	reposPerLine := tw / longestRepoName
-
-	// space out repo names in columns and pretty print
-	for i := 0; i < len(input); i += reposPerLine {
-		for j := 0; j < reposPerLine && i+j < len(input); j++ {
-			fmt.Printf("%-[1]*[2]s", longestRepoName, input[i+j])
-		}
-
-		fmt.Println()
-	}
-}
-
-type queryOwnedRepos *struct {
-	RepositoryOwner *struct {
-		Repositories *struct {
-			TotalCount int
-			PageInfo   *struct {
-				HasNextPage bool
-				EndCursor   string
-			}
-			Edges []*struct {
-				Node *struct {
-					Name string
-				}
-			}
-		} `graphql:"repositories(affiliations: OWNER, after: $endCursor, first: $perPage, orderBy: {field: CREATED_AT, direction: ASC})"`
-	} `graphql:"repositoryOwner(login: $login)"`
-}
-
-func process(qor queryOwnedRepos, ownedRepos *[]string) (hasNextPage bool, endCursor string) {
-	if qor.RepositoryOwner != nil {
-		if qor.RepositoryOwner.Repositories != nil {
-			if qor.RepositoryOwner.Repositories.PageInfo != nil {
-				hasNextPage = qor.RepositoryOwner.Repositories.PageInfo.HasNextPage
-				endCursor = qor.RepositoryOwner.Repositories.PageInfo.EndCursor
-			}
-
-			if qor.RepositoryOwner.Repositories.Edges != nil {
-				for i := range qor.RepositoryOwner.Repositories.Edges {
-					if qor.RepositoryOwner.Repositories.Edges[i].Node != nil {
-						*ownedRepos = append(*ownedRepos, qor.RepositoryOwner.Repositories.Edges[i].Node.Name)
-					}
-				}
-			}
-		}
-	}
-
-	return
 }
