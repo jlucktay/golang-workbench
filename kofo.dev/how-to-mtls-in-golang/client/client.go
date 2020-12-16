@@ -44,5 +44,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("error reading response: %v", err)
 	}
+
 	fmt.Println(string(body))
 }

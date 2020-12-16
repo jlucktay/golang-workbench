@@ -12,9 +12,9 @@ import (
 func main() {
 	// set up handler to listen to root path
 	handler := http.NewServeMux()
-	handler.HandleFunc("/", func(writer http.ResponseWriter, _ *http.Request) {
-		log.Println("new request")
-		fmt.Fprintf(writer, "hello world \n")
+	handler.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("new %s request\n", r.Method)
+		fmt.Fprintf(w, "hello world\n")
 	})
 
 	// load CA certificate file and add it to list of client CAs
