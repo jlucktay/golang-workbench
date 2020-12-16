@@ -13,7 +13,8 @@ func main() {
 		Timeout: time.Minute * 3,
 	}
 
-	resp, err := client.Get("http://localhost:9090")
+	// change the address to match the common name of the certificate
+	resp, err := client.Get("https://example.test:9090")
 	if err != nil {
 		log.Fatalf("error making get request: %v", err)
 	}

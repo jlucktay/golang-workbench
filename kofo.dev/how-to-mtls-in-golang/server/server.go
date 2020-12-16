@@ -20,7 +20,8 @@ func main() {
 		Handler: handler,
 	}
 
-	if err := server.ListenAndServe(); err != nil {
+	// serve the endpoint with tls encryption
+	if err := server.ListenAndServeTLS("../certs/server.crt", "../certs/server.key"); err != nil {
 		log.Fatalf("error listening to port: %v", err)
 	}
 }
