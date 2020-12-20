@@ -9,17 +9,77 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-const airdateLayout = "January 2, 2006"
+const (
+	airdateLayout    = "January 2, 2006"
+	allowedDomain    = "arrow.fandom.com"
+	categoryListsURL = "https://" + allowedDomain + "/wiki/Category:Lists"
+)
 
 func main() {
-	if errPE := printEpisodes("https://arrow.fandom.com/wiki/List_of_Arrow_episodes"); errPE != nil {
-		fmt.Fprintf(os.Stderr, "could not print Arrow episode list: %v", errPE)
+	episodeListURLs, errPE := getEpisodeListURLs()
+	if errPE != nil {
+		fmt.Fprintf(os.Stderr, "could not get episode list URLs: %v", errPE)
+	}
+
+	for show := range episodeListURLs {
+		fmt.Printf("%s\n", show)
+	}
+
+	fmt.Println()
+
+	for show, elu := range episodeListURLs {
+		if errPE := printEpisodes(show, elu); errPE != nil {
+			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", show, errPE)
+		}
 	}
 }
 
-func printEpisodes(episodeListURL string) error {
+func getEpisodeListURLs() (map[string]string, error) {
+	episodeListURLs := map[string]string{}
+
+	const (
+		checkPrefix = "List of "
+		checkSuffix = " episodes"
+	)
+
 	c := colly.NewCollector(
-		colly.AllowedDomains("arrow.fandom.com"),
+		colly.AllowedDomains(allowedDomain),
+		colly.MaxDepth(1),
+	)
+
+	c.OnHTML("body", func(body *colly.HTMLElement) {
+		body.ForEach("div.category-page__members "+
+			"ul.category-page__members-for-char "+
+			"li.category-page__member "+
+			"a.category-page__member-link",
+			func(_ int, a *colly.HTMLElement) {
+				// Only consider 'List of ... episodes' links
+				if !strings.HasPrefix(a.Text, checkPrefix) || !strings.HasSuffix(a.Text, checkSuffix) {
+					return
+				}
+
+				// Need to specifically exclude the list of crossover episodes
+				if strings.Contains(a.Text, " crossover ") {
+					return
+				}
+
+				showName := strings.TrimPrefix(a.Text, checkPrefix)
+				showName = strings.TrimSuffix(showName, checkSuffix)
+
+				episodeListURLs[showName] = a.Request.AbsoluteURL(a.Attr("href"))
+			})
+	})
+
+	if errVis := c.Visit(categoryListsURL); errVis != nil {
+		return nil, fmt.Errorf("error while visiting %s: %w", categoryListsURL, errVis)
+	}
+
+	return episodeListURLs, nil
+}
+
+func printEpisodes(show, episodeListURL string) error {
+	c := colly.NewCollector(
+		colly.AllowedDomains(allowedDomain),
 		colly.MaxDepth(0),
 	)
 
@@ -39,14 +99,14 @@ func printEpisodes(episodeListURL string) error {
 					return
 				}
 
-				fmt.Printf("S%dE%02s %-20s\t%-36s\t%s\n",
-					i+1, episodeNum, ttAirdate.Format(airdateLayout), episodeName, episodeLink)
+				fmt.Printf("%s\tS%dE%02s %-20s\t%-36s\t%s\n",
+					show, i+1, episodeNum, ttAirdate.Format(airdateLayout), episodeName, episodeLink)
 			})
 		})
 	})
 
 	if errVis := c.Visit(episodeListURL); errVis != nil {
-		return errVis
+		return fmt.Errorf("error while visiting %s: %w", episodeListURL, errVis)
 	}
 
 	return nil
