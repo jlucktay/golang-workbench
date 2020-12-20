@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -11,11 +12,16 @@ import (
 const airdateLayout = "January 2, 2006"
 
 func main() {
+	if errPE := printEpisodes("https://arrow.fandom.com/wiki/List_of_Arrow_episodes"); errPE != nil {
+		fmt.Fprintf(os.Stderr, "could not print Arrow episode list: %v", errPE)
+	}
+}
+
+func printEpisodes(episodeListURL string) error {
 	c := colly.NewCollector(
 		colly.AllowedDomains("arrow.fandom.com"),
 		colly.MaxDepth(0),
 	)
-
 
 	c.OnHTML("body", func(body *colly.HTMLElement) {
 		body.ForEach("table.wikitable", func(i int, table *colly.HTMLElement) {
@@ -39,7 +45,9 @@ func main() {
 		})
 	})
 
-	if errVis := c.Visit("https://arrow.fandom.com/wiki/List_of_Arrow_episodes"); errVis != nil {
-		return
+	if errVis := c.Visit(episodeListURL); errVis != nil {
+		return errVis
 	}
+
+	return nil
 }
