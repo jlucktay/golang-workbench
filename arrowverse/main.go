@@ -8,6 +8,8 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
+const airdateLayout = "January 2, 2006"
+
 func main() {
 	c := colly.NewCollector(
 		colly.AllowedDomains("arrow.fandom.com"),
@@ -25,15 +27,14 @@ func main() {
 				episodeNum := strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)"))
 				episodeName := strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)
 				episodeLink := tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href"))
-
-				const layout = "January 2, 2006"
-				airDate := strings.TrimSpace(tbody.ChildText("td:nth-of-type(4)"))
-				ttAirDate, errParse := time.Parse(layout, airDate)
+				episodeAirdate := strings.TrimSpace(tbody.ChildText("td:nth-of-type(4)"))
+				ttAirdate, errParse := time.Parse(airdateLayout, episodeAirdate)
 				if errParse != nil {
 					return
 				}
 
-				fmt.Printf("S%dE%02s %-20s\t%-36s\t%s\n", i+1, episodeNum, ttAirDate.Format(layout), episodeName, episodeLink)
+				fmt.Printf("S%dE%02s %-20s\t%-36s\t%s\n",
+					i+1, episodeNum, ttAirdate.Format(airdateLayout), episodeName, episodeLink)
 			})
 		})
 	})
