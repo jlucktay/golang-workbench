@@ -110,33 +110,36 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 					return
 				}
 
-				e := Episode{Name: strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)}
-
 				var err error
+				ep, itSel := Episode{}, NewIteratingSelector()
 
-				e.EpisodeOverall, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText("td:nth-of-type(1)")))
+				if tbody.DOM.ChildrenFiltered("td").Length() >= 4 {
+					ep.EpisodeOverall, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText(itSel.Next())))
+					if err != nil {
+						return
+					}
+				}
+
+				ep.EpisodeSeason, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText(itSel.Next())))
 				if err != nil {
 					return
 				}
 
-				e.EpisodeSeason, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)")))
+				ep.Name = strings.Trim(strings.TrimSpace(tbody.ChildText(itSel.Next())), `"`)
+
+				ep.Link, err = url.Parse(tbody.Request.AbsoluteURL(tbody.ChildAttr(itSel.String()+" a", "href")))
 				if err != nil {
 					return
 				}
 
-				e.Link, err = url.Parse(tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href")))
-				if err != nil {
-					return
-				}
-
-				epAirdate := strings.TrimSpace(strings.Map(mapSpaces, tbody.ChildText("td:nth-of-type(4)")))
-				e.Airdate, err = time.Parse(airdateLayout, epAirdate)
+				epAirdate := strings.TrimSpace(strings.Map(mapSpaces, tbody.ChildText(itSel.Next())))
+				ep.Airdate, err = time.Parse(airdateLayout, epAirdate)
 				if err != nil {
 					return
 				}
 
 				// Add this episode to the current season, indexed by 'i' from body.ForEach
-				s.Seasons[i].Episodes = append(s.Seasons[i].Episodes, e)
+				s.Seasons[i].Episodes = append(s.Seasons[i].Episodes, ep)
 			})
 		})
 	})
@@ -222,4 +225,33 @@ func mapSpaces(input rune) rune {
 	}
 
 	return input
+}
+
+// IteratingSelector is a helper to get us through those pesky 'td' selectors.
+type IteratingSelector struct {
+	selectorFmt string
+	tdOffset    int
+}
+
+// NewIteratingSelector currently has hard-coded values because we only use it in one loop.
+func NewIteratingSelector() *IteratingSelector {
+	return &IteratingSelector{
+		selectorFmt: "td:nth-of-type(%d)",
+		tdOffset:    0,
+	}
+}
+
+func (is *IteratingSelector) String() string {
+	return fmt.Sprintf(is.selectorFmt, is.tdOffset)
+}
+
+// Current will return the iterator with its current value.
+func (is *IteratingSelector) Current() string {
+	return fmt.Sprint(is)
+}
+
+// Next will first increment the value, and then return the iterator.
+func (is *IteratingSelector) Next() string {
+	is.tdOffset++
+	return fmt.Sprint(is)
 }
