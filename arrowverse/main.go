@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,20 +30,23 @@ func main() {
 
 	fmt.Println()
 
-	for show, elu := range episodeListURLs {
-		if errPE := printEpisodes(show, elu); errPE != nil {
-			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", show, errPE)
+	for s, elu := range episodeListURLs {
+		show, errPE := getEpisodes(s, elu)
+		if errPE != nil {
+			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", s, errPE)
 		}
+
+		fmt.Printf("%s\n", show)
 	}
 }
 
 func getEpisodeListURLs() (map[string]string, error) {
-	episodeListURLs := map[string]string{}
-
 	const (
 		checkPrefix = "List of "
 		checkSuffix = " episodes"
 	)
+
+	episodeListURLs := map[string]string{}
 
 	c := colly.NewCollector(
 		colly.AllowedDomains(allowedDomain),
@@ -71,6 +76,7 @@ func getEpisodeListURLs() (map[string]string, error) {
 			})
 	})
 
+	// Execute the visit to actually make the HTTP request(s), inside an exponential backoff with default settings
 	operation := func() error {
 		return c.Visit(categoryListsURL)
 	}
@@ -82,41 +88,119 @@ func getEpisodeListURLs() (map[string]string, error) {
 	return episodeListURLs, nil
 }
 
-func printEpisodes(show, episodeListURL string) error {
+func getEpisodes(show, episodeListURL string) (*Show, error) {
 	c := colly.NewCollector(
 		colly.AllowedDomains(allowedDomain),
 		colly.MaxDepth(0),
 	)
 
+	// Create the new show
+	s := &Show{Name: show}
+
 	c.OnHTML("body", func(body *colly.HTMLElement) {
 		body.ForEach("table.wikitable", func(i int, table *colly.HTMLElement) {
+			// Add a new season for this wikitable
+			s.Seasons = append(s.Seasons, Season{Number: i + 1})
+
 			table.ForEach("tbody tr", func(_ int, tbody *colly.HTMLElement) {
 				if tbody.DOM.ChildrenFiltered("th").Length() > 0 { // Skip <th> row
 					return
 				}
 
-				episodeNum := strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)"))
-				episodeName := strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)
-				episodeLink := tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href"))
-				episodeAirdate := strings.TrimSpace(tbody.ChildText("td:nth-of-type(4)"))
-				ttAirdate, errParse := time.Parse(airdateLayout, episodeAirdate)
-				if errParse != nil {
+				epOverall := strings.TrimSpace(tbody.ChildText("td:nth-of-type(1)"))
+				epOverallConv, errConvES := strconv.Atoi(epOverall)
+				if errConvES != nil {
 					return
 				}
 
-				fmt.Printf("%s\tS%dE%02s %-20s\t%-36s\t%s\n",
-					show, i+1, episodeNum, ttAirdate.Format(airdateLayout), episodeName, episodeLink)
+				epSeason := strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)"))
+				epSeasonConv, errConvES := strconv.Atoi(epSeason)
+				if errConvES != nil {
+					return
+				}
+
+				epName := strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)
+
+				epLink := tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href"))
+				link, errUParse := url.Parse(epLink)
+				if errUParse != nil {
+					return
+				}
+
+				epAirdate := strings.TrimSpace(tbody.ChildText("td:nth-of-type(4)"))
+				airdate, errTParse := time.Parse(airdateLayout, epAirdate)
+				if errTParse != nil {
+					return
+				}
+
+				// Add this episode to the current season, indexed by 'i' from body.ForEach
+				e := Episode{
+					Name:           epName,
+					EpisodeSeason:  epSeasonConv,
+					EpisodeOverall: epOverallConv,
+					Airdate:        airdate,
+					Link:           link,
+				}
+
+				s.Seasons[i].Episodes = append(s.Seasons[i].Episodes, e)
 			})
 		})
 	})
 
+	// Execute the visit to actually make the HTTP request(s), inside an exponential backoff with default settings
 	operation := func() error {
 		return c.Visit(episodeListURL)
 	}
 
 	if errVis := backoff.Retry(operation, backoff.NewExponentialBackOff()); errVis != nil {
-		return fmt.Errorf("error while visiting %s: %w", episodeListURL, errVis)
+		return nil, fmt.Errorf("error while visiting %s: %w", episodeListURL, errVis)
 	}
 
-	return nil
+	return s, nil
+}
+
+// Show describes an Arrowverse show.
+type Show struct {
+	Name    string
+	Seasons []Season
+}
+
+func (s Show) String() string {
+	var b strings.Builder
+
+	for _, season := range s.Seasons {
+		fmt.Fprintf(&b, "%s, season %d\n", s.Name, season.Number)
+		fmt.Fprintf(&b, "%s\n", season)
+	}
+
+	return b.String()
+}
+
+// Season describes a season of an Arrowverse show.
+type Season struct {
+	Number   int
+	Episodes []Episode
+}
+
+func (s Season) String() string {
+	var b strings.Builder
+
+	for _, episode := range s.Episodes {
+		fmt.Fprintf(&b, "S%02d%s\n", s.Number, episode)
+	}
+
+	return b.String()
+}
+
+// Episode describes an episode of an Arrowverse show.
+type Episode struct {
+	Name           string
+	EpisodeSeason  int
+	EpisodeOverall int
+	Airdate        time.Time
+	Link           *url.URL
+}
+
+func (e Episode) String() string {
+	return fmt.Sprintf("E%02d %-70s\t%-20s\t%s", e.EpisodeSeason, e.Name, e.Airdate.Format(airdateLayout), e.Link)
 }
