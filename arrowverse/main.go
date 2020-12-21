@@ -172,7 +172,8 @@ func (s Show) String() string {
 	var b strings.Builder
 
 	for _, season := range s.Seasons {
-		fmt.Fprintf(&b, "%s, season %d\n", s.Name, season.Number)
+		fmt.Fprintf(&b, "%s, season %d/%d (%d episode(s))\n",
+			s.Name, season.Number, len(s.Seasons), len(season.Episodes))
 		fmt.Fprintf(&b, "%s\n", season)
 	}
 
