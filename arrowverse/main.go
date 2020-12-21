@@ -20,7 +20,7 @@ const (
 )
 
 func main() {
-	episodeListURLs, errPE := getEpisodeListURLs()
+	episodeListURLs, errPE := GetEpisodeListURLs()
 	if errPE != nil {
 		fmt.Fprintf(os.Stderr, "could not get episode list URLs: %v", errPE)
 	}
@@ -34,7 +34,7 @@ func main() {
 	shows := []Show{}
 
 	for s, elu := range episodeListURLs {
-		show, errPE := getEpisodes(s, elu)
+		show, errPE := GetEpisodes(s, elu)
 		if errPE != nil {
 			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", s, errPE)
 		}
@@ -49,7 +49,8 @@ func main() {
 	}
 }
 
-func getEpisodeListURLs() (map[string]string, error) {
+// GetEpisodeListURLs will retrieve URLs of all of the 'List of ... episodes' for shows that are available on the wiki.
+func GetEpisodeListURLs() (map[string]string, error) {
 	const (
 		checkPrefix = "List of "
 		checkSuffix = " episodes"
@@ -97,7 +98,8 @@ func getEpisodeListURLs() (map[string]string, error) {
 	return episodeListURLs, nil
 }
 
-func getEpisodes(show, episodeListURL string) (*Show, error) {
+// GetEpisodes will retrieve details for all of the given show's episodes from the wiki.
+func GetEpisodes(show, episodeListURL string) (*Show, error) {
 	c := colly.NewCollector(
 		colly.AllowedDomains(allowedDomain),
 		colly.MaxDepth(0),
