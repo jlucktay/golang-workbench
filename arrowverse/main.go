@@ -31,13 +31,21 @@ func main() {
 
 	fmt.Println()
 
+	shows := []Show{}
+
 	for s, elu := range episodeListURLs {
 		show, errPE := getEpisodes(s, elu)
 		if errPE != nil {
 			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", s, errPE)
 		}
 
-		fmt.Printf("%s\n", show)
+		shows = append(shows, *show)
+	}
+
+	fmt.Printf("# shows: %d\n", len(shows))
+
+	for i := range shows {
+		fmt.Println(shows[i])
 	}
 }
 
