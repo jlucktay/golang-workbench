@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/gocolly/colly/v2"
 )
 
@@ -70,7 +71,11 @@ func getEpisodeListURLs() (map[string]string, error) {
 			})
 	})
 
-	if errVis := c.Visit(categoryListsURL); errVis != nil {
+	operation := func() error {
+		return c.Visit(categoryListsURL)
+	}
+
+	if errVis := backoff.Retry(operation, backoff.NewExponentialBackOff()); errVis != nil {
 		return nil, fmt.Errorf("error while visiting %s: %w", categoryListsURL, errVis)
 	}
 
@@ -105,7 +110,11 @@ func printEpisodes(show, episodeListURL string) error {
 		})
 	})
 
-	if errVis := c.Visit(episodeListURL); errVis != nil {
+	operation := func() error {
+		return c.Visit(episodeListURL)
+	}
+
+	if errVis := backoff.Retry(operation, backoff.NewExponentialBackOff()); errVis != nil {
 		return fmt.Errorf("error while visiting %s: %w", episodeListURL, errVis)
 	}
 
