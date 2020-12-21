@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gocolly/colly/v2"
@@ -127,7 +128,7 @@ func getEpisodes(show, episodeListURL string) (*Show, error) {
 					return
 				}
 
-				epAirdate := strings.TrimSpace(tbody.ChildText("td:nth-of-type(4)"))
+				epAirdate := strings.TrimSpace(strings.Map(mapSpaces, tbody.ChildText("td:nth-of-type(4)")))
 				airdate, errTParse := time.Parse(airdateLayout, epAirdate)
 				if errTParse != nil {
 					return
@@ -203,4 +204,12 @@ type Episode struct {
 
 func (e Episode) String() string {
 	return fmt.Sprintf("E%02d %-70s\t%-20s\t%s", e.EpisodeSeason, e.Name, e.Airdate.Format(airdateLayout), e.Link)
+}
+
+// mapSpaces helps us get rid of non-breaking spaces from HTML.
+func mapSpaces(input rune) rune {
+	if unicode.IsSpace(input) {
+		return ' '
+	}
+	return input
 }
