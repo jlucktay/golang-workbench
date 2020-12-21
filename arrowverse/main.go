@@ -161,7 +161,10 @@ func getEpisodes(show, episodeListURL string) (*Show, error) {
 
 // Show describes an Arrowverse show.
 type Show struct {
-	Name    string
+	// Name of the show.
+	Name string
+
+	// Seasons for this show only.
 	Seasons []Season
 }
 
@@ -178,7 +181,10 @@ func (s Show) String() string {
 
 // Season describes a season of an Arrowverse show.
 type Season struct {
-	Number   int
+	// Number of the season for the show.
+	Number int
+
+	// Episodes within this season only.
 	Episodes []Episode
 }
 
@@ -194,11 +200,20 @@ func (s Season) String() string {
 
 // Episode describes an episode of an Arrowverse show.
 type Episode struct {
-	Name           string
-	EpisodeSeason  int
+	// Name of the episode.
+	Name string
+
+	// EpisodeSeason is the episode number within the current season.
+	EpisodeSeason int
+
+	// EpisodeOverall is the episode number in the overall run of the entire show.
 	EpisodeOverall int
-	Airdate        time.Time
-	Link           *url.URL
+
+	// Airdate is when the episode was first broadcast.
+	Airdate time.Time
+
+	// Link to a wiki page with episode details.
+	Link *url.URL
 }
 
 func (e Episode) String() string {
