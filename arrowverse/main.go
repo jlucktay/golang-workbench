@@ -116,41 +116,32 @@ func getEpisodes(show, episodeListURL string) (*Show, error) {
 					return
 				}
 
-				epOverall := strings.TrimSpace(tbody.ChildText("td:nth-of-type(1)"))
-				epOverallConv, errConvES := strconv.Atoi(epOverall)
-				if errConvES != nil {
+				e := Episode{Name: strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)}
+
+				var err error
+
+				e.EpisodeOverall, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText("td:nth-of-type(1)")))
+				if err != nil {
 					return
 				}
 
-				epSeason := strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)"))
-				epSeasonConv, errConvES := strconv.Atoi(epSeason)
-				if errConvES != nil {
+				e.EpisodeSeason, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText("td:nth-of-type(2)")))
+				if err != nil {
 					return
 				}
 
-				epName := strings.Trim(strings.TrimSpace(tbody.ChildText("td:nth-of-type(3)")), `"`)
-
-				epLink := tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href"))
-				link, errUParse := url.Parse(epLink)
-				if errUParse != nil {
+				e.Link, err = url.Parse(tbody.Request.AbsoluteURL(tbody.ChildAttr("td:nth-of-type(3) a", "href")))
+				if err != nil {
 					return
 				}
 
 				epAirdate := strings.TrimSpace(strings.Map(mapSpaces, tbody.ChildText("td:nth-of-type(4)")))
-				airdate, errTParse := time.Parse(airdateLayout, epAirdate)
-				if errTParse != nil {
+				e.Airdate, err = time.Parse(airdateLayout, epAirdate)
+				if err != nil {
 					return
 				}
 
 				// Add this episode to the current season, indexed by 'i' from body.ForEach
-				e := Episode{
-					Name:           epName,
-					EpisodeSeason:  epSeasonConv,
-					EpisodeOverall: epOverallConv,
-					Airdate:        airdate,
-					Link:           link,
-				}
-
 				s.Seasons[i].Episodes = append(s.Seasons[i].Episodes, e)
 			})
 		})
@@ -219,5 +210,6 @@ func mapSpaces(input rune) rune {
 	if unicode.IsSpace(input) {
 		return ' '
 	}
+
 	return input
 }
