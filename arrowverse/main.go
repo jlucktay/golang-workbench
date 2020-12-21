@@ -12,10 +12,11 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gocolly/colly/v2"
+
+	"go.jlucktay.dev/golang-workbench/arrowverse/pkg/models"
 )
 
 const (
-	airdateLayout    = "January 2, 2006"
 	allowedDomain    = "arrow.fandom.com"
 	categoryListsURL = "https://" + allowedDomain + "/wiki/Category:Lists"
 )
@@ -26,7 +27,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "could not get episode list URLs: %v", errPE)
 	}
 
-	shows := []Show{}
+	shows := []models.Show{}
 
 	for s, elu := range episodeListURLs {
 		show, errPE := GetEpisodes(s, elu)
@@ -92,19 +93,19 @@ func GetEpisodeListURLs() (map[string]string, error) {
 }
 
 // GetEpisodes will retrieve details for all of the given show's episodes from the wiki.
-func GetEpisodes(show, episodeListURL string) (*Show, error) {
+func GetEpisodes(show, episodeListURL string) (*models.Show, error) {
 	c := colly.NewCollector(
 		colly.AllowedDomains(allowedDomain),
 		colly.MaxDepth(0),
 	)
 
 	// Create the new show
-	s := &Show{Name: show}
+	s := &models.Show{Name: show}
 
 	c.OnHTML("body", func(body *colly.HTMLElement) {
 		body.ForEach("table.wikitable", func(i int, table *colly.HTMLElement) {
 			// Add a new season for this wikitable
-			s.Seasons = append(s.Seasons, Season{Number: i + 1})
+			s.Seasons = append(s.Seasons, models.Season{Number: i + 1})
 
 			table.ForEach("tbody tr", func(_ int, tbody *colly.HTMLElement) {
 				if tbody.DOM.ChildrenFiltered("th").Length() > 0 { // Skip <th> row
@@ -112,7 +113,7 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 				}
 
 				var err error
-				ep, itSel := Episode{}, NewIteratingSelector()
+				ep, itSel := models.Episode{}, NewIteratingSelector()
 
 				// Trim citation link suffixes like "[3]"
 				checkCiteSuffix := regexp.MustCompile(`"?\[[0-9]+\]$`)
@@ -158,7 +159,7 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 					theFuture := 5252 - time.Now().Year()
 					ep.Airdate = time.Now().AddDate(theFuture, 0, 0).Round(time.Hour * 24)
 				} else {
-					ep.Airdate, err = time.Parse(airdateLayout, epAirdate)
+					ep.Airdate, err = time.Parse(models.AirdateLayout, epAirdate)
 					if err != nil {
 						return
 					}
@@ -180,68 +181,6 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 	}
 
 	return s, nil
-}
-
-// Show describes an Arrowverse show.
-type Show struct {
-	// Name of the show.
-	Name string
-
-	// Seasons for this show only.
-	Seasons []Season
-}
-
-func (s Show) String() string {
-	var b strings.Builder
-
-	for _, season := range s.Seasons {
-		fmt.Fprintf(&b, "%s, season %d/%d (%d episode(s))\n",
-			s.Name, season.Number, len(s.Seasons), len(season.Episodes))
-		fmt.Fprintf(&b, "%s\n", season)
-	}
-
-	return b.String()
-}
-
-// Season describes a season of an Arrowverse show.
-type Season struct {
-	// Number of the season for the show.
-	Number int
-
-	// Episodes within this season only.
-	Episodes []Episode
-}
-
-func (s Season) String() string {
-	var b strings.Builder
-
-	for _, episode := range s.Episodes {
-		fmt.Fprintf(&b, "S%02d%s\n", s.Number, episode)
-	}
-
-	return b.String()
-}
-
-// Episode describes an episode of an Arrowverse show.
-type Episode struct {
-	// Name of the episode.
-	Name string
-
-	// EpisodeSeason is the episode number within the current season.
-	EpisodeSeason int
-
-	// EpisodeOverall is the episode number in the overall run of the entire show.
-	EpisodeOverall int
-
-	// Airdate is when the episode was first broadcast.
-	Airdate time.Time
-
-	// Link to a wiki page with episode details.
-	Link *url.URL
-}
-
-func (e Episode) String() string {
-	return fmt.Sprintf("E%02d %-70s\t%-20s\t%s", e.EpisodeSeason, e.Name, e.Airdate.Format(airdateLayout), e.Link)
 }
 
 // mapSpaces helps us get rid of non-breaking spaces from HTML.
