@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -113,6 +114,9 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 				var err error
 				ep, itSel := Episode{}, NewIteratingSelector()
 
+				// Trim citation link suffixes like "[3]"
+				checkCiteSuffix := regexp.MustCompile(`"?\[[0-9]+\]$`)
+
 				if tbody.DOM.ChildrenFiltered("td").Length() >= 4 {
 					ep.EpisodeOverall, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText(itSel.Next())))
 					if err != nil {
@@ -120,12 +124,26 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 					}
 				}
 
-				ep.EpisodeSeason, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText(itSel.Next())))
-				if err != nil {
-					return
+				epSeason := tbody.ChildText(itSel.Next())
+				epSeason = checkCiteSuffix.ReplaceAllString(epSeason, "")
+
+				// Handle the 'DC's Legends of Tomorrow' season 5 special episode
+				if epSeason == `—` && s.Seasons[i].Number == 5 && s.Name == "DC's Legends of Tomorrow" {
+					ep.EpisodeSeason = 0
+				} else {
+					ep.EpisodeSeason, err = strconv.Atoi(strings.TrimSpace(epSeason))
+					if err != nil {
+						return
+					}
 				}
 
-				ep.Name = strings.Trim(strings.TrimSpace(tbody.ChildText(itSel.Next())), `"`)
+				epName := strings.Trim(strings.TrimSpace(tbody.ChildText(itSel.Next())), `"`)
+				ep.Name = checkCiteSuffix.ReplaceAllString(epName, "")
+
+				// Get ahead of too much junk data creeping in
+				if ep.Name == "TBA" {
+					return
+				}
 
 				ep.Link, err = url.Parse(tbody.Request.AbsoluteURL(tbody.ChildAttr(itSel.String()+" a", "href")))
 				if err != nil {
@@ -133,9 +151,17 @@ func GetEpisodes(show, episodeListURL string) (*Show, error) {
 				}
 
 				epAirdate := strings.TrimSpace(strings.Map(mapSpaces, tbody.ChildText(itSel.Next())))
-				ep.Airdate, err = time.Parse(airdateLayout, epAirdate)
-				if err != nil {
-					return
+				epAirdate = checkCiteSuffix.ReplaceAllString(epAirdate, "")
+
+				// Round off 'TBA' airdates into the future 🤷‍♂️
+				if epAirdate == "TBA" {
+					theFuture := 5252 - time.Now().Year()
+					ep.Airdate = time.Now().AddDate(theFuture, 0, 0).Round(time.Hour * 24)
+				} else {
+					ep.Airdate, err = time.Parse(airdateLayout, epAirdate)
+					if err != nil {
+						return
+					}
 				}
 
 				// Add this episode to the current season, indexed by 'i' from body.ForEach
@@ -253,5 +279,6 @@ func (is *IteratingSelector) Current() string {
 // Next will first increment the value, and then return the iterator.
 func (is *IteratingSelector) Next() string {
 	is.tdOffset++
+
 	return fmt.Sprint(is)
 }
