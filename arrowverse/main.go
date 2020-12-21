@@ -25,24 +25,16 @@ func main() {
 		fmt.Fprintf(os.Stderr, "could not get episode list URLs: %v", errPE)
 	}
 
-	for show := range episodeListURLs {
-		fmt.Printf("%s\n", show)
-	}
-
-	fmt.Println()
-
 	shows := []Show{}
 
 	for s, elu := range episodeListURLs {
 		show, errPE := GetEpisodes(s, elu)
 		if errPE != nil {
-			fmt.Fprintf(os.Stderr, "could not print %s episode list: %v", s, errPE)
+			fmt.Fprintf(os.Stderr, "could not get episode details for '%s': %v", s, errPE)
 		}
 
 		shows = append(shows, *show)
 	}
-
-	fmt.Printf("# shows: %d\n", len(shows))
 
 	for i := range shows {
 		fmt.Println(shows[i])
