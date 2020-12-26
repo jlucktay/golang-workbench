@@ -2,6 +2,7 @@ package main_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/matryer/is"
 
@@ -45,8 +46,22 @@ func TestEpisodeNumbers(t *testing.T) {
 			is.True(haveShowNumbers)
 
 			for i := 0; i < len(show.Seasons); i++ {
+				// If we have numbers for this season, make sure they match, then move on to the next season
 				if episodeCount, haveSeasonNumbers := seasonNumbers[i+1]; haveSeasonNumbers {
 					is.Equal(len(show.Seasons[i].Episodes), episodeCount)
+					continue
+				}
+
+				// Otherwise, make sure we have at least one episode to inspect before going ahead
+				lastEpIdx := len(show.Seasons[i].Episodes) - 1
+
+				if lastEpIdx < 0 {
+					continue
+				}
+
+				// Check the retrieved airdate against today's date
+				if show.Seasons[i].Episodes[lastEpIdx].Airdate.Before(time.Now()) {
+					t.Fatalf("missing numbers for S%02d of '%s' which has finished airing", i, show.Name)
 				}
 			}
 		})
