@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/gocolly/colly/v2"
@@ -182,43 +181,4 @@ func GetEpisodes(show, episodeListURL string) (*models.Show, error) {
 	}
 
 	return s, nil
-}
-
-// mapSpaces helps us get rid of non-breaking spaces from HTML.
-func mapSpaces(input rune) rune {
-	if unicode.IsSpace(input) {
-		return ' '
-	}
-
-	return input
-}
-
-// IteratingSelector is a helper to get us through those pesky 'td' selectors.
-type IteratingSelector struct {
-	selectorFmt string
-	tdOffset    int
-}
-
-// NewIteratingSelector currently has hard-coded values because we only use it in one loop.
-func NewIteratingSelector() *IteratingSelector {
-	return &IteratingSelector{
-		selectorFmt: "td:nth-of-type(%d)",
-		tdOffset:    0,
-	}
-}
-
-func (is *IteratingSelector) String() string {
-	return fmt.Sprintf(is.selectorFmt, is.tdOffset)
-}
-
-// Current will return the iterator with its current value.
-func (is *IteratingSelector) Current() string {
-	return fmt.Sprint(is)
-}
-
-// Next will first increment the value, and then return the iterator.
-func (is *IteratingSelector) Next() string {
-	is.tdOffset++
-
-	return fmt.Sprint(is)
 }
