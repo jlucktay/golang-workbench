@@ -118,7 +118,7 @@ func GetEpisodes(show, episodeListURL string) (*models.Show, error) {
 				// Trim citation link suffixes like "[3]"
 				checkCiteSuffix := regexp.MustCompile(`"?\[[0-9]+\]$`)
 
-				if tbody.DOM.ChildrenFiltered("td").Length() >= 4 {
+				if tbody.DOM.ChildrenFiltered("td").Length() >= 4 { //nolint:gomnd // Deal with wider tables
 					ep.EpisodeOverall, err = strconv.Atoi(strings.TrimSpace(tbody.ChildText(itSel.Next())))
 					if err != nil {
 						return
@@ -156,8 +156,9 @@ func GetEpisodes(show, episodeListURL string) (*models.Show, error) {
 
 				// Round off 'TBA' airdates into the future 🤷‍♂️
 				if epAirdate == "TBA" {
-					theFuture := 5252 - time.Now().Year()
-					ep.Airdate = time.Now().AddDate(theFuture, 0, 0).Round(time.Hour * 24)
+					theFuture := 5252 - time.Now().Year() //nolint:gomnd // https://dc.fandom.com/wiki/52#52
+
+					ep.Airdate = time.Now().AddDate(theFuture, 0, 0).Round(time.Hour * 24) //nolint:gomnd // 24h = 1d
 				} else {
 					ep.Airdate, err = time.Parse(models.AirdateLayout, epAirdate)
 					if err != nil {
