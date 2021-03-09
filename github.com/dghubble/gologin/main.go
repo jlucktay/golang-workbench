@@ -48,6 +48,7 @@ func New(config *Config) *http.ServeMux {
 	stateConfig := gologin.DebugOnlyCookieConfig
 	mux.Handle("/google/login", google.StateHandler(stateConfig, google.LoginHandler(oauth2Config, nil)))
 	mux.Handle("/google/callback", google.StateHandler(stateConfig, google.CallbackHandler(oauth2Config, issueSession(), nil)))
+
 	return mux
 }
 
@@ -55,6 +56,7 @@ func New(config *Config) *http.ServeMux {
 func issueSession() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
 		ctx := req.Context()
+
 		googleUser, err := google.UserFromContext(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -64,12 +66,15 @@ func issueSession() http.Handler {
 		session := sessionStore.New(sessionName)
 		session.Values[sessionUserKey] = googleUser.Id
 		session.Values[sessionUsername] = googleUser.Name
+
 		if err := session.Save(w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		http.Redirect(w, req, "/profile", http.StatusFound)
 	}
+
 	return http.HandlerFunc(fn)
 }
 
@@ -80,8 +85,10 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 		// welcome with login button
 		page, _ := ioutil.ReadFile("home.html")
 		fmt.Fprint(w, string(page))
+
 		return
 	}
+
 	// authenticated profile
 	fmt.Fprintf(w, `<p>You are logged in %s!</p><form action="/logout" method="post"><input type="submit" value="Logout"></form>`, session.Values[sessionUsername])
 }
@@ -91,6 +98,7 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
 		sessionStore.Destroy(w, sessionName)
 	}
+
 	http.Redirect(w, req, "/", http.StatusFound)
 }
 
@@ -106,20 +114,25 @@ func main() {
 	clientID := flag.String("client-id", "", "Google Client ID")
 	clientSecret := flag.String("client-secret", "", "Google Client Secret")
 	flag.Parse()
+
 	if *clientID != "" {
 		config.ClientID = *clientID
 	}
+
 	if *clientSecret != "" {
 		config.ClientSecret = *clientSecret
 	}
+
 	if config.ClientID == "" {
 		log.Fatal("Missing Google Client ID")
 	}
+
 	if config.ClientSecret == "" {
 		log.Fatal("Missing Google Client Secret")
 	}
 
 	log.Printf("Starting Server listening on %s\n", address)
+
 	err := http.ListenAndServe(address, New(config))
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
