@@ -130,15 +130,18 @@ func logoutHandler(w http.ResponseWriter, req *http.Request) {
 
 // main creates and starts a Server listening.
 func main() {
-	const address = "localhost:8080"
-	// read credentials from environment variables if available
 	config := &Config{
+		// read credentials from environment variables if available
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 	}
+
 	// allow consumer credential flags to override config fields
 	clientID := flag.String("client-id", "", "Google Client ID")
 	clientSecret := flag.String("client-secret", "", "Google Client Secret")
+
+	// default address to localhost for development
+	address := flag.String("server-address", "localhost:8080", "Server address to listen on")
 	flag.Parse()
 
 	if *clientID != "" {
