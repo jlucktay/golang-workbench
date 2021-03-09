@@ -83,7 +83,12 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	session, err := sessionStore.Get(req, sessionName)
 	if err != nil {
 		// welcome with login button
-		page, _ := ioutil.ReadFile("home.html")
+		page, err := ioutil.ReadFile("home.html") //
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		fmt.Fprint(w, string(page))
 
 		return
