@@ -30,8 +30,7 @@ var sessionStore = sessions.NewCookieStore([]byte(sessionSecret), nil)
 
 // Config configures the main ServeMux.
 type Config struct {
-	ClientID     string
-	ClientSecret string
+	ClientID, ClientSecret string
 }
 
 // New returns a new ServeMux with app routes.
@@ -92,7 +91,7 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	session, err := sessionStore.Get(req, sessionName)
 	if err != nil {
 		// welcome with login button
-		page, err := ioutil.ReadFile("home.html") //
+		page, err := ioutil.ReadFile("home.html")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -122,7 +121,7 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 
 // logoutHandler destroys the session on POSTs and redirects to home.
 func logoutHandler(w http.ResponseWriter, req *http.Request) {
-	if req.Method == "POST" {
+	if req.Method == http.MethodPost {
 		sessionStore.Destroy(w, sessionName)
 	}
 
@@ -158,10 +157,6 @@ func main() {
 		log.Fatal("Missing Google Client Secret")
 	}
 
-	log.Printf("Starting Server listening on %s\n", address)
-
-	err := http.ListenAndServe(address, New(config))
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+	log.Printf("Server listening on '%s'...\n", *address)
+	log.Fatal(http.ListenAndServe(*address, New(config)))
 }
