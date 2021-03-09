@@ -36,6 +36,7 @@ func New(config *Config) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", profileHandler)
 	mux.HandleFunc("/logout", logoutHandler)
+
 	// 1. Register Login and Callback handlers
 	oauth2Config := &oauth2.Config{
 		ClientID:     config.ClientID,
@@ -44,10 +45,12 @@ func New(config *Config) *http.ServeMux {
 		Endpoint:     googleOAuth2.Endpoint,
 		Scopes:       []string{"profile", "email"},
 	}
+
 	// state param cookies require HTTPS by default; disable for localhost development
 	stateConfig := gologin.DebugOnlyCookieConfig
 	mux.Handle("/google/login", google.StateHandler(stateConfig, google.LoginHandler(oauth2Config, nil)))
-	mux.Handle("/google/callback", google.StateHandler(stateConfig, google.CallbackHandler(oauth2Config, issueSession(), nil)))
+	mux.Handle("/google/callback", google.StateHandler(stateConfig, google.CallbackHandler(oauth2Config, issueSession(),
+		nil)))
 
 	return mux
 }
@@ -62,6 +65,7 @@ func issueSession() http.Handler {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		// 2. Implement a success handler to issue some form of session
 		session := sessionStore.New(sessionName)
 		session.Values[sessionUserKey] = googleUser.Id
@@ -95,7 +99,8 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// authenticated profile
-	fmt.Fprintf(w, `<p>You are logged in %s!</p><form action="/logout" method="post"><input type="submit" value="Logout"></form>`, session.Values[sessionUsername])
+	fmt.Fprintf(w, `<p>You are logged in %s!</p><form action="/logout" method="post"><input type="submit" `+
+		`value="Logout"></form>`, session.Values[sessionUsername])
 }
 
 // logoutHandler destroys the session on POSTs and redirects to home.
