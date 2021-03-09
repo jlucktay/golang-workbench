@@ -16,8 +16,11 @@ import (
 )
 
 const (
-	sessionName     = "example-google-app"
-	sessionSecret   = "example cookie signing secret"
+	sessionName   = "example-google-app"
+	sessionSecret = "example cookie signing secret"
+
+	sessionEmail    = "googleEmail"
+	sessionPicture  = "googlePicture"
 	sessionUserKey  = "googleID"
 	sessionUsername = "googleName"
 )
@@ -68,6 +71,8 @@ func issueSession() http.Handler {
 
 		// 2. Implement a success handler to issue some form of session
 		session := sessionStore.New(sessionName)
+		session.Values[sessionEmail] = googleUser.Email
+		session.Values[sessionPicture] = googleUser.Picture
 		session.Values[sessionUserKey] = googleUser.Id
 		session.Values[sessionUsername] = googleUser.Name
 
@@ -99,8 +104,20 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// authenticated profile
-	fmt.Fprintf(w, `<p>You are logged in %s!</p><form action="/logout" method="post"><input type="submit" `+
-		`value="Logout"></form>`, session.Values[sessionUsername])
+	if picture, hasPicture := session.Values[sessionPicture]; hasPicture && picture != "" {
+		fmt.Fprintf(w, `<img src="%s" />`, picture)
+	}
+
+	fmt.Fprint(w, `<p>You are logged in!</p>`+
+		`<form action="/logout" method="post"><input type="submit" value="Logout"></form>`)
+
+	fmt.Fprint(w, `<ul>`)
+
+	for k, v := range session.Values {
+		fmt.Fprintf(w, "<li>key: %s<br />value: %s</li>", k, v)
+	}
+
+	fmt.Fprint(w, `</ul>`)
 }
 
 // logoutHandler destroys the session on POSTs and redirects to home.
