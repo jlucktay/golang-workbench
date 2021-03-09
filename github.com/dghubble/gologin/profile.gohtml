@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Profile</title>
+    <style></style>
+  </head>
+
+  <body>
+    {{ if .Picture }}<img alt="Profile picture" src="{{ .Picture }}" />{{ end }}
+
+    <p>You are logged in!</p>
+		<form action="/logout" method="post">
+      <input type="submit" value="Logout">
+    </form>
+
+    <ul>
+      {{ range $index, $element := .Items }}
+        <li>index: {{ $index }}<br />element: {{ $element }}</li>
+      {{ else }}
+        <li><strong>no session data</strong></li>
+      {{ end }}
+    </ul>
+  </body>
+</html>

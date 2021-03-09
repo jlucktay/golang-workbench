@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -103,20 +104,23 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// authenticated profile
-	if picture, hasPicture := session.Values[sessionPicture]; hasPicture && picture != "" {
-		fmt.Fprintf(w, `<img src="%s" />`, picture)
+	tpl := template.Must(template.New("profile.gohtml").ParseFiles("profile.gohtml"))
+	data := struct {
+		Items   map[string]interface{}
+		Picture string
+	}{
+		Items: session.Values,
 	}
 
-	fmt.Fprint(w, `<p>You are logged in!</p>`+
-		`<form action="/logout" method="post"><input type="submit" value="Logout"></form>`)
-
-	fmt.Fprint(w, `<ul>`)
-
-	for k, v := range session.Values {
-		fmt.Fprintf(w, "<li>key: %s<br />value: %s</li>", k, v)
+	if picture, hasPicture := session.Values[sessionPicture]; hasPicture {
+		if picStr, ok := picture.(string); ok {
+			data.Picture = picStr
+		}
 	}
 
-	fmt.Fprint(w, `</ul>`)
+	if err := tpl.Execute(w, data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // logoutHandler destroys the session on POSTs and redirects to home.
