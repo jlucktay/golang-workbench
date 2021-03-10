@@ -122,3 +122,36 @@ These GitHub projects all came from [here](https://pkg.go.dev/github.com/gorilla
 98. 1462 [julienschmidt/go-http-routing-benchmark](https://github.com/julienschmidt/go-http-routing-benchmark)
 99. 1460 [ubuntu-core/snappy](https://github.com/ubuntu-core/snappy)
 100. 1457 [netgusto/nodebook](https://github.com/netgusto/nodebook)
+
+## Fiber
+
+### v2
+
+As of 2021-02-21, from <https://pkg.go.dev/github.com/gofiber/fiber/v2@v2.5.0?tab=importedby>:
+
+1. 1411 smallnest/go-web-framework-benchmark
+2. 445 awslabs/aws-lambda-go-api-proxy
+3. 141 harry-027/go-notify
+4. 77 whitaker-io/machine
+5. 75 devguardio/carrier
+6. 41 hepsiburada/fiber-prometheus
+7. 33 create-go-app/fiber-go-template
+8. 23 spacebin-org/spirit
+9. 16 doingodswork/deflix-stremio
+10. 16 antoniodipinto/ikisocket
+11. 14 b2wdigital/goignite
+12. 11 ahui2016/go-send
+13. 11 codemicro/fiber-cache
+14. 10 getevo/evo
+
+### v1
+
+As of 2021-02-21, from <https://pkg.go.dev/github.com/gofiber/fiber@v1.14.6?tab=importedby>:
+
+1. 520 renzholy/mongood
+2. 303 steinfletcher/apitest
+3. 87 thomasvvugt/fiber-boilerplate
+4. 41 hepsiburada/fiber-prometheus
+5. 21 bitcav/nitr
+6. 15 ansrivas/fiberprometheus
+7. 10 getevo/evo
