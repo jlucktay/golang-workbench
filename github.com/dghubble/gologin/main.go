@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"html/template"
@@ -12,6 +13,7 @@ import (
 	"github.com/dghubble/gologin/v2"
 	"github.com/dghubble/gologin/v2/google"
 	"github.com/dghubble/sessions"
+	"github.com/yosssi/gohtml"
 	"golang.org/x/oauth2"
 	googleOAuth2 "golang.org/x/oauth2/google"
 )
@@ -118,8 +120,18 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	if err := tpl.Execute(w, data); err != nil {
+	b := &bytes.Buffer{}
+	if err := tpl.Execute(b, data); err != nil {
+		fmt.Fprintf(os.Stderr, "could not execute template into buffer: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fBytes := gohtml.Format(b.String())
+	if _, err := w.Write([]byte(fBytes)); err != nil {
+		fmt.Fprintf(os.Stderr, "could not write formatted bytes to ResponseWriter: %v\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 

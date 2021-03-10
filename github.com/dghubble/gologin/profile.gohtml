@@ -11,14 +11,14 @@
     {{ if .Picture }}<img alt="Profile picture" src="{{ .Picture }}" />{{ end }}
 
     <p>You are logged in!</p>
-		<form action="/logout" method="post">
-      <input type="submit" value="Logout">
+    <form action="/logout" method="post">
+      <input type="submit" value="Logout" />
     </form>
 
     <ul>
       {{ range $index, $element := .Items }}
         <li>index: {{ $index }}<br />element: {{ $element }}</li>
-      {{ else }}
+        {{ else }}
         <li><strong>no session data</strong></li>
       {{ end }}
     </ul>
