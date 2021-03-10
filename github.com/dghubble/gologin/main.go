@@ -63,10 +63,11 @@ func New(config *Config) *http.ServeMux {
 // issueSession issues a cookie session after successful Google login
 func issueSession() http.Handler {
 	fn := func(w http.ResponseWriter, req *http.Request) {
-		ctx := req.Context()
+		fmt.Printf("[issueSession] %s %s\n", req.Method, req.URL)
 
-		googleUser, err := google.UserFromContext(ctx)
+		googleUser, err := google.UserFromContext(req.Context())
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "could not get Google user info from context: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -79,6 +80,7 @@ func issueSession() http.Handler {
 		session.Values[sessionUsername] = googleUser.Name
 
 		if err := session.Save(w); err != nil {
+			fmt.Fprintf(os.Stderr, "could not save session: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -91,11 +93,14 @@ func issueSession() http.Handler {
 
 // profileHandler shows a personal profile or a login button (unauthenticated).
 func profileHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Printf("[profileHandler] %s %s\n", req.Method, req.URL)
+
 	session, err := sessionStore.Get(req, sessionName)
 	if err != nil {
 		// welcome with login button
 		page, err := ioutil.ReadFile("home.html")
 		if err != nil {
+			fmt.Fprintf(os.Stderr, "could not read HTML file: %v\n", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -137,6 +142,8 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 
 // logoutHandler destroys the session on POSTs and redirects to home.
 func logoutHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Printf("[logoutHandler] %s %s\n", req.Method, req.URL)
+
 	if req.Method == http.MethodPost {
 		sessionStore.Destroy(w, sessionName)
 	}
