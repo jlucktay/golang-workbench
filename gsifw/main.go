@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -36,6 +37,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/favicon.ico", http.NotFoundHandler())
 	mux.HandleFunc("/", googleSignInForWebsites(rootPage))
+	mux.HandleFunc("/tokensignin", tokenSignIn)
 
 	log.Printf("server listening on '%s'...", *address)
 	log.Fatal(http.ListenAndServe(*address, mux))
@@ -66,4 +68,39 @@ func googleSignInForWebsites(page []byte) func(http.ResponseWriter, *http.Reques
 			return
 		}
 	}
+}
+
+func tokenSignIn(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		resp := fmt.Sprintf("Method Not Allowed: %s", r.Method)
+		http.Error(w, resp, http.StatusMethodNotAllowed)
+		log.Println(resp)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("could not parse request form: %v", err)
+		return
+	}
+
+	idToken, tokenPresent := r.Form["idtoken"]
+	if !tokenPresent {
+		resp := "Bad Request: no 'idtoken' in form"
+		http.Error(w, resp, http.StatusBadRequest)
+		log.Println(resp)
+		return
+	}
+
+	if len(idToken) != 1 {
+		resp := "Bad Request: idtoken slice contains incorrect numnber of elements"
+		http.Error(w, resp, http.StatusBadRequest)
+		log.Println(resp)
+		return
+	}
+
+	log.Printf("ID token: '%s'", idToken[0])
+
+	fmt.Println("TODO: Verify the integrity of the ID token " +
+		"(https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token)")
 }
