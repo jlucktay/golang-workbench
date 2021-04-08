@@ -2,14 +2,17 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/yosssi/gohtml"
+	"google.golang.org/api/idtoken"
 )
 
 func main() {
@@ -93,7 +96,7 @@ func tokenSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(idToken) != 1 {
-		resp := "Bad Request: idtoken slice contains incorrect numnber of elements"
+		resp := "Bad Request: idtoken slice contains incorrect number of elements"
 		http.Error(w, resp, http.StatusBadRequest)
 		log.Println(resp)
 		return
@@ -103,4 +106,32 @@ func tokenSignIn(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("TODO: Verify the integrity of the ID token " +
 		"(https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token)")
+
+	p, err := idtoken.Validate(context.Background(), idToken[0], "")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("could not validate ID token: %v", err)
+		return
+	}
+
+	strings.Contains(p.Issuer, "substr string")
+}
+
+func verifyIntegrity(token string) bool {
+	/*
+		The ID token is properly signed by Google.
+		Use Google's public keys (available in JWK or PEM format) to verify the token's signature.
+		These keys are regularly rotated; examine the Cache-Control header in the response to determine when you should retrieve them again.
+
+		The value of aud in the ID token is equal to one of your app's client IDs.
+		This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
+
+		The value of iss in the ID token is equal to accounts.google.com or https://accounts.google.com.
+
+		The expiry time (exp) of the ID token has not passed.
+
+		If you want to restrict access to only members of your G Suite domain, verify that the ID token has an hd claim that matches your G Suite domain name.
+	*/
+
+	return false
 }
