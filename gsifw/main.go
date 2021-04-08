@@ -138,7 +138,10 @@ func tokenSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if _, err := w.Write([]byte(sEmail)); err != nil {
-		log.Printf("could not write to ResponseWriter: %v", err)
+		resp := fmt.Errorf("%s: could not write bytes to ResponseWriter: %w",
+			http.StatusText(http.StatusInternalServerError), err)
+		http.Error(w, resp.Error(), http.StatusInternalServerError)
+		log.Println(resp)
 		return
 	}
 }
