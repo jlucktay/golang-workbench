@@ -3,6 +3,7 @@ module go.jlucktay.dev/golang-workbench/gsifw
 go 1.15
 
 require (
+	github.com/go-chi/chi/v5 v5.0.2
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/yosssi/gohtml v0.0.0-20201013000340-ee4748c638f4
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect

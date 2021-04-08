@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/yosssi/gohtml"
 	"google.golang.org/api/idtoken"
 )
@@ -50,13 +52,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	mux := http.NewServeMux()
-	mux.Handle("/favicon.ico", http.NotFoundHandler())
-	mux.HandleFunc("/", googleSignInForWebsites(rootPage))
-	mux.HandleFunc("/tokensignin", tokenSignIn)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+
+	r.Get("/favicon.ico", chi.NewMux().NotFoundHandler())
+	r.Get("/", func(w http.ResponseWriter, _ *http.Request) {
+		if _, err := w.Write(rootPage); err != nil {
+			resp := fmt.Errorf("%s: could not write page bytes to ResponseWriter: %w",
+				http.StatusText(http.StatusInternalServerError), err)
+			http.Error(w, resp.Error(), http.StatusInternalServerError)
+			log.Println(resp)
+			return
+		}
+	})
+	r.Post("/tokensignin", tokenSignIn)
 
 	log.Printf("server listening on '%s'...", *address)
-	log.Fatal(http.ListenAndServe(*address, mux))
+	log.Fatal(http.ListenAndServe(*address, r))
 }
 
 // prepareGSIFWBytes will execute the given template to render the clientID into place, and return a byte-slice
@@ -73,29 +85,7 @@ func prepareGSIFWBytes(tpl *template.Template, clientID string) ([]byte, error) 
 	return gohtml.FormatBytes(b.Bytes()), nil
 }
 
-// googleSignInForWebsites runs a static-ish page through html/template and serves it.
-func googleSignInForWebsites(page []byte) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[%s] %s %s", r.RemoteAddr, r.Method, r.URL)
-
-		if _, err := w.Write(page); err != nil {
-			resp := fmt.Errorf("%s: could not write page bytes to ResponseWriter: %w",
-				http.StatusText(http.StatusInternalServerError), err)
-			http.Error(w, resp.Error(), http.StatusInternalServerError)
-			log.Println(resp)
-			return
-		}
-	}
-}
-
 func tokenSignIn(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		resp := fmt.Sprintf("%s: %s", http.StatusText(http.StatusMethodNotAllowed), r.Method)
-		http.Error(w, resp, http.StatusMethodNotAllowed)
-		log.Println(resp)
-		return
-	}
-
 	if err := r.ParseForm(); err != nil {
 		resp := fmt.Errorf("%s: could not parse request form: %w", http.StatusText(http.StatusBadRequest), err)
 		http.Error(w, resp.Error(), http.StatusBadRequest)
