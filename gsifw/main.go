@@ -10,10 +10,15 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/yosssi/gohtml"
 	"google.golang.org/api/idtoken"
 )
+
+const audienceSuffix = ".apps.googleusercontent.com"
+
+var audience string
 
 func main() {
 	// default credential flag to env var
@@ -30,6 +35,14 @@ func main() {
 
 	if *clientID == "" {
 		log.Fatal("missing Google Client ID; set GOOGLE_CLIENT_ID in env or '--client-id' flag")
+	}
+
+	audience = *clientID
+
+	if strings.HasSuffix(*clientID, audienceSuffix) {
+		*clientID = strings.TrimSuffix(*clientID, audienceSuffix)
+	} else {
+		audience += audienceSuffix
 	}
 
 	rootPage, err := prepareGSIFWBytes(tpl, *clientID)
@@ -63,11 +76,13 @@ func prepareGSIFWBytes(tpl *template.Template, clientID string) ([]byte, error) 
 // googleSignInForWebsites runs a static-ish page through html/template and serves it.
 func googleSignInForWebsites(page []byte) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s", r.Method, r.URL)
+		log.Printf("[%s] %s %s", r.RemoteAddr, r.Method, r.URL)
 
 		if _, err := w.Write(page); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("could not write page bytes to ResponseWriter: %v", err)
+			resp := fmt.Errorf("%s: could not write page bytes to ResponseWriter: %w",
+				http.StatusText(http.StatusInternalServerError), err)
+			http.Error(w, resp.Error(), http.StatusInternalServerError)
+			log.Println(resp)
 			return
 		}
 	}
@@ -75,63 +90,115 @@ func googleSignInForWebsites(page []byte) func(http.ResponseWriter, *http.Reques
 
 func tokenSignIn(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		resp := fmt.Sprintf("Method Not Allowed: %s", r.Method)
+		resp := fmt.Sprintf("%s: %s", http.StatusText(http.StatusMethodNotAllowed), r.Method)
 		http.Error(w, resp, http.StatusMethodNotAllowed)
 		log.Println(resp)
 		return
 	}
 
 	if err := r.ParseForm(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Printf("could not parse request form: %v", err)
+		resp := fmt.Errorf("%s: could not parse request form: %w", http.StatusText(http.StatusBadRequest), err)
+		http.Error(w, resp.Error(), http.StatusBadRequest)
+		log.Println(resp)
 		return
 	}
 
 	idToken, tokenPresent := r.Form["idtoken"]
 	if !tokenPresent {
-		resp := "Bad Request: no 'idtoken' in form"
+		resp := fmt.Sprintf("%s: no 'idtoken' in form", http.StatusText(http.StatusBadRequest))
 		http.Error(w, resp, http.StatusBadRequest)
 		log.Println(resp)
 		return
 	}
 
 	if len(idToken) != 1 {
-		resp := "Bad Request: idtoken slice contains incorrect number of elements"
+		resp := fmt.Sprintf("%s: idtoken slice contains incorrect number of elements",
+			http.StatusText(http.StatusBadRequest))
 		http.Error(w, resp, http.StatusBadRequest)
 		log.Println(resp)
 		return
 	}
 
-	log.Printf("ID token: '%s'", idToken[0])
-
-	fmt.Println("TODO: Verify the integrity of the ID token " +
-		"(https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token)")
-
-	p, err := idtoken.Validate(context.Background(), idToken[0], "")
+	idtp, err := verifyIntegrity(idToken[0])
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Printf("could not validate ID token: %v", err)
+		resp := fmt.Errorf("%s: could not verify integrity of the ID token: %w",
+			http.StatusText(http.StatusBadRequest), err)
+		http.Error(w, resp.Error(), http.StatusBadRequest)
+		log.Println(resp)
 		return
 	}
 
-	strings.Contains(p.Issuer, "substr string")
+	emailVerified, evOK := idtp.Claims["email_verified"]
+	if !evOK {
+		return
+	}
+
+	if bEmailVerified, ok := emailVerified.(bool); !ok || !bEmailVerified {
+		return
+	}
+
+	email, ok := idtp.Claims["email"]
+	if !ok {
+		return
+	}
+
+	sEmail, ok := email.(string)
+	if !ok || len(sEmail) == 0 {
+		return
+	}
+
+	if _, err := w.Write([]byte(sEmail)); err != nil {
+		log.Printf("could not write to ResponseWriter: %v", err)
+		return
+	}
 }
 
-func verifyIntegrity(token string) bool {
+// verifyIntegrity checks that the criteria specified at the following link are satisfied:
+// https://developers.google.com/identity/sign-in/web/backend-auth#verify-the-integrity-of-the-id-token
+func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 	/*
 		The ID token is properly signed by Google.
 		Use Google's public keys (available in JWK or PEM format) to verify the token's signature.
-		These keys are regularly rotated; examine the Cache-Control header in the response to determine when you should retrieve them again.
+		These keys are regularly rotated; examine the `Cache-Control` header in the response to determine when you should
+		retrieve them again.
+	*/
+	idtPayload, err := idtoken.Validate(context.Background(), idToken, audience)
+	if err != nil {
+		return nil, fmt.Errorf("could not validate ID token: %w", err)
+	}
 
-		The value of aud in the ID token is equal to one of your app's client IDs.
-		This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
+	/*
+		The value of `aud` in the ID token is equal to one of your app's client IDs.
+		This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same
+		user on your app's backend server.
+	*/
+	// This check should already have been made inside idtoken.Validate() above.
+	if !strings.EqualFold(idtPayload.Audience, audience) {
+		return nil, fmt.Errorf("token audience '%s' does not match this app's client ID", idtPayload.Audience)
+	}
 
-		The value of iss in the ID token is equal to accounts.google.com or https://accounts.google.com.
+	/*
+		The value of `iss` in the ID token is equal to `accounts.google.com` or `https://accounts.google.com`.
+	*/
+	if !strings.HasSuffix(idtPayload.Issuer, "accounts.google.com") {
+		return nil, fmt.Errorf("token was issued by '%s' and not by Google Accounts", idtPayload.Issuer)
+	}
 
-		The expiry time (exp) of the ID token has not passed.
+	/*
+		The expiry time (`exp`) of the ID token has not passed.
+	*/
+	tokenExpires := time.Unix(idtPayload.Expires, 0)
+	if tokenExpires.Before(time.Now()) {
+		return nil, fmt.Errorf("token already expired at '%s'", tokenExpires)
+	}
 
-		If you want to restrict access to only members of your G Suite domain, verify that the ID token has an hd claim that matches your G Suite domain name.
+	/*
+		If you want to restrict access to only members of your G Suite domain, verify that the ID token has an `hd` claim
+		that matches your G Suite domain name.
 	*/
 
-	return false
+	// TODO: allowlist based on Google account ID
+
+	// Everything checks out!
+	return idtPayload, nil
 }
