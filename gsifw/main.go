@@ -48,11 +48,6 @@ func main() {
 		audience += audienceSuffix
 	}
 
-	rootPage, err := prepareGSIFWBytes(tpl, *clientID)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	srv := http.Server{Addr: *address, Handler: setupRouter()}
 
 	idleConnsClosed := make(chan struct{})
@@ -86,20 +81,32 @@ func setupRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	r.Get("/favicon.ico", chi.NewMux().NotFoundHandler())
-	r.Get("/", func(w http.ResponseWriter, _ *http.Request) {
-		if _, err := w.Write(rootPage); err != nil {
-			resp := fmt.Errorf("%s: could not write page bytes to ResponseWriter: %w",
-				http.StatusText(http.StatusInternalServerError), err)
-			http.Error(w, resp.Error(), http.StatusInternalServerError)
-			log.Println(resp)
-			return
-		}
-	})
+	r.Get("/favicon.ico", faviconHandler)
+	r.Get("/", rootPageHandler)
 	r.Post("/tokensignin", tokenSignIn)
 
-	log.Printf("server listening on '%s'...", *address)
-	log.Fatal(http.ListenAndServe(*address, r))
+	return r
+}
+
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./favicon.ico")
+}
+
+func rootPageHandler(w http.ResponseWriter, _ *http.Request) {
+	rootPage, err := prepareGSIFWBytes(tpl, *clientID)
+	if err != nil {
+		// return nil, err
+		return
+	}
+
+	if _, err := w.Write(rootPage); err != nil {
+		resp := fmt.Errorf("%s: could not write page bytes to ResponseWriter: %w",
+			http.StatusText(http.StatusInternalServerError), err)
+		http.Error(w, resp.Error(), http.StatusInternalServerError)
+		log.Println(resp)
+		return
+
+	}
 }
 
 // prepareGSIFWBytes will execute the given template to render the clientID into place, and return a byte-slice
