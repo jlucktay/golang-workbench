@@ -21,11 +21,15 @@ import (
 
 const audienceSuffix = ".apps.googleusercontent.com"
 
-var audience string
+var (
+	audience string
+	clientID *string
+	tpl      *template.Template
+)
 
 func main() {
 	// default credential flag to env var
-	clientID := flag.String("client-id", os.Getenv("GOOGLE_CLIENT_ID"), "Google Client ID")
+	clientID = flag.String("client-id", os.Getenv("GOOGLE_CLIENT_ID"), "Google Client ID")
 
 	// default address to localhost for development
 	address := flag.String("server-address", "localhost:8080", "Server address to listen on")
@@ -34,10 +38,11 @@ func main() {
 	flag.Parse()
 
 	// Prepare the login page template
-	tpl := template.Must(template.New("gsifw.html").ParseFiles("gsifw.html"))
+	tpl = template.Must(template.New("gsifw.html").ParseFiles("gsifw.html"))
 
 	if *clientID == "" {
-		log.Fatal("missing Google Client ID; set GOOGLE_CLIENT_ID in env or '--client-id' flag")
+		log.Print("missing Google Client ID; set GOOGLE_CLIENT_ID in env or '--client-id' flag")
+		return
 	}
 
 	audience = *clientID
