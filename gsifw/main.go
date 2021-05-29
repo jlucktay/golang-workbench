@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sort"
 	"strings"
 	"time"
 
@@ -228,6 +229,12 @@ func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 		return nil, fmt.Errorf("token already expired at '%s'", tokenExpires)
 	}
 
+	// Make sure the ID token was issued in the past
+	tokenIssuedAt := time.Unix(idtPayload.IssuedAt, 0)
+	if tokenIssuedAt.After(time.Now()) {
+		return nil, fmt.Errorf("token is issued in the future at '%s'", tokenIssuedAt)
+	}
+
 	/*
 		If you want to restrict access to only members of your G Suite domain, verify that the ID token has an `hd` claim
 		that matches your G Suite domain name.
@@ -236,5 +243,19 @@ func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 	// TODO: allowlist based on Google account ID
 
 	// Everything checks out!
+
+	// Log the subject and (alphabetised) claims from the ID token
+	xClaims := make([]string, len(idtPayload.Claims))
+
+	for key := range idtPayload.Claims {
+		xClaims = append(xClaims, key)
+
+		if !sort.StringsAreSorted(xClaims) {
+			sort.Strings(xClaims)
+		}
+	}
+
+	log.Printf("verified token for subject '%s'; claims: '%#v'", idtPayload.Subject, xClaims)
+
 	return idtPayload, nil
 }
