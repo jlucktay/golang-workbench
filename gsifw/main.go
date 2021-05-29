@@ -210,7 +210,7 @@ func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 		user on your app's backend server.
 	*/
 	// This check should already have been made inside idtoken.Validate() above.
-	if !strings.EqualFold(idtPayload.Audience, audience) {
+	if idtPayload.Audience != audience {
 		return nil, fmt.Errorf("token audience '%s' does not match this app's client ID", idtPayload.Audience)
 	}
 
