@@ -1,5 +1,7 @@
 # Google Sign-In for Websites
 
+[![godoc](https://img.shields.io/badge/pkg.go.dev-godoc-00ADD8?logo=go)](https://pkg.go.dev/go.jlucktay.dev/golang-workbench/gsifw)
+
 ## Google Cloud - Cloud Functions
 
 - [Background Functions](https://cloud.google.com/functions/docs/writing/background)
@@ -13,6 +15,8 @@
 - [Authenticate with a Backend Server](https://developers.google.com/identity/sign-in/web/backend-auth)
 
 ## Some JWT Things
+
+- [`go-chi/jwtauth` package](https://github.com/go-chi/jwtauth)
 
 ### Header: Algorithm & Token Type
 
@@ -50,3 +54,4 @@
 
 - <https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html>
 - cookies **must** be HTTPS only (`Secure` flag) with `SameSite` set to strict
+- <https://www.packetlabs.net/session-management/>
