@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 
@@ -52,6 +53,36 @@ func main() {
 		log.Fatal(err)
 	}
 
+	srv := http.Server{Addr: *address, Handler: setupRouter()}
+
+	idleConnsClosed := make(chan struct{})
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt)
+		<-sigint
+
+		log.Print("interrupt signal received; server beginning shutdown")
+
+		if err := srv.Shutdown(context.Background()); err != nil {
+			log.Printf("error during shutdown: %v", err)
+		}
+
+		close(idleConnsClosed)
+	}()
+
+	log.Printf("server listening on '%s'...", srv.Addr)
+
+	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
+		log.Printf("error starting or closing listener: %v", err)
+		return
+	}
+
+	<-idleConnsClosed
+
+	log.Print("server has been shutdown, and all (idle) connections closed")
+}
+
+func setupRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
