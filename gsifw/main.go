@@ -245,7 +245,7 @@ func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 	// Everything checks out!
 
 	// Log the subject and (alphabetised) claims from the ID token
-	xClaims := make([]string, len(idtPayload.Claims))
+	xClaims := make([]string, 0)
 
 	for key := range idtPayload.Claims {
 		xClaims = append(xClaims, key)
@@ -255,7 +255,7 @@ func verifyIntegrity(idToken string) (*idtoken.Payload, error) {
 		}
 	}
 
-	log.Printf("verified token for subject '%s'; claims: '%#v'", idtPayload.Subject, xClaims)
+	log.Printf("verified token for subject '%s'; claims: '%s'", idtPayload.Subject, strings.Join(xClaims, ","))
 
 	return idtPayload, nil
 }
