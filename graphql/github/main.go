@@ -29,7 +29,11 @@ func main() {
 
 	oaToken := &oauth2.Token{AccessToken: token} //nolint:exhaustivestruct
 	src := oauth2.StaticTokenSource(oaToken)
-	httpClient := oauth2.NewClient(context.Background(), src)
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout5s)
+	defer cancel()
+
+	httpClient := oauth2.NewClient(ctx, src)
 	httpClient.Timeout = timeout5s
 	client := githubv4.NewClient(httpClient)
 

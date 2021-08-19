@@ -8,11 +8,16 @@ import (
 )
 
 func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]interface{}) ([]string, error) {
-	var ownedRepos []string
+	var (
+		ownedRepos []string
+		endCursor  string
+
+		hasNextPage = true
+	)
 
 	vars["endCursor"] = (*githubv4.String)(nil) // Null the 'after' argument to get first page.
 
-	for {
+	for hasNextPage {
 		fmt.Printf("Querying with variables: %v... ", vars)
 
 		if err := client.Query(context.TODO(), query, vars); err != nil {
@@ -21,14 +26,12 @@ func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]i
 
 		fmt.Println("returned OK.")
 
-		hasNextPage, endCursor := process(*query, &ownedRepos)
-		if !hasNextPage {
-			fmt.Println()
-			break
-		}
+		hasNextPage, endCursor = process(*query, &ownedRepos)
 
 		vars["endCursor"] = githubv4.String(endCursor)
 	}
+
+	fmt.Println()
 
 	return ownedRepos, nil
 }
