@@ -18,20 +18,26 @@ func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]i
 	vars["endCursor"] = (*githubv4.String)(nil) // Null the 'after' argument to get first page.
 
 	for hasNextPage {
-		fmt.Printf("Querying with variables: %v... ", vars)
+		if !jsonFlag {
+			fmt.Printf("Querying with variables: %v... ", vars)
+		}
 
 		if err := client.Query(context.TODO(), query, vars); err != nil {
 			return nil, fmt.Errorf("couldn't run query: %w", err)
 		}
 
-		fmt.Println("returned OK.")
+		if !jsonFlag {
+			fmt.Println("returned OK.")
+		}
 
 		hasNextPage, endCursor = process(*query, &ownedRepos)
 
 		vars["endCursor"] = githubv4.String(endCursor)
 	}
 
-	fmt.Println()
+	if !jsonFlag {
+		fmt.Println()
+	}
 
 	return ownedRepos, nil
 }

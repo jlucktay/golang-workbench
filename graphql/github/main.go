@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -18,7 +20,15 @@ const (
 	timeout5s = 5 * time.Second
 )
 
+var jsonFlag bool
+
+func init() {
+	flag.BoolVar(&jsonFlag, "json", false, "format output as JSON")
+}
+
 func main() {
+	flag.Parse()
+
 	// Set up GitHub GraphQL API v4 client
 	token, tokenSet := os.LookupEnv(envKey)
 	if !tokenSet {
@@ -48,24 +58,41 @@ func main() {
 	// Query for unforked repos
 	queryVariables["isFork"] = githubv4.Boolean(false)
 
+	printerFunc := prettyPrintTerminal
+
+	if jsonFlag {
+		printerFunc = prettyPrintJSON
+	}
+
 	myRepos, errRunMine := runQuery(client, &queryMine, queryVariables)
 	if errRunMine != nil {
-		fmt.Fprint(os.Stderr, errRunMine)
+		fmt.Fprintln(os.Stderr, errRunMine)
 
 		return
 	}
 
-	prettyPrint(myRepos)
+	printerFunc(myRepos, printSources)
 
 	// Query for forked repos
 	queryVariables["isFork"] = githubv4.Boolean(true)
 
 	forkedRepos, errRunForked := runQuery(client, &queryForked, queryVariables)
 	if errRunForked != nil {
-		fmt.Fprint(os.Stderr, errRunForked)
+		fmt.Fprintln(os.Stderr, errRunForked)
 
 		return
 	}
 
-	prettyPrint(forkedRepos)
+	printerFunc(forkedRepos, printForks)
+
+	if !jsonFlag {
+		return
+	}
+
+	jsonResult, err := json.Marshal(jsonBuffer)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "could not marshal JSON result: %v\n", err)
+	}
+
+	fmt.Println(string(jsonResult))
 }

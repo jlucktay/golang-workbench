@@ -7,8 +7,8 @@ import (
 	"golang.org/x/term"
 )
 
-func prettyPrint(input []string) {
-	fmt.Printf("%d owned repo(s):\n", len(input))
+func prettyPrintTerminal(input []string, repoType string) {
+	fmt.Printf("%d repo %s:\n", len(input), repoType)
 
 	// get terminal width
 	tw, _, errTGS := term.GetSize(int(os.Stdout.Fd()))
@@ -40,4 +40,25 @@ func prettyPrint(input []string) {
 	}
 
 	fmt.Println()
+}
+
+type jsonOutput struct {
+	Sources []string `json:"sources"`
+	Forks   []string `json:"forks"`
+}
+
+var jsonBuffer jsonOutput
+
+const (
+	printSources = "sources"
+	printForks   = "forks"
+)
+
+func prettyPrintJSON(input []string, repoType string) {
+	switch repoType {
+	case printSources:
+		jsonBuffer.Sources = append(jsonBuffer.Sources, input...)
+	case printForks:
+		jsonBuffer.Forks = append(jsonBuffer.Forks, input...)
+	}
 }
