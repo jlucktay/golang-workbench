@@ -11,22 +11,26 @@ import (
 )
 
 const (
-	envToken    = "GITHUB_TOKEN"
+	envKey      = "GITHUB_TOKEN"
 	githubLogin = "jlucktay"
 	perPage     = 100
+
+	timeout5s = 5 * time.Second
 )
 
 func main() {
 	// Set up GitHub GraphQL API v4 client
-	token, tokenSet := os.LookupEnv(envToken)
+	token, tokenSet := os.LookupEnv(envKey)
 	if !tokenSet {
-		fmt.Fprintf(os.Stderr, "token not set in environment: %s\n", envToken)
+		fmt.Fprintf(os.Stderr, "token not set in environment: %s\n", envKey)
+
 		return
 	}
 
-	src := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	httpClient := oauth2.NewClient(context.TODO(), src)
-	httpClient.Timeout = 5 * time.Second
+	oaToken := &oauth2.Token{AccessToken: token} //nolint:exhaustivestruct
+	src := oauth2.StaticTokenSource(oaToken)
+	httpClient := oauth2.NewClient(context.Background(), src)
+	httpClient.Timeout = timeout5s
 	client := githubv4.NewClient(httpClient)
 
 	// Set up queries to send to GraphQL and hold results, and variables for each run
@@ -40,11 +44,11 @@ func main() {
 	// Query for unforked repos
 	queryVariables["isFork"] = githubv4.Boolean(false)
 
-	myRepos, errRunMine := run(client, &queryMine, queryVariables)
+	myRepos, errRunMine := runQuery(client, &queryMine, queryVariables)
 	if errRunMine != nil {
 		fmt.Fprint(os.Stderr, errRunMine)
-		return
 
+		return
 	}
 
 	prettyPrint(myRepos)
@@ -52,11 +56,11 @@ func main() {
 	// Query for forked repos
 	queryVariables["isFork"] = githubv4.Boolean(true)
 
-	forkedRepos, errRunForked := run(client, &queryForked, queryVariables)
+	forkedRepos, errRunForked := runQuery(client, &queryForked, queryVariables)
 	if errRunForked != nil {
 		fmt.Fprint(os.Stderr, errRunForked)
-		return
 
+		return
 	}
 
 	prettyPrint(forkedRepos)

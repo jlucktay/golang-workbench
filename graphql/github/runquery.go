@@ -7,7 +7,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-func run(client *githubv4.Client, query *queryOwnedRepos, vars map[string]interface{}) ([]string, error) {
+func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]interface{}) ([]string, error) {
 	var ownedRepos []string
 
 	vars["endCursor"] = (*githubv4.String)(nil) // Null the 'after' argument to get first page.
@@ -16,10 +16,10 @@ func run(client *githubv4.Client, query *queryOwnedRepos, vars map[string]interf
 		fmt.Printf("Querying with variables: %v... ", vars)
 
 		if err := client.Query(context.TODO(), query, vars); err != nil {
-			return nil, fmt.Errorf("couldn't run query: %w\n", err)
+			return nil, fmt.Errorf("couldn't run query: %w", err)
 		}
 
-		fmt.Printf("returned OK.\n")
+		fmt.Println("returned OK.")
 
 		hasNextPage, endCursor := process(*query, &ownedRepos)
 		if !hasNextPage {

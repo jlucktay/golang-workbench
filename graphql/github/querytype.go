@@ -13,6 +13,6 @@ type queryOwnedRepos *struct {
 				}
 			}
 			TotalCount int
-		} `graphql:"repositories(affiliations: OWNER, after: $endCursor, first: $perPage, isFork: $isFork, orderBy: {field: CREATED_AT, direction: ASC})"`
+		} `graphql:"repositories(affiliations: OWNER, after: $endCursor, first: $perPage, isFork: $isFork, orderBy: {field: CREATED_AT, direction: ASC})"` //nolint:lll // Can't multiline struct tags
 	} `graphql:"repositoryOwner(login: $login)"`
 }

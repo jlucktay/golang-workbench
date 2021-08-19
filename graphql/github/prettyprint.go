@@ -14,6 +14,7 @@ func prettyPrint(input []string) {
 	tw, _, errTGS := term.GetSize(int(os.Stdout.Fd()))
 	if errTGS != nil {
 		fmt.Fprintf(os.Stderr, "couldn't get terminal size: %v\n", errTGS)
+
 		return
 	}
 
