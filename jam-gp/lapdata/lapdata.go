@@ -84,7 +84,7 @@ type Cls struct {
 	ID int `json:"id"`
 }
 
-// Competitors describe drivers at the event.
+// Competitors describe teams of drivers at the event.
 type Competitors struct {
 	Ch  interface{} `json:"ch"`
 	Cid interface{} `json:"cid"`
@@ -94,12 +94,19 @@ type Competitors struct {
 
 	ID ID `json:"_id"`
 
-	C    string `json:"c"`
-	Cc   string `json:"cc"`
-	Cm   string `json:"cm"`
-	Gq   string `json:"gq"`
-	Na   string `json:"na"`
-	Nm   string `json:"nm"`
+	// C is the type of kart driven by the team.
+	C string `json:"c"`
+
+	Cc string `json:"cc"`
+	Cm string `json:"cm"`
+	Gq string `json:"gq"`
+
+	// Na is the name of the team.
+	Na string `json:"na"`
+
+	// Nm is the kart number of the team.
+	Nm string `json:"nm"`
+
 	Rcid string `json:"rcid"`
 	Sc   string `json:"sc"`
 	Scid string `json:"scid"`
