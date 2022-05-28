@@ -17,6 +17,10 @@ type Event struct {
 
 // Session is one of the highest-level containers for data.
 type Session struct {
+	ID ID `json:"_id"`
+
+	EventID EventID `json:"event_id"`
+
 	StartTime time.Time `json:"start_time"`
 
 	Com               interface{} `json:"com"`
@@ -34,13 +38,9 @@ type Session struct {
 	SessionType   string `json:"session_type"`
 	Status        string `json:"status"`
 
-	ID ID `json:"_id"`
-
-	EventID EventID `json:"event_id"`
-
 	BestTimes []BestTimes `json:"best_times"`
 
-	Cls []Cls `json:"cls"`
+	Cls []Class `json:"cls"`
 
 	Competitors []Competitors `json:"competitors"`
 
@@ -76,23 +76,27 @@ type BestTimes struct {
 	T int `json:"t"`
 }
 
-// Cls seems to refer to the kart type.
-type Cls struct {
-	C  string `json:"c"`
-	Nm string `json:"nm"`
+// Class refers to the kart type.
+type Class struct {
+	// Code of the kart class.
+	Code string `json:"c"`
 
+	// Name of the kart class.
+	Name string `json:"nm"`
+
+	// ID of the kart class.
 	ID int `json:"id"`
 }
 
 // Competitors describe teams of drivers at the event.
 type Competitors struct {
+	ID ID `json:"_id"`
+
 	Ch  interface{} `json:"ch"`
 	Cid interface{} `json:"cid"`
 	E   interface{} `json:"e"`
 	N   interface{} `json:"n"`
 	Rt  interface{} `json:"rt"`
-
-	ID ID `json:"_id"`
 
 	// KartType is the type of kart driven by the team.
 	KartType string `json:"c"`
@@ -138,18 +142,20 @@ type Laps struct {
 
 // Sectors number three on the race track.
 type Sectors struct {
-	Sid string `json:"sid"`
+	// SectorID will refer to one of the three sectors on the track.
+	SectorID string `json:"sid"`
 
-	St int `json:"st"`
+	// SectorTime is the elapsed time in this sector on this lap.
+	SectorTime int `json:"st"`
 }
 
 // Results contains various timings, averages, best sectors, and so on.
 type Results struct {
+	ID ID `json:"_id"`
+
 	Bs2Or interface{} `json:"bs2or"`
 	Bs1Or interface{} `json:"bs1or"`
 	Pen   interface{} `json:"pen"`
-
-	ID ID `json:"_id"`
 
 	Avg   string `json:"avg"`
 	B     string `json:"b"`
@@ -160,20 +166,43 @@ type Results struct {
 	P     string `json:"p"`
 	Pls   string `json:"pls"`
 	Scid  string `json:"scid"`
-	T     string `json:"t"`
+
+	// Total time elapsed.
+	T string `json:"t"`
 
 	Ty []interface{} `json:"ty"`
 
-	Bln      int `json:"bln"`
-	BltMs    int `json:"blt_ms"`
-	Bs1      int `json:"bs1"`
-	Bs1L     int `json:"bs1l"`
-	Bs2      int `json:"bs2"`
-	Bs2L     int `json:"bs2l"`
-	Bs3      int `json:"bs3"`
-	Bs3L     int `json:"bs3l"`
-	Nl       int `json:"nl"`
-	TMs      int `json:"t_ms"`
+	// Best lap number.
+	Bln int `json:"bln"`
+
+	// Best lap time in milliseconds.
+	BltMs int `json:"blt_ms"`
+
+	// Best time for sector one.
+	Bs1 int `json:"bs1"`
+
+	// Best time for sector one was set on this lap.
+	Bs1L int `json:"bs1l"`
+
+	// Best time for sector two.
+	Bs2 int `json:"bs2"`
+
+	// Best time for sector two was set on this lap.
+	Bs2L int `json:"bs2l"`
+
+	// Best time for sector three.
+	Bs3 int `json:"bs3"`
+
+	// Best time for sector three was set on this lap.
+	Bs3L int `json:"bs3l"`
+
+	// The number of laps completed.
+	Nl int `json:"nl"`
+
+	// Total time elapsed in milliseconds.
+	TMs int `json:"t_ms"`
+
+	// Ultimate is the theoretical best lap based on the three best sector times.
 	Ultimate int `json:"ultimate"`
 
 	Gpts float64 `json:"gpts"`
