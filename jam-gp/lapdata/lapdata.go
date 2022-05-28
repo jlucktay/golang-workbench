@@ -123,9 +123,13 @@ type Competitors struct {
 type Laps struct {
 	Sectors []Sectors `json:"sectors,omitempty"`
 
+	// Lt is the individual lap time.
 	Lt int `json:"lt"`
-	N  int `json:"n"`
-	P  int `json:"p"`
+
+	N int `json:"n"`
+	P int `json:"p"`
+
+	// Tt is the cumulative total lap time so far.
 	Tt int `json:"tt"`
 
 	Blor bool `json:"blor,omitempty"`

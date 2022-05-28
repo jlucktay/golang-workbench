@@ -49,9 +49,9 @@ func TestLapDataTotalTime(t *testing.T) {
 		totalTime := 0
 
 		for j := range e.Session.Competitors[i].Laps {
-			totalTime += e.Session.Competitors[i].Laps[j].Tt
+			totalTime += e.Session.Competitors[i].Laps[j].Lt
 		}
 
-		is.True(totalTime >= hourInMilliseconds*1.75) // each competitor should have at least 1h45m of cumulative lap times
+		is.True(totalTime >= hourInMilliseconds*1.75) // each competitor should have at least 1h45m of total lap times
 	}
 }
