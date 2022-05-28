@@ -36,3 +36,22 @@ func TestCompetitorsHaveLapData(t *testing.T) {
 		is.True(len(e.Session.Competitors[i].Laps) > 0) // no lap data for competitor
 	}
 }
+
+func TestLapDataTotalTime(t *testing.T) {
+	t.Parallel()
+
+	is := is.New(t)
+	e := loadEventData(t)
+
+	const hourInMilliseconds = 60 * 60 * 1000
+
+	for i := range e.Session.Competitors {
+		totalTime := 0
+
+		for j := range e.Session.Competitors[i].Laps {
+			totalTime += e.Session.Competitors[i].Laps[j].Tt
+		}
+
+		is.True(totalTime >= hourInMilliseconds*1.75) // each competitor should have at least 1h45m of cumulative lap times
+	}
+}
