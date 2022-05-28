@@ -53,5 +53,8 @@ func TestLapDataTotalTime(t *testing.T) {
 		}
 
 		is.True(totalTime >= hourInMilliseconds*1.75) // each competitor should have at least 1h45m of total lap times
+
+		lastLapIndex := len(e.Session.Competitors[i].Laps) - 1
+		is.Equal(totalTime, e.Session.Competitors[i].Laps[lastLapIndex].Tt) // stored total time doesn't equal calculated
 	}
 }
