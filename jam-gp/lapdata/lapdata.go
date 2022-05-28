@@ -94,25 +94,25 @@ type Competitors struct {
 
 	ID ID `json:"_id"`
 
-	// C is the type of kart driven by the team.
-	C string `json:"c"`
+	// KartType is the type of kart driven by the team.
+	KartType string `json:"c"`
 
 	Cc string `json:"cc"`
 	Cm string `json:"cm"`
 	Gq string `json:"gq"`
 
-	// Na is the name of the team.
-	Na string `json:"na"`
+	// Name is the name of the team.
+	Name string `json:"na"`
 
-	// Nm is the kart number of the team.
-	Nm string `json:"nm"`
+	// Number is the kart number of the team.
+	Number string `json:"nm"`
 
 	Rcid string `json:"rcid"`
 	Sc   string `json:"sc"`
 	Scid string `json:"scid"`
 	Tdn  string `json:"tdn"`
 
-	Laps []Laps `json:"laps"`
+	Laps SliceOfLaps `json:"laps"`
 
 	Gp int `json:"gp"`
 
@@ -123,14 +123,14 @@ type Competitors struct {
 type Laps struct {
 	Sectors []Sectors `json:"sectors,omitempty"`
 
-	// Lt is the individual lap time.
-	Lt int `json:"lt"`
+	// LapTime is the individual lap time.
+	LapTime int `json:"lt"`
 
 	N int `json:"n"`
 	P int `json:"p"`
 
-	// Tt is the cumulative total lap time so far.
-	Tt int `json:"tt"`
+	// TotalTime is the cumulative total lap time so far.
+	TotalTime int `json:"tt"`
 
 	Blor bool `json:"blor,omitempty"`
 	Pb   bool `json:"pb,omitempty"`
