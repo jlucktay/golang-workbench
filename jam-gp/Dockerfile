@@ -9,7 +9,7 @@ ENV CGO_ENABLED=0
 # Use Go modules
 ENV GO111MODULE=on
 
-WORKDIR /go/src/go.jlucktay.dev/jam-gp
+WORKDIR /go/src/go.jlucktay.dev/golang-workbench/jam-gp
 
 # Add the sources.
 COPY . .

@@ -1,5 +1,5 @@
 {
   "gopls": {
-    "formatting.local": "go.jlucktay.dev/jam-gp"
+    "formatting.local": "go.jlucktay.dev/golang-workbench/jam-gp"
   }
 }

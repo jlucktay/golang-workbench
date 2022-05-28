@@ -25,7 +25,7 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix(go.jlucktay.dev/jam-gp)
+      - prefix(go.jlucktay.dev/golang-workbench/jam-gp)
 
   goconst:
     min-len: 3
