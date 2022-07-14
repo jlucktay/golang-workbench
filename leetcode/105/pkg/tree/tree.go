@@ -8,5 +8,5 @@ type TreeNode struct {
 }
 
 func BuildTree(preorder []int, inorder []int) *TreeNode {
-	return nil
+	return &TreeNode{Val: -1}
 }
