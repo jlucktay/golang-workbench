@@ -3,7 +3,7 @@ package tree_test
 import (
 	"testing"
 
-	"github.com/matryer/is"
+	"github.com/google/go-cmp/cmp"
 
 	"go.jlucktay.dev/golang-workbench/leetcode/105/pkg/tree"
 )
@@ -37,12 +37,11 @@ func TestBuildTree(t *testing.T) {
 	}
 	for desc, tc := range testCases {
 		t.Run(desc, func(t *testing.T) {
-			is := is.New(t)
+			result := tree.BuildTree(tc.preorder, tc.inorder)
 
-			is.Equal(
-				tree.BuildTree(tc.preorder, tc.inorder),
-				tc.expected,
-			)
+			if diff := cmp.Diff(tc.expected, result); diff != "" {
+				t.Errorf("tree.BuildTree() mismatch (-want +got):\n%s", diff)
+			}
 		})
 	}
 }
