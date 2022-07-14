@@ -47,7 +47,7 @@ func BuildTree(preorder []int, inorder []int) *TreeNode {
 	//   the in-order traversal [𝑧1,…,𝑧𝑛],
 	// you can rebuild the tree as follows:
 
-	if len(preorder) < 1 || len(inorder) < 1 {
+	if len(preorder) < 1 {
 		return nil
 	}
 
@@ -58,7 +58,7 @@ func BuildTree(preorder []int, inorder []int) *TreeNode {
 	k := 0
 	for a := range inorder {
 		if inorder[a] == preorder[0] {
-			k = a + 1 // k is set as a 1-based index, not a 0-based
+			k = a
 			break
 		}
 	}
@@ -66,32 +66,14 @@ func BuildTree(preorder []int, inorder []int) *TreeNode {
 	// Then
 	//   [𝑧1,…,𝑧𝑘−1] is the in-order traversal of the left child and
 	//   [𝑧𝑘+1,…,𝑧𝑛] is the in-order traversal of the right child.
-	leftInorder := make([]int, 0)
-	if len(inorder) >= k-1 {
-		leftInorder = append(leftInorder, inorder[:k-1]...)
-	}
-
-	rightInorder := make([]int, 0)
-	if len(inorder) >= k {
-		rightInorder = append(rightInorder, inorder[k:]...)
-	}
 
 	// Going by the number of elements,
 	//   [𝑥2,…,𝑥𝑘] is the pre-order traversal of the left child and
 	//   [𝑥𝑘+1,…,𝑥𝑛] is the pre-order traversal of the right child.
-	leftPreorder := make([]int, 0)
-	if len(preorder) >= k {
-		leftPreorder = append(leftPreorder, preorder[1:k]...)
-	}
-
-	rightPreorder := make([]int, 0)
-	if len(preorder) >= k {
-		rightPreorder = append(rightPreorder, preorder[k:]...)
-	}
 
 	// Recurse to build the left and right subtrees.
-	root.Left = BuildTree(leftPreorder, leftInorder)
-	root.Right = BuildTree(rightPreorder, rightInorder)
+	root.Left = BuildTree(preorder[1:k+1], inorder[:k])
+	root.Right = BuildTree(preorder[k+1:], inorder[k+1:])
 
 	return root
 }
