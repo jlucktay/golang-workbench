@@ -1,37 +1,21 @@
 package kipa
 
-var memo = [1001][1001]int{}
+func KInversePairs(n int, k int) int {
+	dp := [1001][1001]int{}
 
-func init() {
-	for a := range memo {
-		for b := range memo[a] {
-			memo[a][b] = -1
+	for i := 1; i <= n; i++ {
+		for j := 0; j <= k; j++ {
+			if j == 0 {
+				dp[i][j] = 1
+			} else {
+				for p := 0; p <= min(j, i-1); p++ {
+					dp[i][j] = (dp[i][j] + dp[i-1][j-p]) % 1000000007
+				}
+			}
 		}
 	}
-}
 
-func KInversePairs(n int, k int) int {
-	if n == 0 {
-		return 0
-	}
-
-	if k == 0 {
-		return 1
-	}
-
-	if memo[n][k] != -1 {
-		return memo[n][k]
-	}
-
-	inv := 0
-
-	for i := 0; i <= min(k, n-1); i++ {
-		inv = (inv + KInversePairs(n-1, k-i)) % 1000000007
-	}
-
-	memo[n][k] = inv
-
-	return inv
+	return dp[n][k]
 }
 
 func min(a, b int) int {
