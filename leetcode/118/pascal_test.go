@@ -1,10 +1,9 @@
 package pascal
 
 import (
-	"reflect"
 	"testing"
 
-	"github.com/matryer/is"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestGenerate(t *testing.T) {
@@ -23,7 +22,13 @@ func TestGenerate(t *testing.T) {
 	}
 	for desc, tc := range testCases {
 		t.Run(desc, func(t *testing.T) {
-			is.New(t).True(reflect.DeepEqual(generate(tc.input), tc.output)) // expected != actual
+			result := generate(tc.input)
+
+			t.Logf("result from input '%v':\n%+v", tc.input, result)
+
+			if diff := cmp.Diff(tc.output, result); diff != "" {
+				t.Errorf("generate(%d) mismatch (-want +got):\n%s", tc.input, diff)
+			}
 		})
 	}
 }
