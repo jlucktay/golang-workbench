@@ -11,5 +11,5 @@ type Server struct {
 }
 
 func (s *Server) routes() {
-	s.router.HandleFunc()
+	// s.router.HandleFunc()
 }
