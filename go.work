@@ -20,6 +20,7 @@ use (
 	./docker/cloudreach-blog/20180502/src
 	./euler
 	./facebook
+	./fast-small-prime-checker
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
