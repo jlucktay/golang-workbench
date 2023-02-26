@@ -84,5 +84,6 @@ use (
 	./the-zero-value
 	./time_parse
 	./triplebyte
+	./variadic
 	./wasm
 )
