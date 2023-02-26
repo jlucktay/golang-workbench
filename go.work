@@ -2,6 +2,7 @@ go 1.20
 
 use (
 	.
+	./app-engine-1_11
 	./aws/iam
 	./cineworld
 	./concurrency/fan_out-fan_in
