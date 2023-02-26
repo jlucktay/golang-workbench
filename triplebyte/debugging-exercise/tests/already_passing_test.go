@@ -1,12 +1,11 @@
 package main
 
 import (
+	"net/url"
 	"testing"
 
-	"net/url"
-
-	"../crawler"
-	"../htmlhelp"
+	"go.jlucktay.dev/golang-workbench/triplebyte/debugging-exercise/crawler"
+	"go.jlucktay.dev/golang-workbench/triplebyte/debugging-exercise/htmlhelp"
 )
 
 func TestHtmlhelp(t *testing.T) {
@@ -44,11 +43,10 @@ func TestHtmlhelp(t *testing.T) {
 			t.Errorf("neighbor mismatch: %s %s", u.String(), expect[i])
 		}
 	}
-
 }
 
 func TestCrawler(t *testing.T) {
-	c := crawler.Crawler{100, crawler.Silent()}
+	c := crawler.Crawler{Threads: 100, Log: crawler.Silent()}
 	graph, err := c.Crawl("http://triplebyte.github.io/web-crawler-test-site/already-passing-tests/", "")
 	if err != nil {
 		t.Fatalf("can't crawl: %v", err)
@@ -79,6 +77,5 @@ func TestCrawler(t *testing.T) {
 		case n.Code != tc.code:
 			t.Errorf("Crawl(%q).Code: '%d' '%d'", u, tc.code, n.Code)
 		}
-
 	}
 }

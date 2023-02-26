@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"../htmlhelp"
+	"go.jlucktay.dev/golang-workbench/triplebyte/debugging-exercise/htmlhelp"
 )
 
 // Crawler describes the parameters for a crawl

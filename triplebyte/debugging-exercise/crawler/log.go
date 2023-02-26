@@ -15,8 +15,10 @@ type Log interface {
 	noteError(string)
 }
 
-type verbose struct{}
-type silent struct{}
+type (
+	verbose struct{}
+	silent  struct{}
+)
 
 // Verbose log prints during run
 func Verbose() Log {

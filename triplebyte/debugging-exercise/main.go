@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"./crawler"
+	"go.jlucktay.dev/golang-workbench/triplebyte/debugging-exercise/crawler"
 )
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 		log = crawler.Verbose()
 	}
 
-	c := crawler.Crawler{*threads, log}
+	c := crawler.Crawler{Threads: *threads, Log: log}
 	if _, err := c.Crawl(args[0], *outputFile); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 	}

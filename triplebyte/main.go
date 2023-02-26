@@ -67,8 +67,8 @@ func (b *board) String() string {
 }
 
 func (b *board) isFull() bool {
-	for y, _ := range b.board {
-		for x, _ := range b.board[y] {
+	for y := range b.board {
+		for x := range b.board[y] {
 			if b.board[y][x].t == "-" {
 				return false
 			}
@@ -79,8 +79,8 @@ func (b *board) isFull() bool {
 }
 
 func (b *board) aiMove() error {
-	for y, _ := range b.board {
-		for x, _ := range b.board[y] {
+	for y := range b.board {
+		for x := range b.board[y] {
 			if b.board[y][x].t == "-" {
 				b.board[y][x].t = "X"
 				return nil

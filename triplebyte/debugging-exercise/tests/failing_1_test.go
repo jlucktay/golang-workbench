@@ -4,11 +4,11 @@ import (
 	"net/url"
 	"testing"
 
-	"../crawler"
+	"go.jlucktay.dev/golang-workbench/triplebyte/debugging-exercise/crawler"
 )
 
 func TestChallenge1(t *testing.T) {
-	c := crawler.Crawler{5, crawler.Verbose()}
+	c := crawler.Crawler{Threads: 5, Log: crawler.Verbose()}
 	graph, err := c.Crawl("triplebyte.github.io/web-crawler-test-site/test1/", "")
 	if err != nil {
 		t.Fatal("Broken test, can't run crawl")
