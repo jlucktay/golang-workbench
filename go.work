@@ -46,6 +46,7 @@ use (
 	./goquery
 	./graph
 	./graphql/github
+	./hackerrank
 	./hello
 	./htmlparse
 	./jam-gp
