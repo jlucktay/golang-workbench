@@ -50,6 +50,7 @@ use (
 	./hello
 	./hex
 	./htmlparse
+	./interfaces/pp2a-asg2
 	./jam-gp
 	./jwt
 	./kofo.dev/how-to-mtls-in-golang
