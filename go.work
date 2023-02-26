@@ -13,6 +13,7 @@ use (
 	./concurrency/incremental-counter
 	./concurrency/pipeline-pattern
 	./cpu-max
+	./custom-domain
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
