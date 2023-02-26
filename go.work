@@ -8,6 +8,7 @@ use (
 	./channels/buffered
 	./check-log-output
 	./cineworld
+	./codewars
 	./concurrency/fan_out-fan_in
 	./concurrency/incremental-counter
 	./concurrency/pipeline-pattern
