@@ -1,3 +1,3 @@
 module go.jlucktay.dev/golang-workbench/go-git
 
-go 1.15
+go 1.20
