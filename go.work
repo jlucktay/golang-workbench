@@ -16,6 +16,7 @@ use (
 	./custom-domain
 	./debug
 	./defer
+	./docker/cloudreach-blog/20180502/src
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
