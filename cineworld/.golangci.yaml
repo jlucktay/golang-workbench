@@ -11,6 +11,7 @@ linters:
     - depguard
     - dogsled
     - dupl
+    - dupword
     - durationcheck
     - errcheck
     - errchkjson
@@ -18,11 +19,15 @@ linters:
     - errorlint
     - execinquery
     - exhaustive
+    - exhaustruct
     - exportloopref
     - forbidigo
     - forcetypeassert
     - funlen
     - gci
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoglobals
     - gochecknoinits
     - gocognit
     - goconst
@@ -35,9 +40,11 @@ linters:
     - gofumpt
     - goheader
     - goimports
+    - gomnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname
+    - gosec
     - gosimple
     - govet
     - grouper
@@ -46,10 +53,12 @@ linters:
     - interfacebloat
     - ireturn
     - lll
+    - loggercheck
     - logrlint
     - maintidx
     - makezero
     - misspell
+    - musttag
     - nakedret
     - nestif
     - nilerr
@@ -65,12 +74,12 @@ linters:
     - promlinter
     - reassign
     - revive
-    - rowserrcheck
     - sqlclosecheck
     - staticcheck
     - stylecheck
     - tagliatelle
     - tenv
+    - testableexamples
     - testpackage
     - thelper
     - tparallel
@@ -80,12 +89,11 @@ linters:
     - unused
     - usestdlibvars
     - varnamelen
-    - wastedassign
     - whitespace
     - wrapcheck
+    - wsl
 
-    # - exhaustruct
-    # - gochecknoglobals
-    # - gomnd
-    # - gosec
-    # - wsl
+    # Disabled because of generics.
+    # You can track the evolution of the generics support by following the https://github.com/golangci/golangci-lint/issues/2649.
+    # - rowserrcheck
+    # - wastedassign

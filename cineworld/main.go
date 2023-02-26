@@ -22,6 +22,7 @@ const (
 	cinemaID = "073"
 )
 
+//nolint:gochecknoglobals // Flags to pass in arguments with.
 var days = flag.Int("days", 0, "number of days into the future")
 
 func main() {
@@ -30,6 +31,7 @@ func main() {
 	ctx := context.Background()
 	localDate := time.Now().AddDate(0, 0, *days).Local().Format("2006-01-02")
 	url := urlDomain + fmt.Sprintf(urlPath, cinemaID, localDate)
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -95,7 +97,7 @@ func (b Body) String() string {
 
 	tabW := new(tabwriter.Writer)
 
-	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0)
+	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd // Arbitrary padding value.
 
 	for _, film := range b.Films {
 		fmt.Fprintf(tabW, "%s\t", film)
@@ -159,6 +161,7 @@ func (ms *MultiSorter) Sort(changes []Film) {
 // Call its Sort method to sort the data.
 func OrderedBy(less ...lessFunc) *MultiSorter {
 	return &MultiSorter{
+		films:     nil,
 		lessFuncs: less,
 	}
 }
@@ -195,9 +198,7 @@ func (ms *MultiSorter) Less(i, j int) bool {
 			// left > right, so we have a decision.
 			return false
 		}
-
-		// left == right; try the next comparison.
-	}
+	} // left == right; try the next comparison.
 
 	// All comparisons to here said "equal", so just return whatever the final comparison reports.
 	return ms.lessFuncs[index](left, right)
