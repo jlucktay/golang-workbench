@@ -48,6 +48,7 @@ use (
 	./graphql/github
 	./hackerrank
 	./hello
+	./hex
 	./htmlparse
 	./jam-gp
 	./jwt
