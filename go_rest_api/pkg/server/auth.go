@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
