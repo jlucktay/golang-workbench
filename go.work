@@ -64,6 +64,7 @@ use (
 	./monzo
 	./pace.dev/blog/2020/03/02/dynamically-generate-social-images-in-golang-by-mat-ryer
 	./panic
+	./pig
 	./practical-golang-benchmarks
 	./prime-sieve
 	./ps4-share
