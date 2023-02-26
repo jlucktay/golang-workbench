@@ -14,6 +14,7 @@ use (
 	./concurrency/pipeline-pattern
 	./cpu-max
 	./custom-domain
+	./debug
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
