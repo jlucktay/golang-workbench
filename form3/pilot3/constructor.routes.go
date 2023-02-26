@@ -7,7 +7,7 @@ func (a *apiServer) routes() {
 	// s.router.POST("/payments")
 
 	// R
-	s.router.HandleFunc("/payments", s.GET(s.handleGetSinglePayment()))
+	a.router.HandleFunc("/payments", a.GET(a.handleGetSinglePayment()))
 	// s.router.GET("/payments", nil)
 
 	// U
