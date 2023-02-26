@@ -36,8 +36,7 @@ use (
 	./htmlparse
 	./jam-gp
 	./jwt
-	./kofo.dev/how-to-mtls-in-golang/client
-	./kofo.dev/how-to-mtls-in-golang/server
+	./kofo.dev/how-to-mtls-in-golang
 	./leetcode/105
 	./leetcode/118
 	./leetcode/315
