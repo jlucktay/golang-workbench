@@ -4,7 +4,7 @@ set -euo pipefail
 # If there was already a 'go.mod' file here, this will be an update and not a net-new setup.
 if [[ -f go.mod ]]; then
   net_new_mod=0
-  commit_message_suffix="update a module"
+  commit_message_suffix="update module"
 else
   net_new_mod=1
   commit_message_suffix="set up a module"
