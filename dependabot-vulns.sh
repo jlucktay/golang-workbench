@@ -49,9 +49,8 @@ for ((i = 0; i < list_length; i++)); do
 
     cd "$top_level/${vuln_path%/go.sum}"
 
-    go mod edit -go=1.20
     go get -u -v "$vuln_pkg"
-    go mod tidy
+    go mod tidy -go=1.20
     go build ./...
     go clean -x
 
