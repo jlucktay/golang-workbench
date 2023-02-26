@@ -50,6 +50,7 @@ use (
 	./redis/openmymind
 	./secrets
 	./sigs.k8s.io/controller-runtime/pkg/client/fake
+	./stdlib
 	./stdlib/embed
 	./stdlib/fmt
 	./stdlib/io/fs
