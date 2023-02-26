@@ -50,6 +50,7 @@ use (
 	./hello
 	./hex
 	./htmlparse
+	./interfaces
 	./interfaces/pp2a-asg2
 	./jam-gp
 	./jwt
