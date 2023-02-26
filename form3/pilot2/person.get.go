@@ -19,7 +19,8 @@ func GetPersonEndpoint(response http.ResponseWriter, request *http.Request) {
 	var person Person
 
 	collection := client.Database("thepolyglotdeveloper").Collection("people")
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
 	errDecode := collection.FindOne(ctx, Person{ID: id}).Decode(&person)
 	if errDecode != nil {

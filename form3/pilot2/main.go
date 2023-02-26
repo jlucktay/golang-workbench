@@ -24,7 +24,8 @@ type Person struct {
 func main() {
 	fmt.Println("Starting the application...")
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	opts := &options.ClientOptions{}
 	opts = opts.SetConnectTimeout(10 * time.Second)
@@ -39,7 +40,7 @@ func main() {
 	fmt.Println("Connected to Mongo!")
 
 	fmt.Println("Pinging Mongo...")
-	errPing := client.Ping(nil, nil)
+	errPing := client.Ping(context.TODO(), nil)
 	if errPing != nil {
 		log.Fatal(errPing)
 	}

@@ -22,7 +22,8 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 	fmt.Println("GetPeopleEndpoint - after client.Database().Collection()")
 
 	fmt.Println("GetPeopleEndpoint - before context.WithTimeout()")
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	fmt.Println("GetPeopleEndpoint - after context.WithTimeout()")
 
 	fmt.Println("GetPeopleEndpoint - before collection.Find()")
