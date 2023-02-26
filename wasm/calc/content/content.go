@@ -26,8 +26,8 @@ func subtract(i []js.Value) {
 }
 
 func registerCallbacks() {
-	js.Global().Set("add", js.NewCallback(add))
-	js.Global().Set("subtract", js.NewCallback(subtract))
+	// js.Global().Set("add", js.NewCallback(add))
+	// js.Global().Set("subtract", js.NewCallback(subtract))
 }
 
 func main() {
