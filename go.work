@@ -81,6 +81,7 @@ use (
 	./task-splitter
 	./test-error
 	./text-template
+	./the-zero-value
 	./triplebyte
 	./wasm
 )
