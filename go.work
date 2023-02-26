@@ -19,6 +19,7 @@ use (
 	./docker/cloudreach-blog/20180502
 	./docker/cloudreach-blog/20180502/src
 	./euler
+	./facebook
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
