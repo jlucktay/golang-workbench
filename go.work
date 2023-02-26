@@ -82,6 +82,7 @@ use (
 	./test-error
 	./text-template
 	./the-zero-value
+	./time_parse
 	./triplebyte
 	./wasm
 )
