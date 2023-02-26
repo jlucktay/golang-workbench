@@ -15,6 +15,7 @@ use (
 	./cpu-max
 	./custom-domain
 	./debug
+	./defer
 	./fibonacci-tdd-kata
 	./flatten
 	./forecast
