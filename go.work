@@ -80,6 +80,7 @@ use (
 	./string_concat
 	./task-splitter
 	./test-error
+	./text-template
 	./triplebyte
 	./wasm
 )
