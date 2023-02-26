@@ -30,7 +30,7 @@ func countSmaller(nums []int) []int {
 
 type BIT []int
 
-func add(b BIT, index int, value int) {
+func add(b BIT, index, value int) {
 	i := index + 1
 	for i < len(b) {
 		b[i] += value

@@ -11,7 +11,6 @@ import (
 
 func main() {
 	raw, err := ioutil.ReadFile("sg-support.json")
-
 	if err != nil {
 		panic(err)
 	}

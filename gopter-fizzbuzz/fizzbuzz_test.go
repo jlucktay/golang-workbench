@@ -62,7 +62,6 @@ func TestIntAsString(t *testing.T) {
 	properties.Property("Int as string for all non-divisible by 3 or 5", prop.ForAll(
 		func(number int) bool {
 			result, err := fizzbuzz(number)
-
 			if err != nil {
 				return false
 			}

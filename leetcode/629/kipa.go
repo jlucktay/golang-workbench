@@ -1,6 +1,6 @@
 package kipa
 
-func KInversePairs(n int, k int) int {
+func KInversePairs(n, k int) int {
 	dp := make([]int, k+1)
 	const M = 1000000007
 

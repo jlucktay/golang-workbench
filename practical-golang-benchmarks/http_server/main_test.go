@@ -8,11 +8,12 @@ import (
 	"testing"
 )
 
-var httpServer *http.Server
-var httpsServer *http.Server
+var (
+	httpServer  *http.Server
+	httpsServer *http.Server
+)
 
-type testHandler struct {
-}
+type testHandler struct{}
 
 func (th *testHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")

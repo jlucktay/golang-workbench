@@ -41,7 +41,7 @@ the right child.
 Recurse to build the left and right subtrees.
 */
 
-func BuildTree(preorder []int, inorder []int) *TreeNode {
+func BuildTree(preorder, inorder []int) *TreeNode {
 	// With
 	//   the pre-order traversal [𝑥1,…,𝑥𝑛] and
 	//   the in-order traversal [𝑧1,…,𝑧𝑛],

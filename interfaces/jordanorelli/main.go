@@ -42,7 +42,6 @@ type Timestamp time.Time
 // UnmarshalJSON on a Timestamp does some parsing for us
 func (t *Timestamp) UnmarshalJSON(b []byte) error {
 	v, err := time.Parse(time.RubyDate, string(b[1:len(b)-1]))
-
 	if err != nil {
 		return err
 	}

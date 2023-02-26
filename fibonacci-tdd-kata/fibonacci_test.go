@@ -12,7 +12,7 @@ var _ = Describe("Fibonacci", func() {
 	var fibonacci Fibonacci
 
 	DescribeTable("Calculating Fibonacci numbers",
-		func(steps int, expected int) {
+		func(steps, expected int) {
 			Expect(fibonacci.Fib(steps)).To(Equal(expected))
 		},
 		Entry("fib(0)", 0, 0),

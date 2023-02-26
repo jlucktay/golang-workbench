@@ -11,7 +11,6 @@ import (
 
 func main() {
 	doc, err := goquery.NewDocument("https://blog.golang.org")
-
 	if err != nil {
 		log.Fatal(err)
 	}

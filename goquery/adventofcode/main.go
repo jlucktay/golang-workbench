@@ -30,7 +30,6 @@ func getAdventDayDescriptions(firstDay, lastDay int, m map[int]map[string]string
 		fmt.Println("Fetching '" + url + "'...")
 
 		doc, err := goquery.NewDocument(url)
-
 		if err != nil {
 			log.Fatal(err)
 		}

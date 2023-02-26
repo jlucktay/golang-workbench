@@ -21,8 +21,10 @@ type result struct {
 	sumOfDigits int
 }
 
-var jobs = make(chan job, threadLimit)
-var results = make(chan result, threadLimit)
+var (
+	jobs    = make(chan job, threadLimit)
+	results = make(chan result, threadLimit)
+)
 
 func digits(number int) int {
 	sum := 0

@@ -39,7 +39,8 @@ func (p *UserService) GetUserByUsername(username string) (root.User, error) {
 	return root.User{
 			ID:       model.ID.Hex(),
 			Username: model.Username,
-			Password: "-"},
+			Password: "-",
+		},
 		err
 }
 
@@ -59,6 +60,7 @@ func (p *UserService) Login(c root.Credentials) (root.User, error) {
 	return root.User{
 			ID:       model.ID.Hex(),
 			Username: model.Username,
-			Password: "-"},
+			Password: "-",
+		},
 		errPass
 }

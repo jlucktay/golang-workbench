@@ -24,7 +24,6 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 				}
 				return mySigningKey, nil
 			})
-
 			if err != nil {
 				fmt.Fprintf(w, err.Error())
 			}

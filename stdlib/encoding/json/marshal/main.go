@@ -21,7 +21,6 @@ func main() {
 	}
 
 	b, err := json.Marshal(group)
-
 	if err != nil {
 		log.Fatal(err)
 	}

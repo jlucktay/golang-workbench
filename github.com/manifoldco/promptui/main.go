@@ -17,7 +17,6 @@ func main() {
 	}
 
 	i, choice, err := prompt.Run()
-
 	if err != nil {
 		fmt.Printf("Prompt failed: '%v'\n", err)
 		return

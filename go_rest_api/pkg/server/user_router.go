@@ -29,7 +29,6 @@ func NewUserRouter(u root.UserService, router *mux.Router) *mux.Router {
 
 func (s *userRouter) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := decodeUser(r)
-
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
 		return
@@ -55,7 +54,6 @@ func (s *userRouter) profileHandler(w http.ResponseWriter, r *http.Request) {
 
 	username := claim.Username
 	user, err := s.userService.GetUserByUsername(username)
-
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
 		return
@@ -70,7 +68,6 @@ func (s *userRouter) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	username := vars["username"]
 
 	user, err := s.userService.GetUserByUsername(username)
-
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
 		return
@@ -82,7 +79,6 @@ func (s *userRouter) getUserHandler(w http.ResponseWriter, r *http.Request) {
 func (s *userRouter) loginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("loginHandler")
 	credentials, err := decodeCredentials(r)
-
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
 		return

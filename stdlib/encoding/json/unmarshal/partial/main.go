@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	var jsonBlob = []byte(`{
+	jsonBlob := []byte(`{
 		"ID": 1,
 		"Name": "Reds",
 		"Colors": [

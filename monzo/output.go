@@ -46,7 +46,7 @@ func outputToJSON(urlScheme string) {
 		".json")
 
 	// Emit the JSON to file
-	errWrite := ioutil.WriteFile(filename, jsonBytes, 0644)
+	errWrite := ioutil.WriteFile(filename, jsonBytes, 0o644)
 	if errWrite != nil {
 		Error.Printf("Error writing to file '%s': %v\n", filename, errWrite)
 	}

@@ -28,7 +28,7 @@ func createLogFile(urlScheme, logType string) (io.WriteCloser, *log.Logger) {
 	filename := sanitize.Name(fileTimestamp + "." + urlScheme + "-" + flagURL +
 		"." + logType + ".log")
 
-	f, errOpen := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+	f, errOpen := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o644)
 	if errOpen != nil {
 		log.Fatalf("Error opening file: %v", errOpen)
 	}

@@ -12,7 +12,6 @@ import (
 
 func main() {
 	resp, err := http.Get("http://adventofcode.com/2017/day/17")
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +19,6 @@ func main() {
 	defer resp.Body.Close()
 
 	doc, err := html.Parse(resp.Body)
-
 	if err != nil {
 		log.Fatal(err)
 	}

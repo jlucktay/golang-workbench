@@ -10,7 +10,6 @@ import (
 
 func main() {
 	out, err := exec.Command("gcloud", "auth", "print-access-token").Output()
-
 	if err != nil {
 		log.Fatal(err)
 	}

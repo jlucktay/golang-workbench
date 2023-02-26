@@ -43,7 +43,6 @@ func TestCreate(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
 		})
 	}
 }
@@ -88,7 +87,6 @@ func TestRead(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
 		})
 	}
 }
@@ -127,7 +125,6 @@ func TestUpdate(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
 		})
 	}
 }
@@ -166,7 +163,6 @@ func TestDelete(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-
 		})
 	}
 }

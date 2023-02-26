@@ -42,7 +42,6 @@ func main() {
 	}
 
 	reqBodyJSON, err := json.Marshal(reqBody)
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,13 +50,11 @@ func main() {
 	reqURL := "https://translation.googleapis.com/language/translate/v2"
 
 	req, err := http.NewRequest(reqVerb, reqURL, strings.NewReader(string(reqBodyJSON)))
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	hdrAuth, err := exec.Command("gcloud", "auth", "print-access-token").Output()
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,13 +63,11 @@ func main() {
 	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := client.Do(req)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	respBodyBytes, err := ioutil.ReadAll(resp.Body)
-
 	if err != nil {
 		log.Fatal(err)
 	}

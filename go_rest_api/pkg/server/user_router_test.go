@@ -17,7 +17,7 @@ import (
 	"go.jlucktay.dev/golang-workbench/go_rest_api/pkg/mock"
 )
 
-//createUserHandler tests
+// createUserHandler tests
 func Test_UserRouter_createUserHandler(t *testing.T) {
 	t.Run("happy path", createUserHandlerShouldPassUserObjectToUserServiceCreateUser)
 	t.Run("invalid payload", createUserHandlerShouldReturnStatusBadRequestIfPayloadIsInvalid)
@@ -60,27 +60,27 @@ func createUserHandlerShouldPassUserObjectToUserServiceCreateUser(t *testing.T) 
 }
 
 func createUserHandlerShouldReturnStatusBadRequestIfPayloadIsInvalid(t *testing.T) {
-	//Arrange
+	// Arrange
 	us := mock.UserService{}
 	testMux := NewUserRouter(&us, mux.NewRouter())
 	us.CreateUserFn = func(u *root.User) error {
 		return nil
 	}
 
-	//Act
+	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/", nil)
 	r.Header.Set("Content-Type", "application/json")
 	testMux.ServeHTTP(w, r)
 
-	//Assert
+	// Assert
 	if w.Code != http.StatusBadRequest {
 		t.Fatal("expected: http.StatusBadRequest, got: %i", w.Code)
 	}
 }
 
 func createUserHandlerShouldReturnStatusInternalServerErrorIfUserServiceReturnsError(t *testing.T) {
-	//Arrange
+	// Arrange
 	us := mock.UserService{}
 	testMux := NewUserRouter(&us, mux.NewRouter())
 	us.CreateUserFn = func(u *root.User) error {
@@ -91,19 +91,19 @@ func createUserHandlerShouldReturnStatusInternalServerErrorIfUserServiceReturnsE
 	jsonValue, _ := json.Marshal(values)
 	payload := bytes.NewBuffer(jsonValue)
 
-	//Act
+	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("PUT", "/", payload)
 	r.Header.Set("Content-Type", "application/json")
 	testMux.ServeHTTP(w, r)
 
-	//Assert
+	// Assert
 	if w.Code != http.StatusInternalServerError {
 		t.Fatal("expected: http.StatusInternalServerError, got: %i", w.Code)
 	}
 }
 
-//profileHandler tests
+// profileHandler tests
 func Test_UserRouter_profileHandler(t *testing.T) {
 	t.Run("happy path", profileHandlerShouldReturnUserFromContext)
 	t.Run("no context", profileHandlerShouldReturnStatusBadRequestIfNoAuthContext)
@@ -141,23 +141,23 @@ func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 }
 
 func profileHandlerShouldReturnStatusBadRequestIfNoAuthContext(t *testing.T) {
-	//Arrange
+	// Arrange
 	us := mock.UserService{}
 	testMux := NewUserRouter(&us, mux.NewRouter())
 
-	//Act
+	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testMux.ServeHTTP(w, r)
 
-	//Assert
+	// Assert
 	if w.Code != http.StatusUnauthorized {
 		t.Fatalf("expected StatusUnauthorized, got: %d", w.Code)
 	}
 }
 
 func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
-	//Arrange
+	// Arrange
 	us := mock.UserService{}
 	testMux := NewUserRouter(&us, mux.NewRouter())
 	us.GetUserByUsernameFn = func(username string) (root.User, error) {
@@ -166,7 +166,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	testUsername := "test_username"
 	testUser := root.User{Username: testUsername}
 
-	//Act
+	// Act
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testCookie := newAuthCookie(testUser)
@@ -174,7 +174,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.StandardClaims{}})
 	testMux.ServeHTTP(w, r.WithContext(ctx))
 
-	//Assert
+	// Assert
 	if !us.GetUserByUsernameInvoked {
 		t.Fatal("expected GetUserByUsername() to be invoked")
 	}
@@ -183,7 +183,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	}
 }
 
-//getUserHandler tests
+// getUserHandler tests
 func Test_UserRouter_getUserHandler(t *testing.T) {
 	t.Run("happy path", getUserHandlerShouldCallGetUserByUsernameWithUsernameFromQuerystring)
 	t.Run("no user found", getUserHandlerShouldReturnStatusNotFoundIfNoUserFound)
@@ -239,11 +239,11 @@ func getUserHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	}
 }
 
-//gHandler tests
+// gHandler tests
 func Test_UserRouter_loginHandler(t *testing.T) {
 	fmt.Println("loginHandler tests")
 	t.Run("happy path", loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser)
-	//t.Run("no user found", getUserHandlerShouldReturnStatusNotFoundIfNoUserFound)
+	// t.Run("no user found", getUserHandlerShouldReturnStatusNotFoundIfNoUserFound)
 }
 
 func loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser(t *testing.T) {

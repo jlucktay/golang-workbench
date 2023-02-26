@@ -22,9 +22,7 @@ func (c contextKey) String() string {
 	return "mypackage context key " + string(c)
 }
 
-var (
-	contextKeyAuthtoken = contextKey("auth-token")
-)
+var contextKeyAuthtoken = contextKey("auth-token")
 
 func newAuthCookie(user root.User) http.Cookie {
 	expireTime := time.Now().Add(time.Hour * 1)
@@ -33,7 +31,8 @@ func newAuthCookie(user root.User) http.Cookie {
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "localhost!",
-		}}
+		},
+	}
 
 	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, c).SignedString([]byte("secret"))
 
@@ -41,7 +40,8 @@ func newAuthCookie(user root.User) http.Cookie {
 		Name:     "Auth",
 		Value:    token,
 		Expires:  expireTime,
-		HttpOnly: true}
+		HttpOnly: true,
+	}
 	return cookie
 }
 
@@ -60,7 +60,6 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 
 			return []byte("secret"), nil
 		})
-
 		if err != nil {
 			Error(res, http.StatusUnauthorized, "Invalid token")
 			return

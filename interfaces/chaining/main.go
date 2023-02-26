@@ -15,7 +15,6 @@ func main() {
 	var r io.Reader = strings.NewReader(input)
 	r = base64.NewDecoder(base64.StdEncoding, r)
 	r, err := gzip.NewReader(r)
-
 	if err != nil {
 		log.Fatal(err)
 	}

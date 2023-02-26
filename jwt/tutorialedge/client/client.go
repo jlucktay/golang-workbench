@@ -44,7 +44,6 @@ func generateJWT() (string, error) {
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
-
 	if err != nil {
 		return fmt.Sprintf("Something Went Wrong: %s", err.Error()), err
 	}
