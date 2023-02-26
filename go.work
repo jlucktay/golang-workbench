@@ -72,6 +72,7 @@ use (
 	./secrets
 	./sigs.k8s.io/controller-runtime/pkg/client/fake
 	./skype
+	./slice
 	./stdlib
 	./stdlib/embed
 	./stdlib/fmt
