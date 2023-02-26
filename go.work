@@ -42,6 +42,7 @@ use (
 	./go_rest_api
 	./golang.org/x/crypto/bcrypt
 	./gopls-watchdog
+	./gopter-fizzbuzz
 	./goquery
 	./graph
 	./graphql/github
