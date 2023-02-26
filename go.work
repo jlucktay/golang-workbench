@@ -4,6 +4,7 @@ use (
 	.
 	./aws/iam
 	./cineworld
+	./concurrency/fan_out-fan_in
 	./concurrency/incremental-counter
 	./concurrency/pipeline-pattern
 	./cpu-max
