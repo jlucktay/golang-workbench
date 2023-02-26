@@ -4,6 +4,7 @@ use (
 	.
 	./app-engine-1_11
 	./aws/iam
+	./aws2tf
 	./cineworld
 	./concurrency/fan_out-fan_in
 	./concurrency/incremental-counter
