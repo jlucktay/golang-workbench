@@ -78,6 +78,7 @@ use (
 	./stdlib/fmt
 	./stdlib/io/fs
 	./string_concat
+	./task-splitter
 	./test-error
 	./triplebyte
 	./wasm
