@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 var mySigningKey = []byte("captainjacksparrowsayshi")
