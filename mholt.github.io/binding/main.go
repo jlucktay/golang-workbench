@@ -7,7 +7,7 @@ import (
 	"github.com/mholt/binding"
 )
 
-// First define a type to hold the data
+// First define a type to hold the data.
 // (If the data comes from JSON, see: http://mholt.github.io/json-to-go)
 type ContactForm struct {
 	User struct {
@@ -17,8 +17,8 @@ type ContactForm struct {
 	Message string
 }
 
-// Then provide a field mapping (pointer receiver is vital)
-func (cf *ContactForm) FieldMap() binding.FieldMap {
+// Then provide a field mapping (pointer receiver is vital).
+func (cf *ContactForm) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&cf.User.ID: "user_id",
 		&cf.Email:   "email",
