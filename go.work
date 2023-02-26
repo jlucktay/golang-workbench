@@ -6,6 +6,7 @@ use (
 	./aws/iam
 	./aws2tf
 	./channels/buffered
+	./check-log-output
 	./cineworld
 	./concurrency/fan_out-fan_in
 	./concurrency/incremental-counter
