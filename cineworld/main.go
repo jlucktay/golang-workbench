@@ -25,7 +25,9 @@ const (
 )
 
 //nolint:gochecknoglobals // Flags to pass in arguments with.
-var days = flag.Int("days", 0, "number of days into the future")
+var (
+	futureDays = flag.Int("f", 0, "start listing from this many days into the future")
+)
 
 func main() {
 	// Parse any flags passed in.
@@ -35,7 +37,7 @@ func main() {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout)))
 
 	ctx := context.Background()
-	localDate := time.Now().AddDate(0, 0, *days).Local().Format("2006-01-02")
+	localDate := time.Now().AddDate(0, 0, *futureDays).Local().Format("2006-01-02")
 	url := urlDomain + fmt.Sprintf(urlPath, cinemaID, localDate)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -49,9 +51,9 @@ func main() {
 		slog.Error("sending request", err, slog.Any("request", req))
 		return
 	}
+	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
 
 	if res.StatusCode >= http.StatusMultipleChoices {
 		slog.Error("response failed", err, slog.Int("status", res.StatusCode), slog.String("body", string(body)))
@@ -109,6 +111,11 @@ func (b Body) String() string {
 	tabW := new(tabwriter.Writer)
 
 	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd // Arbitrary padding value.
+
+	if len(b.Events) >= 1 {
+		xedt := strings.Split(b.Events[0].EventDateTime, "T")
+		fmt.Fprintf(tabW, "%s\n", xedt[0])
+	}
 
 	for _, film := range b.Films {
 		fmt.Fprintf(tabW, "%s\t", film)
@@ -231,7 +238,13 @@ type Event struct {
 }
 
 func (e Event) String() string {
-	return e.EventDateTime
+	split := strings.Split(e.EventDateTime, "T")
+
+	if len(split) < 2 {
+		return e.EventDateTime
+	}
+
+	return split[1]
 }
 
 type CompositeBookingLink struct {
