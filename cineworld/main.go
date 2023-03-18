@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"text/tabwriter"
 	"time"
 
@@ -26,6 +27,7 @@ const (
 //nolint:gochecknoglobals // Flags to pass in arguments with.
 var (
 	futureDays = flag.Int("f", 0, "start listing from this many days into the future")
+	listDays   = flag.Int("l", 1, "retrieve listings from this many days")
 )
 
 func main() {
@@ -35,35 +37,79 @@ func main() {
 	// Set up logging.
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout)))
 
-	localDate := time.Now().AddDate(0, 0, *futureDays).Local().Format("2006-01-02")
-	url := urlDomain + fmt.Sprintf(urlPath, cinemaID, localDate)
-
-	res, err := http.Get(url)
-	if err != nil {
-		slog.Error("getting URL", err, slog.String("url", url))
-		return
-	}
-	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-
-	if res.StatusCode >= http.StatusMultipleChoices {
-		slog.Error("response failed", err, slog.Int("status", res.StatusCode), slog.String("body", string(body)))
-		return
+	// Create somewhere to store results.
+	rs := responseStorage{
+		responses: make(map[time.Time]Response),
+		mx:        sync.Mutex{},
 	}
 
-	if err != nil {
-		slog.Error("reading response body", err)
-		return
+	// Range across number of days we want listings from and request them all concurrently.
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < *listDays; i++ {
+		wg.Add(1)
+
+		go func(j int) {
+			defer wg.Done()
+
+			localDate := time.Now().AddDate(0, 0, *futureDays+j).Local()
+			fLocalDate := localDate.Format("2006-01-02")
+			url := urlDomain + fmt.Sprintf(urlPath, cinemaID, fLocalDate)
+
+			// Derived logger with URL attached.
+			slogw := slog.Default().With(slog.String("url", url))
+
+			res, err := http.Get(url)
+			if err != nil {
+				slogw.Error("getting URL", err)
+				return
+			}
+			defer res.Body.Close()
+
+			body, err := io.ReadAll(res.Body)
+			if res.StatusCode >= http.StatusMultipleChoices {
+				slogw.Error("response failed", err, slog.Int("status", res.StatusCode), slog.String("body", string(body)))
+				return
+			}
+			if err != nil {
+				slogw.Error("reading response body", err)
+				return
+			}
+
+			var filmEvents Response
+			if err := json.Unmarshal(body, &filmEvents); err != nil {
+				slogw.Error("unmarshaling response body", err)
+				return
+			}
+
+			// Store result in map.
+			rs.mx.Lock()
+			rs.responses[localDate] = filmEvents
+			rs.mx.Unlock()
+		}(i)
 	}
 
-	var filmEvents Response
-	if err := json.Unmarshal(body, &filmEvents); err != nil {
-		slog.Error("unmarshaling response body", err)
-		return
+	wg.Wait()
+
+	// Get keys from response storage, to iterate through the map in chronological order and print.
+	dateKeys := make([]time.Time, len(rs.responses))
+
+	for key := range rs.responses {
+		dateKeys = append(dateKeys, key)
 	}
 
-	fmt.Print(filmEvents)
+	sort.Slice(dateKeys, func(i, j int) bool {
+		return dateKeys[i].Before(dateKeys[j])
+	})
+
+	for i := 0; i < len(dateKeys); i++ {
+		fmt.Print(rs.responses[dateKeys[i]])
+	}
+}
+
+type responseStorage struct {
+	responses map[time.Time]Response
+	mx        sync.Mutex
 }
 
 // Response and its children structs were all generated thanks to [JSON-to-Go].
@@ -106,7 +152,7 @@ func (b Body) String() string {
 
 	if len(b.Events) >= 1 {
 		xedt := strings.Split(b.Events[0].EventDateTime, "T")
-		fmt.Fprintf(tabW, "%s\n", xedt[0])
+		fmt.Fprintf(tabW, "\n%s\n", xedt[0])
 	}
 
 	for _, film := range b.Films {
