@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -36,19 +35,12 @@ func main() {
 	// Set up logging.
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout)))
 
-	ctx := context.Background()
 	localDate := time.Now().AddDate(0, 0, *futureDays).Local().Format("2006-01-02")
 	url := urlDomain + fmt.Sprintf(urlPath, cinemaID, localDate)
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	res, err := http.Get(url)
 	if err != nil {
-		slog.Error("creating new request", err, slog.String("url", url))
-		return
-	}
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		slog.Error("sending request", err, slog.Any("request", req))
+		slog.Error("getting URL", err, slog.String("url", url))
 		return
 	}
 	defer res.Body.Close()
