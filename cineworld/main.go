@@ -6,13 +6,15 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"os"
 	"sort"
 	"strconv"
 	"strings"
 	"text/tabwriter"
 	"time"
+
+	"golang.org/x/exp/slog"
 )
 
 const (
@@ -26,7 +28,11 @@ const (
 var days = flag.Int("days", 0, "number of days into the future")
 
 func main() {
+	// Parse any flags passed in.
 	flag.Parse()
+
+	// Set up logging.
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout)))
 
 	ctx := context.Background()
 	localDate := time.Now().AddDate(0, 0, *days).Local().Format("2006-01-02")
@@ -34,31 +40,36 @@ func main() {
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("creating new request", err, slog.String("url", url))
+		return
 	}
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("sending request", err, slog.Any("request", req))
+		return
 	}
 
 	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
 
 	if res.StatusCode >= http.StatusMultipleChoices {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+		slog.Error("response failed", err, slog.Int("status", res.StatusCode), slog.String("body", string(body)))
+		return
 	}
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("reading response body", err)
+		return
 	}
 
 	var filmEvents Response
 	if err := json.Unmarshal(body, &filmEvents); err != nil {
-		log.Fatal("error:", err)
+		slog.Error("unmarshaling response body", err)
+		return
 	}
 
-	log.Printf("\n\n%s", filmEvents)
+	fmt.Print(filmEvents)
 }
 
 // Response and its children structs were all generated thanks to [JSON-to-Go].
