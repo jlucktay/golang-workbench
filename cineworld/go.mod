@@ -2,4 +2,4 @@ module go.jlucktay.dev/golang-workbench/cineworld
 
 go 1.20
 
-require golang.org/x/exp v0.0.0-20230315142452-642cacee5cc0
+require golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
