@@ -21,12 +21,11 @@ import (
 const (
 	urlDomain = "https://www.cineworld.co.uk"
 	urlPath   = "/uk/data-api-service/v1/quickbook/10108/film-events/in-cinema/%s/at-date/%s"
-
-	cinemaID = "073"
 )
 
 //nolint:gochecknoglobals // Flags to pass in arguments with.
 var (
+	cinemaID   = flag.String("c", "073", "ID of cinema to pull screenings for")
 	futureDays = flag.Int("f", 0, "start listing from this many days into the future")
 	include3d  = flag.Bool("3", false, "include screenings in 3D")
 	listDays   = flag.Int("l", 1, "retrieve listings from this many days")
@@ -56,7 +55,7 @@ func main() {
 
 			localDate := time.Now().AddDate(0, 0, *futureDays+j).Local()
 			fLocalDate := localDate.Format("2006-01-02")
-			url := urlDomain + fmt.Sprintf(urlPath, cinemaID, fLocalDate)
+			url := urlDomain + fmt.Sprintf(urlPath, *cinemaID, fLocalDate)
 
 			// Derived logger with URL attached.
 			slogw := slog.Default().With(slog.String("url", url))
@@ -173,7 +172,7 @@ func (b Body) String() string {
 				continue
 			}
 
-			if event.FilmID == film.ID && event.CinemaID == cinemaID {
+			if event.FilmID == film.ID && event.CinemaID == *cinemaID {
 				if !firstEvent {
 					fmt.Fprint(tabW, " ")
 				}
