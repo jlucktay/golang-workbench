@@ -14,6 +14,7 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"golang.org/x/exp/slices"
 	"golang.org/x/exp/slog"
 )
 
@@ -27,6 +28,7 @@ const (
 //nolint:gochecknoglobals // Flags to pass in arguments with.
 var (
 	futureDays = flag.Int("f", 0, "start listing from this many days into the future")
+	include3d  = flag.Bool("3", false, "include screenings in 3D")
 	listDays   = flag.Int("l", 1, "retrieve listings from this many days")
 )
 
@@ -161,6 +163,11 @@ func (b Body) String() string {
 		firstEvent := true
 
 		for _, event := range b.Events {
+			// Check if event's string representation is non-zero length before checking further.
+			if event.String() == "" {
+				continue
+			}
+
 			if event.FilmID == film.ID && event.CinemaID == cinemaID {
 				if !firstEvent {
 					fmt.Fprint(tabW, " ")
@@ -276,6 +283,14 @@ type Event struct {
 }
 
 func (e Event) String() string {
+	if !*include3d && slices.Contains(e.AttributeIDs, "3d") {
+		slog.Debug("event is in 3D",
+			slog.Any("attributeIDs", e.AttributeIDs),
+			slog.String("dateTime", e.EventDateTime))
+
+		return ""
+	}
+
 	split := strings.Split(e.EventDateTime, "T")
 
 	if len(split) < 2 {
