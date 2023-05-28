@@ -158,7 +158,16 @@ func (b Body) String() string {
 
 	if len(b.Events) >= 1 {
 		xedt := strings.Split(b.Events[0].EventDateTime, "T")
-		fmt.Fprintf(tabW, "\n%s\n", xedt[0])
+		dateHeader := xedt[0]
+
+		parsedTime, err := time.Parse("2006-01-02", xedt[0])
+		if err != nil {
+			slog.Error("parsing event date time", slog.String("input", xedt[0]), slog.Any("err", err))
+		} else {
+			dateHeader = parsedTime.Format("2006-01-02 Monday")
+		}
+
+		fmt.Fprintf(tabW, "\n%s\n", dateHeader)
 	}
 
 	for _, film := range b.Films {
