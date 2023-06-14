@@ -61,6 +61,7 @@ use (
 	./leetcode/629
 	./memory-management-and-allocation
 	./mholt.github.io/binding
+	./mlb/biginns
 	./monzo
 	./pace.dev/blog/2020/03/02/dynamically-generate-social-images-in-golang-by-mat-ryer
 	./panic
