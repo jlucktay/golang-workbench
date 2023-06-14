@@ -7,4 +7,7 @@ require (
 	go.jlucktay.dev/golang-workbench/secrets v0.1.0
 )
 
-require github.com/onsi/gomega v1.27.1 // indirect
+require (
+	github.com/onsi/gomega v1.27.1 // indirect
+	golang.org/x/net v0.11.0 // indirect
+)
