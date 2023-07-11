@@ -95,7 +95,7 @@ func main() {
 
 		parseMe := strings.Join([]string{xft[1], xft[2]}, " ")
 
-		startTime, err := time.ParseInLocation("1/2/2006 3:04 PM", parseMe, location)
+		startTime, err := time.ParseInLocation("1/2/06 3:04 PM", parseMe, location)
 		if err != nil {
 			slog.Error("could not parse time from string", slog.String("input", parseMe), tint.Err(err))
 			os.Exit(1)
