@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/onsi/gomega v1.27.1 // indirect
-	golang.org/x/net v0.11.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
 )
