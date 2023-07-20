@@ -90,12 +90,35 @@ func main() {
 		xft := strings.Split(ft, "\n\t")
 
 		if len(xft) < 3 {
+			slog.Warn("full text had less than 3 fields", slog.Any("xft", xft))
+			continue
+		}
+
+		xxft1 := strings.Split(xft[1], "/")
+		if len(xxft1) < 3 {
+			slog.Warn("date had less than 3 fields", slog.String("xft[1]", xft[1]))
+			continue
+		}
+
+		const (
+			parseLayoutPrefix = "1/2/"
+			parseLayoutSuffix = " 3:04 PM"
+		)
+
+		var parseLayout string
+
+		if len(xxft1[2]) == 2 {
+			parseLayout = fmt.Sprintf("%s06%s", parseLayoutPrefix, parseLayoutSuffix)
+		} else if len(xxft1[2]) == 4 {
+			parseLayout = fmt.Sprintf("%s2006%s", parseLayoutPrefix, parseLayoutSuffix)
+		} else {
+			slog.Warn("year field in date was not 2 nor 4 characters", xxft1[2])
 			continue
 		}
 
 		parseMe := strings.Join([]string{xft[1], xft[2]}, " ")
 
-		startTime, err := time.ParseInLocation("1/2/06 3:04 PM", parseMe, location)
+		startTime, err := time.ParseInLocation(parseLayout, parseMe, location)
 		if err != nil {
 			slog.Error("could not parse time from string", slog.String("input", parseMe), tint.Err(err))
 			os.Exit(1)
