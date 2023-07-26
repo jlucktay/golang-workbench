@@ -14,9 +14,11 @@ fi
 
 current_project=$(basename "$top_level")
 
+project_owner=$(echo "$top_level" | rev | cut -d'/' -f2 | rev)
+
 gql_result=$(gh api graphql -f=query="
   query{
-    repository(name: \"$current_project\", owner: \"jlucktay\") {
+    repository(name: \"$current_project\", owner: \"$project_owner\") {
       vulnerabilityAlerts(last: 100, states: OPEN) {
         nodes {
           number
