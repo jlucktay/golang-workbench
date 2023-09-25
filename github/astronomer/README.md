@@ -1,11 +1,25 @@
 # Astronomer
 
-Go through the [list of URLs](list.txt) and get a star count for each.
+Pull the list of dependants that import the nominated project, and get a GitHub star count for each.
+To nominate a project, provide it as a string argument to the binary.
+
+You must also have a
+[valid GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+exported to the `GITHUB_TOKEN` environment variable.
+
+For example, this would look at [the `runtime/debug` package](https://pkg.go.dev/runtime/debug?tab=importedby) in the
+standard library:
+
+```shell
+astronomer runtime/debug
+```
+
+## `gorilla/mux`
 
 These GitHub projects all came from [here](https://pkg.go.dev/github.com/gorilla/mux@v1.8.0?tab=importedby) on
 2021-01-21.
 
-## Provisional top ten - 2021-01-21
+### Provisional top ten - 2021-01-21
 
 ```text
 01) 59462 Moby/Moby
@@ -20,7 +34,7 @@ These GitHub projects all came from [here](https://pkg.go.dev/github.com/gorilla
 10) 11430 Hyperledger/fabric
 ```
 
-## Top one hundred - 2021-01-22
+### Top one hundred - 2021-01-22
 
 1. 59465 [dotcloud/docker](https://github.com/dotcloud/docker)
 2. 59465 [moby/moby](https://github.com/moby/moby)
@@ -123,7 +137,7 @@ These GitHub projects all came from [here](https://pkg.go.dev/github.com/gorilla
 99. 1460 [ubuntu-core/snappy](https://github.com/ubuntu-core/snappy)
 100. 1457 [netgusto/nodebook](https://github.com/netgusto/nodebook)
 
-## Fiber
+## `gofiber/fiber`
 
 ### v2
 
