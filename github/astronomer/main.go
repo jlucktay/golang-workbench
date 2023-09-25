@@ -4,7 +4,6 @@ import (
 	"container/heap"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -32,7 +31,7 @@ func main() {
 	httpClient.Timeout = 5 * time.Second
 	client := githubv4.NewClient(httpClient)
 
-	content, err := ioutil.ReadFile("list.txt")
+	content, err := os.ReadFile("list.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

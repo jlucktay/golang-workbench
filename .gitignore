@@ -36,3 +36,7 @@
 # End of https://www.gitignore.io/api/go,visualstudiocode
 
 .DS_Store
+
+# Go workspace checksum file
+# cf. https://github.com/golang/go/issues/51941
+/go.work.sum
