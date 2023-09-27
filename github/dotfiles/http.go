@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 func getResponse(get url.URL) io.Reader {
@@ -15,7 +16,7 @@ func getResponse(get url.URL) io.Reader {
 	}
 
 	req.Header.Add("User-Agent", "jlucktay (dotfiles)")
-	req.SetBasicAuth("jlucktay", ghpaToken)
+	req.SetBasicAuth("jlucktay", os.Getenv("GITHUB_TOKEN"))
 
 	res, resErr := http.DefaultClient.Do(req)
 	if resErr != nil {
