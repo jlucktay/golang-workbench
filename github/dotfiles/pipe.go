@@ -11,8 +11,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func genLinks(input *goquery.Document, filter string) (output chan url.URL) {
-	output = make(chan url.URL)
+func genLinks(input *goquery.Document, filter string) chan url.URL {
+	output := make(chan url.URL)
 
 	r, err := regexp.Compile(filter)
 	if err != nil {
@@ -33,14 +33,14 @@ func genLinks(input *goquery.Document, filter string) (output chan url.URL) {
 		close(output)
 	}()
 
-	return
+	return output
 }
 
-func genAPILang(in chan url.URL) (output chan url.URL) {
-	output = make(chan url.URL)
+func genAPILang(input chan url.URL) chan url.URL {
+	output := make(chan url.URL)
 
 	go func() {
-		for i := range in {
+		for i := range input {
 			p := strings.Split(i.Path, "/")
 			langURL, err := url.Parse(fmt.Sprintf("https://api.github.com/repos/%s/%s/languages", p[1], p[2]))
 			if err != nil {
@@ -53,11 +53,11 @@ func genAPILang(in chan url.URL) (output chan url.URL) {
 		close(output)
 	}()
 
-	return
+	return output
 }
 
-func genFilterGoRepos(input chan url.URL) (output chan url.URL) {
-	output = make(chan url.URL)
+func genFilterGoRepos(input chan url.URL) chan url.URL {
+	output := make(chan url.URL)
 
 	go func() {
 		for i := range input {
@@ -73,7 +73,7 @@ func genFilterGoRepos(input chan url.URL) (output chan url.URL) {
 		close(output)
 	}()
 
-	return
+	return output
 }
 
 func genGithubURL(input chan url.URL) chan url.URL {
