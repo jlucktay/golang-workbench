@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/forecast
 
-go 1.20
+go 1.21.1
 
 require (
 	github.com/joefitzgerald/forecast v1.2.4
@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/onsi/gomega v1.27.1 // indirect
-	golang.org/x/net v0.12.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 )

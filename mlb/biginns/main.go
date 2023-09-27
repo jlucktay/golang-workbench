@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 	"time"
@@ -11,7 +12,6 @@ import (
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"golang.org/x/exp/slog"
 )
 
 const (
@@ -112,7 +112,7 @@ func main() {
 		} else if len(xxft1[2]) == 4 {
 			parseLayout = fmt.Sprintf("%s2006%s", parseLayoutPrefix, parseLayoutSuffix)
 		} else {
-			slog.Warn("year field in date was not 2 nor 4 characters", xxft1[2])
+			slog.Warn("year field in date was not 2 nor 4 characters", slog.String("year-field", xxft1[2]))
 			continue
 		}
 

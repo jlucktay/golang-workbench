@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/gopls-watchdog
 
-go 1.20
+go 1.21.1
 
 require (
 	github.com/mitchellh/go-ps v1.0.0
@@ -13,5 +13,5 @@ require (
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
-	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 )

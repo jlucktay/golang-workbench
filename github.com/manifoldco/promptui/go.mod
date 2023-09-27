@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/manifoldco/promptui
 
-go 1.20
+go 1.21.1
 
 require github.com/manifoldco/promptui v0.7.0
 
@@ -11,6 +11,6 @@ require (
 	github.com/lunixbochs/vtclean v0.0.0-20180621232353-2d01aacdc34a // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
-	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"sort"
@@ -15,7 +16,6 @@ import (
 	"time"
 
 	"golang.org/x/exp/slices"
-	"golang.org/x/exp/slog"
 )
 
 const (
@@ -36,7 +36,7 @@ func main() {
 	flag.Parse()
 
 	// Set up logging.
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout)))
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})))
 
 	// Create somewhere to store results.
 	respStore := responseStorage{

@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github/dotfiles
 
-go 1.20
+go 1.21.1
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
@@ -8,6 +8,6 @@ require (
 )
 
 require (
-	github.com/andybalholm/cascadia v1.3.1 // indirect
-	golang.org/x/net v0.12.0 // indirect
+	github.com/andybalholm/cascadia v1.3.2 // indirect
+	golang.org/x/net v0.15.0 // indirect
 )
