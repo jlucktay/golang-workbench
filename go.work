@@ -1,4 +1,4 @@
-go 1.21
+go 1.21.1
 
 use (
 	.
@@ -78,6 +78,7 @@ use (
 	./stdlib/embed
 	./stdlib/fmt
 	./stdlib/io/fs
+	./stdlib/log/slog
 	./string_concat
 	./task-splitter
 	./test-error
