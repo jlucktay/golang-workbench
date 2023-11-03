@@ -7,7 +7,7 @@ require (
 	github.com/matryer/is v1.4.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
-	golang.org/x/sync v0.2.0
+	golang.org/x/sync v0.3.0
 )
 
 require (
