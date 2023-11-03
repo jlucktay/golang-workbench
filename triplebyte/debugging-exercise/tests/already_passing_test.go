@@ -46,6 +46,8 @@ func TestHtmlhelp(t *testing.T) {
 }
 
 func TestCrawler(t *testing.T) {
+	t.Skip("the Triplebyte GitHub Pages are gone, and just 404 now")
+
 	c := crawler.Crawler{Threads: 100, Log: crawler.Silent()}
 	graph, err := c.Crawl("http://triplebyte.github.io/web-crawler-test-site/already-passing-tests/", "")
 	if err != nil {

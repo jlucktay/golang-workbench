@@ -8,6 +8,8 @@ import (
 )
 
 func TestChallenge3(t *testing.T) {
+	t.Skip("the Triplebyte GitHub Pages are gone, and just 404 now")
+
 	// THIS TEST WILL HANG. Don't sit around waiting for it to finish!
 
 	c := crawler.Crawler{Threads: 5, Log: crawler.Verbose()}
