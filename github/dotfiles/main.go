@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	dotfilesURL, _ := url.Parse("https://dotfiles.github.io")
+	dotfilesURL, _ := url.Parse("https://dotfiles.github.io/utilities/")
 	ghRegex := `^https://github.com/[A-Za-z0-9_\-\.]+/[A-Za-z0-9_\-\.]+$`
 
 	doc, err := goquery.NewDocumentFromReader(getResponse(*dotfilesURL))
