@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/goquery
 
-go 1.21.1
+go 1.21.3
 
 require github.com/PuerkitoBio/goquery v1.8.1
 

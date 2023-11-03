@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/graphql/github
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/shurcooL/githubv4 v0.0.0-20230704064427-599ae7bbf278

@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/gopls-watchdog
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/mitchellh/go-ps v1.0.0

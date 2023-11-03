@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/labstack/echo
 
-go 1.21.1
+go 1.21.3
 
 require github.com/labstack/echo/v4 v4.10.2
 

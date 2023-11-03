@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/go_rest_api
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible

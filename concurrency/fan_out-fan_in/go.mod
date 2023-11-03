@@ -1,3 +1,3 @@
 module go.jlucktay.dev/golang-workbench/concurrency/fan_out-fan_in
 
-go 1.21.1
+go 1.21.3

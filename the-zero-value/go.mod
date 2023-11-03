@@ -1,3 +1,3 @@
 module go.jlucktay.dev/golang-workbench/the-zero-value
 
-go 1.21.1
+go 1.21.3

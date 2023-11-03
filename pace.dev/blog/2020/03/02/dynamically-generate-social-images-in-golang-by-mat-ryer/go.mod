@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/pace.dev/blog/2020/03/02/dynamically-generate-social-images-in-golang-by-mat-ryer
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/disintegration/imaging v1.6.2

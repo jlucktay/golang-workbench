@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/practical-golang-benchmarks
 
-go 1.21.1
+go 1.21.3
 
 require golang.org/x/crypto v0.14.0
 

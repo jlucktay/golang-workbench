@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/sigs.k8s.io/controller-runtime/pkg/client/fake
 
-go 1.21.1
+go 1.21.3
 
 require sigs.k8s.io/controller-runtime v0.14.4
 

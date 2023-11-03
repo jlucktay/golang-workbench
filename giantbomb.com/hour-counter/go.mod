@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/giantbomb.com/hour-counter
 
-go 1.21.1
+go 1.21.3
 
 require (
 	github.com/go-redis/redis/v7 v7.4.1

@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/mholt.github.io/binding
 
-go 1.21.1
+go 1.21.3
 
 require github.com/mholt/binding v0.3.0
 
