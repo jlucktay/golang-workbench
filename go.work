@@ -4,6 +4,7 @@ use (
 	.
 	./app-engine-1_11
 	./aws/iam
+	./aws/sdk-v2
 	./aws2tf
 	./channels/buffered
 	./check-log-output
