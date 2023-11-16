@@ -69,7 +69,7 @@ for ((i = 0; i < list_length; i++)); do
     cd "$project_directory"
 
     go get -u -v "$vuln_pkg"
-    go mod tidy -go=1.20
+    go mod tidy
     go build ./...
     go clean -x
 
