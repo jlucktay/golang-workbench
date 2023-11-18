@@ -11,7 +11,7 @@ There are 5 simple files for this demo that you can clone from [here](https://gi
 ├── apache
 │   ├── Dockerfile
 │   └── demo.apache.conf
-├── docker-compose.yml
+├── docker-compose.yaml
 ├── php
 │   └── Dockerfile
 └── public_html
@@ -48,7 +48,7 @@ This format has been around for a while in Dockerland and is now in version 3.6 
 
 This format allows for defining sets of services which make up an entire application. It allows you to define the dependencies for those services, networks, volumes, etc as code and as you roll into production, you can even specify deployment parameters on services which allow you to replicate, scale, update, and self-heal on Docker Swarm or even Kubernetes on the latest Docker for Mac or Docker Enterprise Edition!
 
-#### docker-compose.yml
+#### docker-compose.yaml
 
 ``` yaml
 version: "3.2"
@@ -164,7 +164,7 @@ LoadModule proxy_fcgi_module /usr/local/apache2/modules/mod_proxy_fcgi.so
 
 ### Volumes
 
-The last feature that we'll call out here for demonstration purposes is the use of volumes to serve out our code. Both the PHP and Apache containers have access to a "volume" that we define in the `docker-compose.yml` file which maps the `public_html` folder of our repository to the respective services for them to access. When we do this, we map a folder on the host filesystem (outside of the container context) to inside of the running containers. Developers may wish to set their projects up like this because it allows them to edit the file outside of the container, yet have the container serve the updated PHP code out as soon as changes are saved.
+The last feature that we'll call out here for demonstration purposes is the use of volumes to serve out our code. Both the PHP and Apache containers have access to a "volume" that we define in the `docker-compose.yaml` file which maps the `public_html` folder of our repository to the respective services for them to access. When we do this, we map a folder on the host filesystem (outside of the container context) to inside of the running containers. Developers may wish to set their projects up like this because it allows them to edit the file outside of the container, yet have the container serve the updated PHP code out as soon as changes are saved.
 
 Volumes are a very powerful construct of the Docker world and we're only scratching the surface of what one can achieve by using them in development and production. Please see the official documentation on volumes for further use cases and best practices!
 
