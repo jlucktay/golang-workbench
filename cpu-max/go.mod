@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/cpu-max
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/schollz/progressbar/v3 v3.13.1

@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/charmbracelet/harmonica
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/charmbracelet/bubbletea v0.23.2

@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/fibonacci-tdd-kata
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/onsi/ginkgo v1.16.5

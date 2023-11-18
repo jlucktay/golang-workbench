@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/redis/openmymind
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/caarlos0/env/v6 v6.9.3

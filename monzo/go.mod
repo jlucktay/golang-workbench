@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/monzo
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1

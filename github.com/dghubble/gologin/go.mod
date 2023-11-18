@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/dghubble/gologin
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/dghubble/gologin/v2 v2.4.0

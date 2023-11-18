@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/stdlib/log/slog
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/lmittmann/tint v1.0.2

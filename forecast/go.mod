@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/forecast
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/joefitzgerald/forecast v1.2.4
