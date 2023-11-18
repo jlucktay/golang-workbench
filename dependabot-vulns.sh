@@ -16,6 +16,10 @@ current_project=$(basename "$top_level")
 
 project_owner=$(echo "$top_level" | rev | cut -d'/' -f2 | rev)
 
+if [[ $project_owner == "go.jlucktay.dev" ]]; then
+  project_owner="jlucktay"
+fi
+
 gql_result=$(gh api graphql -f=query="
   query{
     repository(name: \"$current_project\", owner: \"$project_owner\") {
