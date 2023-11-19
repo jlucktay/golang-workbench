@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -36,7 +37,7 @@ func main() {
 	flag.Parse()
 
 	// Set up logging.
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})))
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, nil)))
 
 	// Create somewhere to store results.
 	respStore := responseStorage{
@@ -53,16 +54,25 @@ func main() {
 		go func(j int) {
 			defer wgDays.Done()
 
-			localDate := time.Now().AddDate(0, 0, *futureDays+j).Local()
+			localDate := time.Now().AddDate(0, 0, *futureDays+j)
 			fLocalDate := localDate.Format("2006-01-02")
 			url := urlDomain + fmt.Sprintf(fmtURLPath, *cinemaID, fLocalDate)
 
 			// Derived logger with URL attached.
 			slogw := slog.Default().With(slog.String("url", url))
 
-			res, err := http.Get(url)
+			req, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, url, nil)
 			if err != nil {
-				slogw.Error("getting URL", err)
+				slogw.Error("creating request",
+					slog.Any("err", err))
+
+				return
+			}
+
+			res, err := http.DefaultClient.Do(req)
+			if err != nil {
+				slogw.Error("getting URL",
+					slog.Any("err", err))
 
 				return
 			}
@@ -70,20 +80,25 @@ func main() {
 
 			body, err := io.ReadAll(res.Body)
 			if res.StatusCode >= http.StatusMultipleChoices {
-				slogw.Error("response failed", err, slog.Int("status", res.StatusCode), slog.String("body", string(body)))
+				slogw.Error("response failed",
+					slog.Any("err", err),
+					slog.Int("status", res.StatusCode),
+					slog.String("body", string(body)))
 
 				return
 			}
 
 			if err != nil {
-				slogw.Error("reading response body", err)
+				slogw.Error("reading response body",
+					slog.Any("err", err))
 
 				return
 			}
 
 			var filmEvents Response
 			if err := json.Unmarshal(body, &filmEvents); err != nil {
-				slogw.Error("unmarshaling response body", err)
+				slogw.Error("unmarshaling response body",
+					slog.Any("err", err))
 
 				return
 			}
@@ -109,7 +124,7 @@ func main() {
 	})
 
 	for i := 0; i < len(dateKeys); i++ {
-		fmt.Print(respStore.responses[dateKeys[i]])
+		fmt.Fprint(os.Stdout, respStore.responses[dateKeys[i]])
 	}
 }
 
@@ -142,18 +157,12 @@ func (b Body) String() string {
 	increasingLength := func(f1, f2 *Film) bool {
 		return f1.Length < f2.Length
 	}
-	// decreasingLength := func(f1, f2 *Film) bool {
-	// 	return f1.Length > f2.Length
-	// }
 
 	OrderedBy(name, increasingLength).Sort(b.Films)
-	// OrderedBy(name, decreasingLength).Sort(b.Films)
-	// OrderedBy(decreasingLength, name).Sort(b.Films)
 
 	var sBuilder strings.Builder
 
 	tabW := new(tabwriter.Writer)
-
 	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd // Arbitrary padding value.
 
 	if len(b.Events) >= 1 {
@@ -162,7 +171,9 @@ func (b Body) String() string {
 
 		parsedTime, err := time.Parse("2006-01-02", xedt[0])
 		if err != nil {
-			slog.Error("parsing event date time", slog.String("input", xedt[0]), slog.Any("err", err))
+			slog.Error("parsing event date time",
+				slog.String("input", xedt[0]),
+				slog.Any("err", err))
 		} else {
 			dateHeader = parsedTime.Format("2006-01-02 Monday")
 		}
@@ -306,7 +317,7 @@ func (e Event) String() string {
 
 	split := strings.Split(e.EventDateTime, "T")
 
-	if len(split) < 2 {
+	if len(split) < 2 { //nolint:gomnd // If there is no second element, the return below will panic.
 		return e.EventDateTime
 	}
 
@@ -314,12 +325,12 @@ func (e Event) String() string {
 }
 
 type CompositeBookingLink struct {
-	Type                  string      `json:"type"`
-	BookingURL            BookingURL  `json:"bookingUrl"`
-	ObsoleteBookingURL    string      `json:"obsoleteBookingUrl"`
-	BlockOnlineSales      interface{} `json:"blockOnlineSales"`
-	BlockOnlineSalesUntil interface{} `json:"blockOnlineSalesUntil"`
-	ServiceURL            string      `json:"serviceUrl"`
+	Type                  string     `json:"type"`
+	BookingURL            BookingURL `json:"bookingUrl"`
+	ObsoleteBookingURL    string     `json:"obsoleteBookingUrl"`
+	BlockOnlineSales      any        `json:"blockOnlineSales"`
+	BlockOnlineSalesUntil any        `json:"blockOnlineSalesUntil"`
+	ServiceURL            string     `json:"serviceUrl"`
 }
 
 type BookingURL struct {
