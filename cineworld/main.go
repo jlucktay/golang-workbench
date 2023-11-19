@@ -41,8 +41,8 @@ func main() {
 
 	// Create somewhere to store results.
 	respStore := responseStorage{
+		Mutex:     sync.Mutex{},
 		responses: make(map[time.Time]Response),
-		mx:        sync.Mutex{},
 	}
 
 	// Range across number of days we want listings from and request them all concurrently.
@@ -104,9 +104,9 @@ func main() {
 			}
 
 			// Store result in map.
-			respStore.mx.Lock()
+			respStore.Lock()
 			respStore.responses[localDate] = filmEvents
-			respStore.mx.Unlock()
+			respStore.Unlock()
 		}(daysIntoFuture)
 	}
 
@@ -129,8 +129,9 @@ func main() {
 }
 
 type responseStorage struct {
+	sync.Mutex
+
 	responses map[time.Time]Response
-	mx        sync.Mutex
 }
 
 // Response and its children structs were all generated thanks to [JSON-to-Go].
