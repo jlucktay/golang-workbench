@@ -41,7 +41,6 @@ func main() {
 
 	// Create somewhere to store results.
 	respStore := responseStorage{
-		Mutex:     sync.Mutex{},
 		responses: make(map[time.Time]Response),
 	}
 
