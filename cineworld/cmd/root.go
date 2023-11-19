@@ -4,12 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/carlmjohnson/versioninfo"
+	"github.com/lmittmann/tint"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 )
 
 // Exit status codes returned by the CLI.
@@ -66,7 +70,8 @@ The cinema to show screenings for can also be set, by its ID.`,
 
 		Version: version,
 
-		RunE: root,
+		PersistentPreRun: func(_ *cobra.Command, _ []string) { setUpLogging(stderr) },
+		RunE:             root,
 	}
 
 	// Wire in the arguments passed to this func.
@@ -103,4 +108,22 @@ func root(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+// setUpLogging will detect whether stderr is a terminal. If so it configures human-readable colourful logs, or JSON
+// logs if not. The configured logger is then assigned as [slog]'s package-level default.
+// Per [these CLI guidelines], logging is assumed to be sent to stderr, as implied by this argument's name.
+//
+// [these CLI guidelines]: https://clig.dev/#the-basics
+func setUpLogging(stderr io.Writer) {
+	var handler slog.Handler
+
+	stderrFile, isFile := stderr.(*os.File)
+	if isFile && term.IsTerminal(int(stderrFile.Fd())) {
+		handler = tint.NewHandler(stderr, nil)
+	} else {
+		handler = slog.NewJSONHandler(stderr, nil)
+	}
+
+	slog.SetDefault(slog.New(handler))
 }
