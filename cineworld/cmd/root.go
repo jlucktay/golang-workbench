@@ -4,16 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log/slog"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/carlmjohnson/versioninfo"
-	"github.com/lmittmann/tint"
 	"github.com/spf13/cobra"
-	"golang.org/x/term"
 )
 
 // Exit status codes returned by the CLI.
@@ -26,13 +22,9 @@ const (
 
 	// ExitNoCommandName if Execute is passed a zero-length string slice, without a command name as the first element.
 	ExitNoCommandName
-)
 
-//nolint:gochecknoglobals // Flags to pass parsed values forward to command logic.
-var (
-	flagCinemaID                   string
-	flagFutureDays, flagNumberDays int
-	flagInclude3D                  bool
+	// ExitParsingArguments if parsing arguments goes awry.
+	ExitParsingArguments
 )
 
 var ErrUnknownArguments = errors.New("unknown arguments passed in")
@@ -79,15 +71,16 @@ The cinema to show screenings for can also be set, by its ID.`,
 	rootCmd.SetErr(stderr)
 	rootCmd.SetArgs(args[1:])
 
-	// Set up flags.
-	rootCmd.PersistentFlags().StringVarP(&flagCinemaID, "cinema-id", "c", "073", "ID of cinema to pull screenings for")
-	rootCmd.PersistentFlags().IntVarP(&flagFutureDays, "future-days", "f", 0,
-		"start listing from this many days into the future")
-	rootCmd.PersistentFlags().BoolVarP(&flagInclude3D, "include-3d", "3", false, "include screenings in 3D")
-	rootCmd.PersistentFlags().IntVarP(&flagNumberDays, "number-days", "n", 1, "retrieve screenings for this many days")
+	// Add persistent flags to the root command, and then execute it.
+	rootCmd.PersistentFlags().AddFlagSet(rootPersistentFlags())
 
 	if err := rootCmd.Execute(); err != nil {
-		return ExitUnknown
+		switch {
+		case errors.Is(err, ErrUnknownArguments):
+			return ExitParsingArguments
+		default:
+			return ExitUnknown
+		}
 	}
 
 	return ExitSuccess
@@ -108,22 +101,4 @@ func root(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-}
-
-// setUpLogging will detect whether stderr is a terminal. If so it configures human-readable colourful logs, or JSON
-// logs if not. The configured logger is then assigned as [slog]'s package-level default.
-// Per [these CLI guidelines], logging is assumed to be sent to stderr, as implied by this argument's name.
-//
-// [these CLI guidelines]: https://clig.dev/#the-basics
-func setUpLogging(stderr io.Writer) {
-	var handler slog.Handler
-
-	stderrFile, isFile := stderr.(*os.File)
-	if isFile && term.IsTerminal(int(stderrFile.Fd())) {
-		handler = tint.NewHandler(stderr, nil)
-	} else {
-		handler = slog.NewJSONHandler(stderr, nil)
-	}
-
-	slog.SetDefault(slog.New(handler))
 }
