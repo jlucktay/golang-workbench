@@ -14,7 +14,7 @@ func main() {
 
 	status := run(os.Stdout)
 
-	slog.Info("goodbye", slog.String("emoji", "👋"))
+	slog.Info("goodbye before os.Exit call", slog.String("emoji", "👋"))
 
 	os.Exit(status)
 }
@@ -26,14 +26,20 @@ func run(stdout io.Writer) int {
 
 	stdoutFile, isFile := stdout.(*os.File)
 	if isFile && term.IsTerminal(int(stdoutFile.Fd())) {
-		handler = tint.NewHandler(stdout, &tint.Options{NoColor: false})
+		handler = tint.NewHandler(stdout, nil)
 	} else {
-		handler = slog.NewJSONHandler(stdout, &slog.HandlerOptions{})
+		handler = slog.NewJSONHandler(stdout, nil)
 	}
 
-	slog.SetDefault(slog.New(handler))
+	slogger := slog.New(handler)
 
-	slog.Info("hello", slog.String("emoji", "🙂"))
+	slogger.Info("direct call to new structured logger", slog.String("emoji", "👀"))
+
+	defer slogger.Info("deferred call made directly to new structured logger", slog.String("emoji", "🐌"))
+
+	slog.SetDefault(slogger)
+
+	slog.Info("hello via slog package default logger", slog.String("emoji", "🙂"))
 
 	return 0
 }
