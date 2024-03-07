@@ -1,4 +1,4 @@
-go 1.21
+go 1.22
 
 use (
 	.
@@ -62,6 +62,7 @@ use (
 	./leetcode/315
 	./leetcode/629
 	./memory-management-and-allocation
+	./mhhs
 	./mholt.github.io/binding
 	./mlb/biginns
 	./monzo
