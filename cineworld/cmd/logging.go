@@ -9,12 +9,12 @@ import (
 	"golang.org/x/term"
 )
 
-// setUpLogging will detect whether stderr is a terminal. If so it configures human-readable colourful logs, or JSON
-// logs if not. The configured logger is then assigned as [slog]'s package-level default.
+// setUpLogging will detect whether stderr is a terminal.
+// If so it configures human-readable colourful logs, or JSON logs if not.
 // Per [these CLI guidelines], logging is assumed to be sent to stderr, as implied by this argument's name.
 //
 // [these CLI guidelines]: https://clig.dev/#the-basics
-func setUpLogging(stderr io.Writer) {
+func setUpLogging(stderr io.Writer) *slog.Logger {
 	var handler slog.Handler
 
 	stderrFile, isFile := stderr.(*os.File)
@@ -24,5 +24,5 @@ func setUpLogging(stderr io.Writer) {
 		handler = slog.NewJSONHandler(stderr, nil)
 	}
 
-	slog.SetDefault(slog.New(handler))
+	return slog.New(handler)
 }

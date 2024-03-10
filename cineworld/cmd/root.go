@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"path/filepath"
 	"strings"
 	"time"
@@ -38,6 +39,8 @@ func Execute(stdout, stderr io.Writer, args []string) int {
 	}
 
 	cmdName := filepath.Base(args[0])
+
+	slogger := setUpLogging(stderr)
 
 	version := fmt.Sprintf("%s built on %s from git SHA %s",
 		versioninfo.Version, versioninfo.LastCommit.UTC().Format(time.RFC3339), versioninfo.Revision)
@@ -75,6 +78,9 @@ The cinema to show screenings for can also be set, by its ID.`,
 	rootCmd.PersistentFlags().AddFlagSet(rootPersistentFlags())
 
 	if err := rootCmd.Execute(); err != nil {
+		defer slogger.Error("executing root command",
+			slog.Any("err", err))
+
 		switch {
 		case errors.Is(err, ErrUnknownArguments):
 			return ExitParsingArguments
