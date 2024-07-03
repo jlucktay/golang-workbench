@@ -30,6 +30,7 @@ use (
 	./form3/pilot3
 	./generics
 	./giantbomb.com/hour-counter
+	./ginsu
 	./github.com/alainakafkes/twilio-sms-tutorial
 	./github.com/charmbracelet/harmonica
 	./github.com/dghubble/gologin
