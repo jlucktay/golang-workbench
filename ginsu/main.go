@@ -15,6 +15,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/google/go-github/v62/github"
+	"github.com/sourcegraph/conc/pool"
 	"github.com/spf13/pflag"
 	"golang.org/x/oauth2"
 	"golang.org/x/term"
@@ -27,6 +28,8 @@ import (
 // [scopes]: https://docs.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/
 // [authorised]: https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 const ghToken = "GITHUB_TOKEN"
+
+const listPerPage = 50
 
 const (
 	exitSuccess = iota
@@ -109,6 +112,53 @@ func run(ctx context.Context, token string) error {
 	hc.Timeout = 5 * time.Second
 	client := github.NewClient(hc)
 
+	firstPage, lastPage, err := listPageOfNotifications(ctx, client, 1)
+	if err != nil {
+		return fmt.Errorf("listing first page of notifications: %w", err)
+	}
+
+	slog.Debug("notification list pages",
+		slog.Int("last", lastPage),
+	)
+
+	p := pool.NewWithResults[[]*github.Notification]().WithContext(ctx)
+
+	for page := 2; page <= lastPage; page++ {
+		page := page
+
+		p.Go(func(ctx context.Context) ([]*github.Notification, error) {
+			result, _, err := listPageOfNotifications(ctx, client, page)
+			return result, err
+		})
+	}
+
+	pagesAfterFirst, err := p.Wait()
+	if err != nil {
+		return fmt.Errorf("paginating notifications: %w", err)
+	}
+
+	notifications := slices.Concat(firstPage, slices.Concat(pagesAfterFirst...))
+
+	slog.Debug("notifications",
+		slog.Int("count", len(notifications)),
+	)
+
+	q := pool.New().WithErrors()
+
+	for i := 0; i < len(notifications); i++ {
+		index := i
+
+		q.Go(func() error {
+			return process(ctx, client, notifications[index])
+		})
+	}
+
+	return q.Wait()
+}
+
+func listPageOfNotifications(ctx context.Context, client *github.Client, page int) (
+	[]*github.Notification, int, error,
+) {
 	opts := &github.NotificationListOptions{
 		// If true, show notifications marked as read.
 		All: false,
@@ -117,41 +167,59 @@ func run(ctx context.Context, token string) error {
 		Participating: false,
 
 		ListOptions: github.ListOptions{
-			PerPage: 100,
+			Page:    page,
+			PerPage: listPerPage,
 		},
 	}
 
+	slog.Debug("started listing page of notifications",
+		slog.Int("page_number", opts.Page),
+	)
+
+	defer slog.Debug("finished listing page of notifications",
+		slog.Int("page_number", opts.Page),
+	)
+
 	nots, resp, err := client.Activity.ListNotifications(ctx, opts)
 	if err != nil {
-		return fmt.Errorf("getting notifications: %w", err)
+		return nil, 0, fmt.Errorf("listing notifications: %w", err)
 	}
 	defer resp.Body.Close()
 
-	for index := range nots {
-		switch nots[index].GetSubject().GetType() {
-		case "Issue":
-			if err := lookAtIssue(ctx, client, nots[index]); err != nil {
-				slog.Error("issue",
-					slog.Any("err", err),
-				)
-			}
+	slog.Debug("got page of notifications",
+		slog.Int("page_number", opts.Page),
+		slog.Int("count", len(nots)),
+	)
 
-		case "PullRequest":
-			if err := lookAtPullRequest(ctx, client, nots[index]); err != nil {
-				slog.Error("pull request",
-					slog.Any("err", err),
-				)
-			}
+	return nots, resp.LastPage, nil
+}
 
-		default:
-			slog.Info("not an issue or a PR, moving on",
-				slog.String("type", nots[index].GetSubject().GetType()),
-				slog.String("title", nots[index].GetSubject().GetTitle()),
-			)
-		}
+func process(ctx context.Context, client *github.Client, ghn *github.Notification) error {
+	slog.Debug("starting to process notification",
+		slog.String("type", ghn.GetSubject().GetType()),
+		slog.String("title", ghn.GetSubject().GetTitle()),
+	)
+
+	defer slog.Debug("finished processing notification",
+		slog.String("type", ghn.GetSubject().GetType()),
+		slog.String("title", ghn.GetSubject().GetTitle()),
+	)
+
+	switch ghn.GetSubject().GetType() {
+	case "Issue":
+		return lookAtIssue(ctx, client, ghn)
+
+	case "PullRequest":
+		return lookAtPullRequest(ctx, client, ghn)
+
+	default:
+		slog.Warn("not an issue or a PR",
+			slog.String("type", ghn.GetSubject().GetType()),
+			slog.String("title", ghn.GetSubject().GetTitle()),
+		)
+
+		return nil
 	}
-
-	return nil
 }
 
 func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notification) error {
@@ -181,6 +249,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.String("repo", ghn.GetRepository().GetFullName()),
 			slog.String("seperator", "/"),
 		)
+
 		return nil
 	}
 
@@ -206,10 +275,12 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.String("url", ghn.GetSubject().GetURL()),
 			slog.String("seperator", "/"),
 		)
+
 		return nil
 	}
 
 	prNumber := xURL[len(xURL)-1]
+
 	number, err := strconv.Atoi(prNumber)
 	if err != nil {
 		return fmt.Errorf("could not convert PR number '%s': %w", prNumber, err)
@@ -228,6 +299,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.String("title", pr.GetTitle()),
 			slog.String("state", pr.GetState()),
 		)
+
 		return nil
 	}
 
