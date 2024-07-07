@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -43,6 +44,8 @@ var (
 	flagOwnerAllowlist = pflag.StringSliceP("owner-allowlist", "o", []string{},
 		"only drill down on these repo owners; comma-separated, not used if left unset")
 )
+
+var errOwnerNotOnAllowlist = errors.New("repo owner not on allowlist")
 
 func main() {
 	// Declare and defer this first, so that it runs last.
@@ -207,7 +210,23 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 
 	switch ghn.GetSubject().GetType() {
 	case "Issue":
-		return lookAtIssue(ctx, client, ghn)
+		if err := lookAtIssue(ctx, client, ghn); err != nil {
+			if !errors.Is(err, errOwnerNotOnAllowlist) {
+				return err
+			}
+
+			slog.Warn("owner not on allowlist",
+				slog.String("repo", ghn.GetRepository().GetFullName()),
+				slog.String("title", ghn.GetSubject().GetTitle()),
+				slog.String("type", ghn.GetSubject().GetType()),
+				slog.String("url", ghn.GetSubject().GetURL()),
+				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
+				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
+				slog.Any("err", err),
+			)
+		}
+
+		return nil
 
 	case "PullRequest":
 		return lookAtPullRequest(ctx, client, ghn)
@@ -222,13 +241,67 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 	}
 }
 
+type details struct {
+	owner, repo string
+	number      int
+}
+
+func parseForDetails(ghn *github.Notification) (details, error) {
+	xRepoFN := strings.Split(ghn.GetRepository().GetFullName(), "/")
+	if len(xRepoFN) < 2 {
+		return details{}, fmt.Errorf("repo full name '%s' did not split into at least two substrings",
+			ghn.GetRepository().GetFullName())
+	}
+
+	owner := xRepoFN[0]
+	repo := xRepoFN[1]
+
+	if len(*flagOwnerAllowlist) > 0 && !slices.Contains(*flagOwnerAllowlist, owner) {
+		return details{}, fmt.Errorf("%w: %s", errOwnerNotOnAllowlist, owner)
+	}
+
+	xURL := strings.Split(ghn.GetSubject().GetURL(), "/")
+	if len(xURL) < 1 {
+		return details{}, fmt.Errorf("notification subject URL '%s' did not split", ghn.GetSubject().GetURL())
+	}
+
+	subjectURLNumber := xURL[len(xURL)-1]
+
+	number, err := strconv.Atoi(subjectURLNumber)
+	if err != nil {
+		return details{}, fmt.Errorf("could not convert subject URL number '%s': %w", subjectURLNumber, err)
+	}
+
+	return details{
+		owner:  owner,
+		repo:   repo,
+		number: number,
+	}, nil
+}
+
 func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notification) error {
-	slog.Info("issue notification",
+	slog.Debug("issue notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("url", ghn.GetSubject().GetURL()),
 		slog.Time("updated_at", ghn.GetUpdatedAt().Time),
+	)
+
+	issDets, err := parseForDetails(ghn)
+	if err != nil {
+		return fmt.Errorf("parsing for details: %w", err)
+	}
+
+	issue, resp, err := client.Issues.Get(ctx, issDets.owner, issDets.repo, issDets.number)
+	if err != nil {
+		return fmt.Errorf("getting pull request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	slog.Info("state of issue",
+		slog.Int("number", issue.GetNumber()),
+		slog.String("state", issue.GetState()),
 	)
 
 	return nil
@@ -243,50 +316,12 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 		slog.Time("updated_at", ghn.GetUpdatedAt().Time),
 	)
 
-	xRepoFN := strings.Split(ghn.GetRepository().GetFullName(), "/")
-	if len(xRepoFN) < 2 {
-		slog.Warn("repo full name did not split into at least two substrings",
-			slog.String("repo", ghn.GetRepository().GetFullName()),
-			slog.String("seperator", "/"),
-		)
-
-		return nil
-	}
-
-	owner := xRepoFN[0]
-	repo := xRepoFN[1]
-
-	if len(*flagOwnerAllowlist) > 0 && !slices.Contains(*flagOwnerAllowlist, owner) {
-		slog.Warn("repo owner not on allowlist",
-			slog.String("repo", ghn.GetRepository().GetFullName()),
-			slog.String("owner", owner),
-			slog.Any("allowlist", *flagOwnerAllowlist),
-			slog.String("title", ghn.GetSubject().GetTitle()),
-			slog.String("type", ghn.GetSubject().GetType()),
-			slog.String("url", ghn.GetSubject().GetURL()),
-		)
-
-		return nil
-	}
-
-	xURL := strings.Split(ghn.GetSubject().GetURL(), "/")
-	if len(xURL) < 1 {
-		slog.Warn("PR URL did not split",
-			slog.String("url", ghn.GetSubject().GetURL()),
-			slog.String("seperator", "/"),
-		)
-
-		return nil
-	}
-
-	prNumber := xURL[len(xURL)-1]
-
-	number, err := strconv.Atoi(prNumber)
+	prDets, err := parseForDetails(ghn)
 	if err != nil {
-		return fmt.Errorf("could not convert PR number '%s': %w", prNumber, err)
+		return fmt.Errorf("parsing for details: %w", err)
 	}
 
-	pr, resp, err := client.PullRequests.Get(ctx, owner, repo, number)
+	pr, resp, err := client.PullRequests.Get(ctx, prDets.owner, prDets.repo, prDets.number)
 	if err != nil {
 		return fmt.Errorf("getting pull request: %w", err)
 	}
@@ -295,7 +330,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	if pr.GetState() != "closed" {
 		slog.Debug("PR not closed, so leaving associated notification alone",
 			slog.String("repo", ghn.GetRepository().GetFullName()),
-			slog.Int("number", number),
+			slog.Int("number", prDets.number),
 			slog.String("title", pr.GetTitle()),
 			slog.String("state", pr.GetState()),
 		)
@@ -305,7 +340,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 
 	slog.Info("PR is closed, marking as done",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
-		slog.Int("number", number),
+		slog.Int("number", prDets.number),
 		slog.String("title", pr.GetTitle()),
 		slog.String("state", pr.GetState()),
 	)
