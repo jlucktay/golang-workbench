@@ -215,7 +215,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 				return err
 			}
 
-			slog.Warn("owner not on allowlist",
+			slog.Warn("issue owner not on allowlist",
 				slog.String("repo", ghn.GetRepository().GetFullName()),
 				slog.String("title", ghn.GetSubject().GetTitle()),
 				slog.String("type", ghn.GetSubject().GetType()),
@@ -229,7 +229,23 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		return nil
 
 	case "PullRequest":
-		return lookAtPullRequest(ctx, client, ghn)
+		if err := lookAtPullRequest(ctx, client, ghn); err != nil {
+			if !errors.Is(err, errOwnerNotOnAllowlist) {
+				return err
+			}
+
+			slog.Warn("PR owner not on allowlist",
+				slog.String("repo", ghn.GetRepository().GetFullName()),
+				slog.String("title", ghn.GetSubject().GetTitle()),
+				slog.String("type", ghn.GetSubject().GetType()),
+				slog.String("url", ghn.GetSubject().GetURL()),
+				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
+				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
+				slog.Any("err", err),
+			)
+		}
+
+		return nil
 
 	default:
 		slog.Warn("not an issue or a PR",
