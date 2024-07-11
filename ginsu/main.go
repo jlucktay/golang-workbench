@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -30,7 +31,10 @@ import (
 // [authorised]: https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 const ghToken = "GITHUB_TOKEN"
 
-const listPerPage = 50
+const (
+	listPerPage     = 50
+	loginDependabot = "dependabot[bot]"
+)
 
 const (
 	exitSuccess = iota
@@ -147,16 +151,27 @@ func run(ctx context.Context, token string) error {
 	)
 
 	q := pool.New().WithErrors()
+	dependabotCounter := &atomic.Uint64{}
+	var i int
 
-	for i := 0; i < len(notifications); i++ {
+	for i = 0; i < len(notifications); i++ {
 		index := i
 
 		q.Go(func() error {
-			return process(ctx, client, notifications[index])
+			return process(ctx, client, notifications[index], dependabotCounter)
 		})
 	}
 
-	return q.Wait()
+	if err := q.Wait(); err != nil {
+		return fmt.Errorf("working through notification pool: %w", err)
+	}
+
+	slog.Info("count of notifications processed",
+		slog.Int("total", i),
+		slog.Uint64("dependabot", dependabotCounter.Load()),
+	)
+
+	return nil
 }
 
 func listPageOfNotifications(ctx context.Context, client *github.Client, page int) (
@@ -197,7 +212,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	return nots, resp.LastPage, nil
 }
 
-func process(ctx context.Context, client *github.Client, ghn *github.Notification) error {
+func process(ctx context.Context, client *github.Client, ghn *github.Notification, dependabot *atomic.Uint64) error {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
@@ -229,7 +244,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		return nil
 
 	case "PullRequest":
-		if err := lookAtPullRequest(ctx, client, ghn); err != nil {
+		if err := lookAtPullRequest(ctx, client, ghn, dependabot); err != nil {
 			if !errors.Is(err, errOwnerNotOnAllowlist) {
 				return err
 			}
@@ -323,7 +338,8 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 	return nil
 }
 
-func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification) error {
+func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, dependabot *atomic.Uint64,
+) error {
 	slog.Debug("PR notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
@@ -343,9 +359,18 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	}
 	defer resp.Body.Close()
 
+	if pr.GetUser().GetLogin() == loginDependabot {
+		slog.Debug("dependabot PR",
+			slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
+			slog.String("title", pr.GetTitle()),
+		)
+
+		dependabot.Add(1)
+	}
+
 	if pr.GetState() != "closed" {
 		slog.Debug("PR not closed, so leaving associated notification alone",
-			slog.String("repo", ghn.GetRepository().GetFullName()),
+			slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 			slog.Int("number", prDets.number),
 			slog.String("title", pr.GetTitle()),
 			slog.String("state", pr.GetState()),
@@ -355,7 +380,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	}
 
 	slog.Info("PR is closed, marking as done",
-		slog.String("repo", ghn.GetRepository().GetFullName()),
+		slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 		slog.Int("number", prDets.number),
 		slog.String("title", pr.GetTitle()),
 		slog.String("state", pr.GetState()),
