@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path"
 	"slices"
 	"strconv"
 	"strings"
@@ -31,17 +32,28 @@ import (
 // [authorised]: https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 const ghToken = "GITHUB_TOKEN"
 
+var requiredScopes = []string{"repo", "notifications"}
+
 const (
 	listPerPage     = 50
 	loginDependabot = "dependabot[bot]"
 )
 
+// HTTP header keys.
+const (
+	// headerKeyScopes will list the scopes the token has authorised.
+	headerKeyScopes = "X-Oauth-Scopes"
+)
+
+// Exit statuses.
 const (
 	exitSuccess = iota
 	exitUnknown
 	exitNoTokenSet
+	exitTokenMissingScopes
 )
 
+// Flags.
 var (
 	flagDebug = pflag.BoolP("debug", "d", false,
 		"show debugging output")
@@ -49,7 +61,11 @@ var (
 		"only drill down on these repo owners; comma-separated, not used if left unset")
 )
 
-var errOwnerNotOnAllowlist = errors.New("repo owner not on allowlist")
+// Static errors.
+var (
+	errOwnerNotOnAllowlist        = errors.New("repo owner not on allowlist")
+	errTokenMissingRequiredScopes = errors.New("token does not have required scope")
+)
 
 func main() {
 	// Declare and defer this first, so that it runs last.
@@ -106,7 +122,14 @@ func main() {
 			slog.Any("err", err),
 		)
 
-		exitStatus = exitUnknown
+		switch {
+		case errors.Is(err, errTokenMissingRequiredScopes):
+			exitStatus = exitTokenMissingScopes
+
+		default:
+			exitStatus = exitUnknown
+		}
+
 		return
 	}
 
@@ -119,6 +142,7 @@ func run(ctx context.Context, token string) error {
 	hc.Timeout = 5 * time.Second
 	client := github.NewClient(hc)
 
+	// Start sifting through notifications.
 	firstPage, lastPage, err := listPageOfNotifications(ctx, client, 1)
 	if err != nil {
 		return fmt.Errorf("listing first page of notifications: %w", err)
@@ -174,6 +198,38 @@ func run(ctx context.Context, token string) error {
 	return nil
 }
 
+func checkTokenScopes(headers http.Header) error {
+	scopesFound := map[string]struct{}{}
+
+	for headerKey, headerValue := range headers {
+		if !strings.EqualFold(headerKey, headerKeyScopes) {
+			continue
+		}
+
+		slog.Debug("scopes header",
+			slog.String("key", headerKey),
+			slog.String("slice", fmt.Sprintf("%#v", headerValue)),
+		)
+
+		for index := range headerValue {
+			for _, foundScope := range strings.Split(headerValue[index], ",") {
+				trimmedScope := strings.TrimSpace(foundScope)
+				scopesFound[trimmedScope] = struct{}{}
+			}
+		}
+	}
+
+	for index := range requiredScopes {
+		requiredScope := requiredScopes[index]
+
+		if _, foundRequiredScope := scopesFound[requiredScope]; !foundRequiredScope {
+			return fmt.Errorf("%w: %s", errTokenMissingRequiredScopes, requiredScope)
+		}
+	}
+
+	return nil
+}
+
 func listPageOfNotifications(ctx context.Context, client *github.Client, page int) (
 	[]*github.Notification, int, error,
 ) {
@@ -208,6 +264,13 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 		slog.Int("page_number", opts.Page),
 		slog.Int("count", len(nots)),
 	)
+
+	// Make sure the token we're using has the necessary scopes, but only do so for the first page and not every time.
+	if page == 1 {
+		if err := checkTokenScopes(resp.Header); err != nil {
+			return nil, 0, fmt.Errorf("checking token scopes: %w", err)
+		}
+	}
 
 	return nots, resp.LastPage, nil
 }
@@ -390,7 +453,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 }
 
 func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notification) error {
-	reqURL := "https://api.github.com/notifications/threads/" + ghn.GetID()
+	reqURL := client.BaseURL.String() + path.Join("notifications", "threads", ghn.GetID())
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, reqURL, nil)
 	if err != nil {
