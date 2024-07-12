@@ -13,6 +13,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -43,7 +44,15 @@ const (
 const (
 	// headerKeyScopes will list the scopes the token has authorised.
 	headerKeyScopes = "X-Oauth-Scopes"
+
+	// headerKeySAML will be populated if the token used is not authorised for [SAML SSO].
+	//
+	// [SAML SSO]: https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28#personal-access-tokens-and-saml-sso
+	headerKeySAML = "X-GitHub-SSO"
 )
+
+// Run these checks only once each.
+var checkScopes, checkSAML sync.Once
 
 // Exit statuses.
 const (
@@ -51,6 +60,7 @@ const (
 	exitUnknown
 	exitNoTokenSet
 	exitTokenMissingScopes
+	exitTokenMissingSAMLSSOAuth
 )
 
 // Flags.
@@ -65,6 +75,7 @@ var (
 var (
 	errOwnerNotOnAllowlist        = errors.New("repo owner not on allowlist")
 	errTokenMissingRequiredScopes = errors.New("token does not have required scope")
+	errTokenMissingSAMLSSOAuth    = errors.New("token is not authorised for SAML SSO with org(s)")
 )
 
 func main() {
@@ -125,6 +136,9 @@ func main() {
 		switch {
 		case errors.Is(err, errTokenMissingRequiredScopes):
 			exitStatus = exitTokenMissingScopes
+
+		case errors.Is(err, errTokenMissingSAMLSSOAuth):
+			exitStatus = exitTokenMissingSAMLSSOAuth
 
 		default:
 			exitStatus = exitUnknown
@@ -199,23 +213,22 @@ func run(ctx context.Context, token string) error {
 }
 
 func checkTokenScopes(headers http.Header) error {
+	scopesHeader, scopesHeaderExists := headers[http.CanonicalHeaderKey(headerKeyScopes)]
+	if !scopesHeaderExists {
+		return fmt.Errorf("%w: %s", errTokenMissingRequiredScopes, strings.Join(requiredScopes, ","))
+	}
+
 	scopesFound := map[string]struct{}{}
 
-	for headerKey, headerValue := range headers {
-		if !strings.EqualFold(headerKey, headerKeyScopes) {
-			continue
-		}
+	slog.Debug("scopes header",
+		slog.String("key", headerKeyScopes),
+		slog.String("slice", fmt.Sprintf("%#v", scopesHeader)),
+	)
 
-		slog.Debug("scopes header",
-			slog.String("key", headerKey),
-			slog.String("slice", fmt.Sprintf("%#v", headerValue)),
-		)
-
-		for index := range headerValue {
-			for _, foundScope := range strings.Split(headerValue[index], ",") {
-				trimmedScope := strings.TrimSpace(foundScope)
-				scopesFound[trimmedScope] = struct{}{}
-			}
+	for index := range scopesHeader {
+		for _, foundScope := range strings.Split(scopesHeader[index], ",") {
+			trimmedScope := strings.TrimSpace(foundScope)
+			scopesFound[trimmedScope] = struct{}{}
 		}
 	}
 
@@ -228,6 +241,55 @@ func checkTokenScopes(headers http.Header) error {
 	}
 
 	return nil
+}
+
+func checkTokenSAML(headers http.Header) error {
+	samlHeader, samlHeaderExists := headers[http.CanonicalHeaderKey(headerKeySAML)]
+	if !samlHeaderExists {
+		return nil
+	}
+
+	orgIDs := []string{}
+
+	slog.Debug("SAML SSO header",
+		slog.String("key", headerKeySAML),
+		slog.String("slice", fmt.Sprintf("%#v", samlHeader)),
+	)
+
+	for i := range samlHeader {
+		xValue := strings.Split(samlHeader[i], "; ")
+
+		slog.Debug("header value",
+			slog.Int("index", i),
+			slog.String("slice", fmt.Sprintf("%#v", xValue)),
+		)
+
+		for j := range xValue {
+			if !strings.HasPrefix(xValue[j], "organizations=") {
+				continue
+			}
+
+			rawOrgIDs := strings.SplitAfter(xValue[j], "organizations=")
+
+			slog.Debug("raw org IDs",
+				slog.Int("index", j),
+				slog.String("slice", fmt.Sprintf("%#v", rawOrgIDs)),
+			)
+
+			if len(rawOrgIDs) > 1 {
+				orgIDs = append(orgIDs, strings.Split(rawOrgIDs[1], ",")...)
+			}
+		}
+	}
+
+	orgAPIURLs := []string{}
+
+	for i := range orgIDs {
+		fmtOrgAPIURL := "https://api.github.com/orgs/%s"
+		orgAPIURLs = append(orgAPIURLs, fmt.Sprintf(fmtOrgAPIURL, orgIDs[i]))
+	}
+
+	return fmt.Errorf("%w: %s", errTokenMissingSAMLSSOAuth, strings.Join(orgAPIURLs, ";"))
 }
 
 func listPageOfNotifications(ctx context.Context, client *github.Client, page int) (
@@ -265,11 +327,23 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 		slog.Int("count", len(nots)),
 	)
 
-	// Make sure the token we're using has the necessary scopes, but only do so for the first page and not every time.
-	if page == 1 {
-		if err := checkTokenScopes(resp.Header); err != nil {
-			return nil, 0, fmt.Errorf("checking token scopes: %w", err)
-		}
+	// Check the token we're using has the necessary scopes and SAML SSO auth, but only once each.
+	var errTokenScopes, errSAML error
+
+	checkScopes.Do(func() {
+		errTokenScopes = checkTokenScopes(resp.Header)
+	})
+
+	if errTokenScopes != nil {
+		return nil, 0, fmt.Errorf("checking token scopes: %w", errTokenScopes)
+	}
+
+	checkSAML.Do(func() {
+		errSAML = checkTokenSAML(resp.Header)
+	})
+
+	if errSAML != nil {
+		return nil, 0, errSAML
 	}
 
 	return nots, resp.LastPage, nil
