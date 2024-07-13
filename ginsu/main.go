@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"runtime/debug"
 	"slices"
 	"strconv"
 	"strings"
@@ -32,6 +33,8 @@ import (
 // [scopes]: https://docs.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/
 // [authorised]: https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 const ghToken = "GITHUB_TOKEN"
+
+const cmdName = "ginsu"
 
 var requiredScopes = []string{"repo", "notifications"}
 
@@ -58,6 +61,7 @@ var checkScopes, checkSAML sync.Once
 const (
 	exitSuccess = iota
 	exitUnknown
+	exitHelp
 	exitNoTokenSet
 	exitTokenMissingScopes
 	exitTokenMissingSAMLSSOAuth
@@ -67,6 +71,8 @@ const (
 var (
 	flagDebug = pflag.BoolP("debug", "d", false,
 		"show debugging output")
+	flagHelp = pflag.BoolP("help", "h", false,
+		"show help, and version from build info if available")
 	flagOwnerAllowlist = pflag.StringSliceP("owner-allowlist", "o", []string{},
 		"only drill down on these repo owners; comma-separated, not used if left unset")
 )
@@ -89,6 +95,22 @@ func main() {
 	}()
 
 	pflag.Parse()
+
+	if *flagHelp {
+		helpOutput := &strings.Builder{}
+		helpOutput.WriteString(cmdName)
+
+		if bi, ok := debug.ReadBuildInfo(); ok && bi != nil {
+			fmt.Fprintf(helpOutput, ", version %s\n\n", bi.Main.Version)
+		}
+
+		helpOutput.WriteString(pflag.CommandLine.FlagUsages())
+
+		fmt.Print(helpOutput)
+
+		exitStatus = exitHelp
+		return
+	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
