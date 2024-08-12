@@ -529,9 +529,10 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 
 	if pr.GetState() != "closed" {
 		slog.Debug("PR not closed, so leaving associated notification alone",
+			slog.String("title", pr.GetTitle()),
+			slog.String("user_login", pr.GetUser().GetLogin()),
 			slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 			slog.Int("number", prDets.number),
-			slog.String("title", pr.GetTitle()),
 			slog.String("state", pr.GetState()),
 		)
 
@@ -539,9 +540,10 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	}
 
 	slog.Info("PR is closed, marking as done",
+		slog.String("title", pr.GetTitle()),
+		slog.String("user_login", pr.GetUser().GetLogin()),
 		slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 		slog.Int("number", prDets.number),
-		slog.String("title", pr.GetTitle()),
 		slog.String("state", pr.GetState()),
 	)
 
