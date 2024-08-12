@@ -2,7 +2,10 @@ module go.jlucktay.dev/golang-workbench/dtm
 
 go 1.22
 
-require github.com/docker/docker v27.1.1+incompatible
+require (
+	github.com/Masterminds/semver/v3 v3.2.1
+	github.com/docker/docker v27.1.1+incompatible
+)
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
