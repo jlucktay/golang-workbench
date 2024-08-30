@@ -20,3 +20,13 @@ then the `DOCKER_HOST` environment variable needs to be set when running `dtm`:
 export DOCKER_HOST="$(docker context inspect --format="{{ .Endpoints.docker.Host }}")"
 dtm
 ```
+
+## Correctness
+
+Check the output of `dtm` against `docker` proper with the following comparison:
+
+```shell
+delta \
+  <(DOCKER_HOST="$(docker context inspect --format="{{ .Endpoints.docker.Host }}")" ./dtm | sort -f) \
+  <(docker images --format='table {{ .Repository }}\t{{ .Tag }}\t{{ .ID }}' | tail -n +2 | sort -f)
+```
