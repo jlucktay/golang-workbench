@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"context"
 	"fmt"
+	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -62,17 +63,23 @@ func main() {
 	slices.SortStableFunc(localImages, func(a, b localImage) int {
 		if n := cmp.Compare(a.repo, b.repo); n != 0 {
 			return n
+		} else if strings.EqualFold(a.tag, "latest") {
+			return 1
+		} else if strings.EqualFold(b.tag, "latest") {
+			return -1
 		}
 
 		// If repo is equal, try parsing tag as semver and ordering that way.
 		verA, err := semver.NewVersion(a.tag)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v", a.tag, err)
+			fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", a.tag, err)
+			return -1
 		}
 
 		verB, err := semver.NewVersion(b.tag)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v", b.tag, err)
+			fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", b.tag, err)
+			return 1
 		}
 
 		return verA.Compare(verB)
@@ -89,4 +96,30 @@ func main() {
 	}
 
 	w.Flush()
+	fmt.Println()
+
+	// Figure out which repos have more than one tag.
+	tagOccurrences := make(map[string]int)
+
+	for index := range localImages {
+		tagOccurrences[localImages[index].repo]++
+	}
+
+	maps.DeleteFunc(tagOccurrences, func(_ string, v int) bool {
+		return v <= 1
+	})
+
+	duplicateTags := make([]string, 0)
+
+	for to := range tagOccurrences {
+		duplicateTags = append(duplicateTags, to)
+	}
+
+	slices.Sort(duplicateTags)
+
+	fmt.Println("Repos with more than one tag:")
+
+	for _, dupe := range duplicateTags {
+		fmt.Printf("  - %dx %s\n", tagOccurrences[dupe], dupe)
+	}
 }

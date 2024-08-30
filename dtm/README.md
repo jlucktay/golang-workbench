@@ -17,6 +17,6 @@ If you are using a non-standard container engine (CE) host, i.e. anything that i
 then the `DOCKER_HOST` environment variable needs to be set when running `dtm`:
 
 ```shell
-export DOCKER_HOST=$(docker context inspect --format="{{ .Endpoints.docker.Host }}")
+export DOCKER_HOST="$(docker context inspect --format="{{ .Endpoints.docker.Host }}")"
 dtm
 ```
