@@ -9,6 +9,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/Masterminds/semver/v3"
+	"github.com/charmbracelet/huh"
 	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/client"
 )
@@ -102,4 +103,102 @@ func main() {
 	}
 
 	w.Flush()
+
+	deletionCandidates := make([]localImage, 0)
+
+	for _, repo := range imageRepos {
+		if len(mLocalImages[repo]) <= 1 {
+			continue
+		}
+
+		for index, li := range mLocalImages[repo] {
+			if strings.EqualFold(li.tag, "latest") {
+				continue
+			}
+
+			sv, err := semver.NewVersion(li.tag)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", li.tag, err)
+				continue
+			}
+
+			if len(mLocalImages[repo]) <= index+1 {
+				continue
+			}
+
+			nextLI := mLocalImages[repo][index+1]
+
+			if strings.EqualFold(nextLI.tag, "latest") {
+				continue
+			}
+
+			hv, err := semver.NewVersion(nextLI.tag)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", nextLI.tag, err)
+				continue
+			}
+
+			if (hv.Major() > sv.Major() ||
+				(hv.Minor() > sv.Minor() && sv.Minor() > 0) ||
+				(hv.Patch() > sv.Patch() && sv.Patch() > 0)) &&
+				len(hv.Prerelease()) == len(sv.Prerelease()) && len(hv.Metadata()) == len(sv.Metadata()) {
+
+				deletionCandidates = append(deletionCandidates, li)
+			}
+		}
+	}
+
+	toBeDeleted := make([]localImage, 0)
+
+	for _, dc := range deletionCandidates {
+		var confirm bool
+
+		title := fmt.Sprintf("Delete '%s:%s' image?", dc.repo, dc.tag)
+
+		form := huh.NewForm(
+			huh.NewGroup(
+				huh.NewConfirm().
+					Title(title).
+					Affirmative("Yes!").
+					Negative("No.").
+					Value(&confirm),
+			),
+		)
+
+		if err := form.Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "running form: %v", err)
+			continue
+		}
+
+		if confirm {
+			toBeDeleted = append(toBeDeleted, dc)
+		}
+	}
+
+	if len(toBeDeleted) > 0 {
+		fmt.Println("Deleting images:")
+	}
+
+	for index, tbd := range toBeDeleted {
+		deleteImageTag := fmt.Sprintf("%s:%s", tbd.repo, tbd.tag)
+
+		fmt.Printf("[%d] %s...\n", index, deleteImageTag)
+
+		removeResult, err := cli.ImageRemove(ctx, deleteImageTag, image.RemoveOptions{})
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "removing image '%s': %v", deleteImageTag, err)
+			continue
+		}
+
+		for _, dr := range removeResult {
+			if len(dr.Deleted) > 0 {
+				fmt.Printf("  Deleted '%s'.\n", dr.Deleted)
+			}
+			if len(dr.Untagged) > 0 {
+				fmt.Printf("  Untagged '%s'.\n", dr.Untagged)
+			}
+		}
+
+		fmt.Println("Done.")
+	}
 }
