@@ -37,6 +37,7 @@
 
 .DS_Store
 
-# Go workspace checksum file
+# Go workspace and checksum file
 # cf. https://github.com/golang/go/issues/51941
+/go.work
 /go.work.sum
