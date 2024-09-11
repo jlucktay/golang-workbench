@@ -423,6 +423,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 
 	default:
 		slog.Warn("not an issue or a PR",
+			slog.String("repo", ghn.GetRepository().GetFullName()),
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()),
 		)
