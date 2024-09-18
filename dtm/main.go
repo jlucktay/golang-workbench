@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strings"
 	"text/tabwriter"
@@ -19,6 +20,8 @@ type localImage struct {
 	repo string
 	tag  string
 }
+
+var patchZero = regexp.MustCompile(`\.\d+\.0`)
 
 func main() {
 	ctx := context.Background()
@@ -140,7 +143,7 @@ func main() {
 
 			if (hv.Major() > sv.Major() ||
 				(hv.Minor() > sv.Minor() && sv.Minor() > 0) ||
-				(hv.Patch() > sv.Patch() && sv.Patch() > 0)) &&
+				(hv.Patch() > sv.Patch() && (sv.Patch() > 0 || patchZero.Match([]byte(sv.Original()))))) &&
 				len(hv.Prerelease()) == len(sv.Prerelease()) && len(hv.Metadata()) == len(sv.Metadata()) {
 
 				deletionCandidates = append(deletionCandidates, li)
