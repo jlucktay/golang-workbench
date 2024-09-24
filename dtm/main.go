@@ -178,9 +178,11 @@ func main() {
 		}
 	}
 
-	if len(toBeDeleted) > 0 {
-		fmt.Println("Deleting images:")
+	if len(toBeDeleted) == 0 {
+		return
 	}
+
+	fmt.Println("Deleting images:")
 
 	for index, tbd := range toBeDeleted {
 		deleteImageTag := fmt.Sprintf("%s:%s", tbd.repo, tbd.tag)
@@ -201,7 +203,7 @@ func main() {
 				fmt.Printf("  Untagged '%s'.\n", dr.Untagged)
 			}
 		}
-
-		fmt.Println("Done.")
 	}
+
+	fmt.Println("Done.")
 }
