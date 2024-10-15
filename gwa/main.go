@@ -12,17 +12,24 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
+	if err := openAndRefreshGit(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "could not open/refresh repo: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func openAndRefreshGit(ctx context.Context) error {
 	// Look for a git repo at or above the current working directory.
 	wd, err := os.Getwd()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getting working directory: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("getting working directory: %w", err)
 	}
 
 	repo, err := git.PlainOpenWithOptions(wd, &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "cannot open any directory at or above '%s' as a git repo: %v\n", wd, err)
-		os.Exit(1)
+		return fmt.Errorf("cannot open any directory at or above '%s' as a git repo: %w", wd, err)
 	}
 
 	// Pending implementation of: https://github.com/go-git/go-git/issues/74
@@ -30,8 +37,7 @@ func main() {
 
 	gitTop, err := script.Exec(gitTopCmd).String()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "executing '%s': %v\n", gitTopCmd, err)
-		os.Exit(1)
+		return fmt.Errorf("executing '%s': %w", gitTopCmd, err)
 	}
 
 	gitTop = strings.TrimSpace(gitTop)
@@ -39,11 +45,9 @@ func main() {
 	// Update and prune all remotes using a worker pool.
 	remotes, err := repo.Remotes()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "reading remotes of repo at '%s': %v\n", gitTop, err)
-		os.Exit(1)
+		return fmt.Errorf("reading remotes of repo at '%s': %w", gitTop, err)
 	}
 
-	ctx := context.Background()
 	fetchPool := pool.New().WithContext(ctx)
 
 	for _, remote := range remotes {
@@ -60,7 +64,8 @@ func main() {
 	}
 
 	if err := fetchPool.Wait(); err != nil {
-		fmt.Fprintf(os.Stderr, "fetching remotes of repo at '%s': %v\n", gitTop, err)
-		os.Exit(1)
+		return fmt.Errorf("fetching remotes of repo at '%s': %w", gitTop, err)
 	}
+
+	return nil
 }
