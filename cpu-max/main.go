@@ -21,7 +21,7 @@ func main() {
 	dur := pflag.DurationP("duration", "d", defaultDuration, "how long to max CPU(s) for")
 	pflag.Parse()
 
-	done := make(chan int)
+	done := make(chan struct{})
 
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go func() {
