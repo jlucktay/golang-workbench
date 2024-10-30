@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -38,6 +39,12 @@ func main() {
 
 	// Set up logging.
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, nil)))
+
+	// If we're not currently in the UK, the Cineworld API gets upset at us.
+	if err := checkCountry("GB"); err != nil {
+		slog.Error("checking country", slog.Any("err", err))
+		return
+	}
 
 	// Create somewhere to store results.
 	respStore := responseStorage{
@@ -125,6 +132,45 @@ func main() {
 	for i := 0; i < len(dateKeys); i++ {
 		fmt.Fprint(os.Stdout, respStore.responses[dateKeys[i]])
 	}
+}
+
+var ErrCountryMismatch = errors.New("expected and actual countries do not match")
+
+func checkCountry(expected string) error {
+	httpClient := http.Client{
+		Timeout: time.Second * 5, //nolint:gomnd,mnd // Five seconds.
+	}
+
+	getIPInfo, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "https://ipinfo.io", nil)
+	if err != nil {
+		return fmt.Errorf("creating IP info request: %w", err)
+	}
+
+	resp, err := httpClient.Do(getIPInfo)
+	if err != nil {
+		return fmt.Errorf("getting IP info: %w", err)
+	}
+	defer resp.Body.Close()
+
+	type ipInfoResponse struct {
+		Country string `json:"country"`
+	}
+
+	iir := &ipInfoResponse{}
+
+	if err := json.NewDecoder(resp.Body).Decode(iir); err != nil {
+		return fmt.Errorf("decoding IP info response: %w", err)
+	}
+
+	slog.Debug("check country",
+		slog.String("expected", expected),
+		slog.String("actual", iir.Country))
+
+	if !strings.EqualFold(expected, iir.Country) {
+		return fmt.Errorf("%w: %s != %s", ErrCountryMismatch, expected, iir.Country)
+	}
+
+	return nil
 }
 
 type responseStorage struct {
