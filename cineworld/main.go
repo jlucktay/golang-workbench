@@ -85,7 +85,7 @@ func main() {
 			defer res.Body.Close()
 
 			body, err := io.ReadAll(res.Body)
-			if res.StatusCode >= http.StatusMultipleChoices {
+			if res.StatusCode >= http.StatusBadRequest {
 				slogw.Error("response failed",
 					slog.Any("err", err),
 					slog.Int("status", res.StatusCode),
@@ -209,7 +209,7 @@ func (b Body) String() string {
 	var sBuilder strings.Builder
 
 	tabW := new(tabwriter.Writer)
-	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd // Arbitrary padding value.
+	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd,mnd // Arbitrary padding value.
 
 	if len(b.Events) >= 1 {
 		xedt := strings.Split(b.Events[0].EventDateTime, "T")
@@ -363,7 +363,7 @@ func (e Event) String() string {
 
 	split := strings.Split(e.EventDateTime, "T")
 
-	if len(split) < 2 { //nolint:gomnd // If there is no second element, the return below will panic.
+	if len(split) < 2 { //nolint:gomnd,mnd // If there is no second element, the return below will panic.
 		return e.EventDateTime
 	}
 
