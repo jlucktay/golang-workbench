@@ -382,6 +382,20 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		slog.String("title", ghn.GetSubject().GetTitle()),
 	)
 
+	if ghn.GetReason() == "mention" {
+		subjectURL := strings.Replace(ghn.GetSubject().GetURL(), "https://api.", "https://", 1)
+		subjectURL = strings.Replace(subjectURL, "/repos/", "/", 1)
+		subjectURL = strings.Replace(subjectURL, "/pulls/", "/pull/", 1)
+
+		slog.Info("notification reason is 'mention'",
+			slog.String("subject_url", subjectURL),
+			slog.String("type", ghn.GetSubject().GetType()),
+			slog.String("title", ghn.GetSubject().GetTitle()),
+		)
+
+		return nil
+	}
+
 	switch ghn.GetSubject().GetType() {
 	case "Issue":
 		if err := lookAtIssue(ctx, client, ghn); err != nil {
@@ -486,7 +500,7 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 
 	issue, resp, err := client.Issues.Get(ctx, issDets.owner, issDets.repo, issDets.number)
 	if err != nil {
-		return fmt.Errorf("getting pull request: %w", err)
+		return fmt.Errorf("getting issue: %w", err)
 	}
 	defer resp.Body.Close()
 
