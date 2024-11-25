@@ -20,6 +20,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/google/go-github/v62/github"
+	"github.com/orsinium-labs/enum"
 	"github.com/sourcegraph/conc/pool"
 	"github.com/spf13/pflag"
 	"golang.org/x/oauth2"
@@ -38,9 +39,15 @@ const cmdName = "ginsu"
 
 var requiredScopes = []string{"repo", "notifications"}
 
-const (
-	listPerPage     = 50
-	loginDependabot = "dependabot[bot]"
+const listPerPage = 50
+
+type botLogin = enum.Member[string]
+
+var (
+	loginDependabot = botLogin{Value: "dependabot[bot]"}
+	loginRenovate   = botLogin{Value: "renovate[bot]"}
+
+	botLogins = enum.New(loginDependabot, loginRenovate)
 )
 
 // HTTP header keys.
@@ -211,14 +218,14 @@ func run(ctx context.Context, token string) error {
 	)
 
 	q := pool.New().WithErrors()
-	dependabotCounter := &atomic.Uint64{}
+	botCounter := &atomic.Uint64{}
 	var i int
 
 	for i = 0; i < len(notifications); i++ {
 		index := i
 
 		q.Go(func() error {
-			return process(ctx, client, notifications[index], dependabotCounter)
+			return process(ctx, client, notifications[index], botCounter)
 		})
 	}
 
@@ -228,7 +235,7 @@ func run(ctx context.Context, token string) error {
 
 	slog.Info("count of notifications processed",
 		slog.Int("total", i),
-		slog.Uint64("dependabot", dependabotCounter.Load()),
+		slog.Uint64("bot", botCounter.Load()),
 	)
 
 	return nil
@@ -371,7 +378,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	return nots, resp.LastPage, nil
 }
 
-func process(ctx context.Context, client *github.Client, ghn *github.Notification, dependabot *atomic.Uint64) error {
+func process(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64) error {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
@@ -417,7 +424,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		return nil
 
 	case "PullRequest":
-		if err := lookAtPullRequest(ctx, client, ghn, dependabot); err != nil {
+		if err := lookAtPullRequest(ctx, client, ghn, bot); err != nil {
 			if !errors.Is(err, errOwnerNotOnAllowlist) {
 				return err
 			}
@@ -512,7 +519,7 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 	return nil
 }
 
-func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, dependabot *atomic.Uint64,
+func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64,
 ) error {
 	slog.Debug("PR notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
@@ -533,13 +540,17 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	}
 	defer resp.Body.Close()
 
-	if pr.GetUser().GetLogin() == loginDependabot {
-		slog.Debug("dependabot PR",
-			slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
-			slog.String("title", pr.GetTitle()),
-		)
+	for _, bl := range botLogins.Members() {
+		if pr.GetUser().GetLogin() == bl.Value {
+			slog.Debug("bot PR",
+				slog.String("bot", bl.Value),
+				slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
+				slog.String("title", pr.GetTitle()),
+			)
 
-		dependabot.Add(1)
+			bot.Add(1)
+			break
+		}
 	}
 
 	if pr.GetState() != "closed" {
