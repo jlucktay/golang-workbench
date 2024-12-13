@@ -58,7 +58,7 @@ for ((i = 0; i < list_length; i++)); do
   vuln_link=$(jq --exit-status --raw-output \
     ".data.repository.vulnerabilityAlerts.nodes[$i].securityAdvisory.notificationsPermalink" <<< "$gql_result")
 
-  tlvp="$top_level/${vuln_path/%'/go.mod'/''}"
+  tlvp="$top_level/${vuln_path/%'go.mod'/''}"
 
   this_module=$(git -C "$tlvp" rev-parse --show-prefix)
   this_module=${this_module%/}
