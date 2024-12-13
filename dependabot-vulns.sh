@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # for each node (vulnerability) in the JSON
-# - join git toplevel to vuln manifest path, minus go.sum
+# - join git toplevel to vuln manifest path, minus go.mod
 # - go to that directory
 # - run 'go get -u <sec vuln pkg name>' et al
 # - git commit
@@ -58,10 +58,10 @@ for ((i = 0; i < list_length; i++)); do
   vuln_link=$(jq --exit-status --raw-output \
     ".data.repository.vulnerabilityAlerts.nodes[$i].securityAdvisory.notificationsPermalink" <<< "$gql_result")
 
-  this_module=$(git rev-parse --show-prefix)
-  this_module=${this_module%/}
+  tlvp="$top_level/${vuln_path/%'/go.mod'/''}"
 
-  project_directory="$top_level/$this_module"
+  this_module=$(git -C "$tlvp" rev-parse --show-prefix)
+  this_module=${this_module%/}
 
   if [[ -n $this_module ]]; then
     this_module="($this_module)"
@@ -70,7 +70,7 @@ for ((i = 0; i < list_length; i++)); do
   (
     set -x
 
-    cd "$project_directory"
+    cd "$tlvp"
 
     go get -u -v "$vuln_pkg"
     go mod tidy
@@ -78,7 +78,7 @@ for ((i = 0; i < list_length; i++)); do
     go clean -x
 
     git unstage
-    git add -- ./go.{mod,sum}
+    git add ./go.{mod,sum}
 
     if ! git commit \
       --message="build$this_module: address Dependabot vuln $vuln_number" \
