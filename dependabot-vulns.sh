@@ -12,13 +12,12 @@ if ! top_level=$(git rev-parse --show-toplevel); then
   exit 1
 fi
 
-current_project=$(basename "$top_level")
+origin_url=$(git remote get-url origin)
 
-project_owner=$(echo "$top_level" | rev | cut -d'/' -f2 | rev)
+current_project=$(cut -d '/' -f 5 <<< "$origin_url")
+current_project=${current_project/%'.git'/''}
 
-if [[ $project_owner == "go.jlucktay.dev" ]]; then
-  project_owner="jlucktay"
-fi
+project_owner=$(cut -d '/' -f 4 <<< "$origin_url")
 
 gql_result=$(gh api graphql -f=query="
   query{
