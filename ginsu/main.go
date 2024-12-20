@@ -475,7 +475,7 @@ func parseForDetails(ghn *github.Notification) (details, error) {
 		return details{}, fmt.Errorf("%w: %s", errOwnerNotOnAllowlist, owner)
 	}
 
-	if len(*flagRepoDenylist) > 0 && !slices.Contains(*flagRepoDenylist, repo) {
+	if len(*flagRepoDenylist) > 0 && slices.Contains(*flagRepoDenylist, repo) {
 		return details{}, fmt.Errorf("%w: %s", errRepoOnDenylist, repo)
 	}
 
