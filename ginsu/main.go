@@ -161,9 +161,18 @@ func main() {
 	}
 
 	if err := run(ctx, token); err != nil {
-		slog.Error("run",
-			slog.Any("err", err),
-		)
+		if !errors.Is(err, errRepoOnDenylist) {
+			slog.Error("run",
+				slog.Any("err", err))
+		} else {
+			slog.Warn("some notifications were from repos on the denylist",
+				slog.String("denylist", fmt.Sprintf("%+v", *flagRepoDenylist)),
+				slog.Int("count", strings.Count(err.Error(), errRepoOnDenylist.Error())))
+
+			exitStatus = exitSuccess
+
+			return
+		}
 
 		switch {
 		case errors.Is(err, errTokenMissingRequiredScopes):
