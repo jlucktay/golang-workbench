@@ -82,11 +82,14 @@ var (
 		"show help, and version from build info if available")
 	flagOwnerAllowlist = pflag.StringSliceP("owner-allowlist", "o", []string{},
 		"only drill down on these repo owners; comma-separated, not used if left unset")
+	flagRepoDenylist = pflag.StringSliceP("repo-denylist", "r", []string{},
+		"don't touch notifications in these repos; comma-separated, not used if left unset")
 )
 
 // Static errors.
 var (
 	errOwnerNotOnAllowlist        = errors.New("repo owner not on allowlist")
+	errRepoOnDenylist             = errors.New("repo on denylist")
 	errTokenMissingRequiredScopes = errors.New("token does not have required scope")
 	errTokenMissingSAMLSSOAuth    = errors.New("token is not authorised for SAML SSO with org(s)")
 )
@@ -470,6 +473,10 @@ func parseForDetails(ghn *github.Notification) (details, error) {
 
 	if len(*flagOwnerAllowlist) > 0 && !slices.Contains(*flagOwnerAllowlist, owner) {
 		return details{}, fmt.Errorf("%w: %s", errOwnerNotOnAllowlist, owner)
+	}
+
+	if len(*flagRepoDenylist) > 0 && !slices.Contains(*flagRepoDenylist, repo) {
+		return details{}, fmt.Errorf("%w: %s", errRepoOnDenylist, repo)
 	}
 
 	xURL := strings.Split(ghn.GetSubject().GetURL(), "/")
