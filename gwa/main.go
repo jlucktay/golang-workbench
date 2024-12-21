@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -105,10 +106,12 @@ func openAndRefreshGit(ctx context.Context) ([]string, error) {
 		fetchPool.Go(func(ctx context.Context) (string, error) {
 			remoteName := remote.Config().Name
 
-			return remoteName, remote.FetchContext(ctx, &git.FetchOptions{
-				RemoteName: remoteName,
-				Prune:      true,
-			})
+			err := remote.FetchContext(ctx, &git.FetchOptions{RemoteName: remoteName})
+			if !errors.Is(err, git.NoErrAlreadyUpToDate) {
+				return "", err
+			}
+
+			return remoteName, nil
 		})
 	}
 
