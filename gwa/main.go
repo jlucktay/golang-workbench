@@ -57,9 +57,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("branch name: '%s'\n", branchName)
+	fmt.Printf("Branch name: '%s'\n", branchName)
 
-	fmt.Println("done.")
+	fmt.Println("Done.")
 }
 
 func validateNewBranch(branchCandidate string) error {
@@ -117,7 +117,7 @@ func openAndRefreshGit(ctx context.Context) ([]string, error) {
 		return nil, fmt.Errorf("updating/pruning remotes of repo at '%s': %w", gitTop, err)
 	}
 
-	fmt.Printf("updated/pruned remotes: %s\n", strings.Join(updatedRemotes, ", "))
+	fmt.Printf("Updated/pruned remotes: %s\n", strings.Join(updatedRemotes, ", "))
 
 	refIter, err := repo.Branches()
 	if err != nil {
