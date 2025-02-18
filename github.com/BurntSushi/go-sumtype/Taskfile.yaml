@@ -1,0 +1,16 @@
+version: 3
+
+tasks:
+  default:
+    cmd: task --summary tool:run
+
+  tool:help:
+    cmd: go tool go-sumtype
+
+  tool:run:
+    summary: |-
+      Run the 'go-sumtype' tool via the new (as of Go 1.24) 'tool' directive in the go.mod file.
+      This is covered entirely by the Go toolchain, and does not require a pre-installed binary of said tool.
+      https://go.dev/doc/go1.24#go-command
+      https://www.bytesizego.com/blog/go-124-tool-directive
+    cmd: go tool go-sumtype .
