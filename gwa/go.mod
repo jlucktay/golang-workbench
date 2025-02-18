@@ -5,7 +5,7 @@ go 1.23
 require (
 	github.com/bitfield/script v0.24.0
 	github.com/charmbracelet/huh v0.6.0
-	github.com/go-git/go-git/v5 v5.12.0
+	github.com/go-git/go-git/v5 v5.13.0
 	github.com/sourcegraph/conc v0.3.0
 )
 
