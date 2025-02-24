@@ -551,10 +551,25 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 	}
 
 	pr, resp, err := client.PullRequests.Get(ctx, prDets.owner, prDets.repo, prDets.number)
+	if resp != nil {
+		defer resp.Body.Close()
+
+		// Weird edge case? Repo deleted?
+		if resp.StatusCode == http.StatusNotFound {
+			slog.Warn("PR not found",
+				slog.String("repo", ghn.GetRepository().GetFullName()),
+				slog.String("title", ghn.GetSubject().GetTitle()),
+				slog.String("type", ghn.GetSubject().GetType()),
+				slog.String("url", ghn.GetSubject().GetURL()),
+				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
+			)
+
+			return nil
+		}
+	}
 	if err != nil {
 		return fmt.Errorf("getting pull request: %w", err)
 	}
-	defer resp.Body.Close()
 
 	for _, bl := range botLogins.Members() {
 		if pr.GetUser().GetLogin() == bl.Value {
