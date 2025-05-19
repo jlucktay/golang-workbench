@@ -1,0 +1,23 @@
+version: 3
+
+tasks:
+  default:
+    desc: List all available tasks.
+    silent: true
+    dir: '{{.TASKFILE_DIR}}'
+    cmd: task --list-all
+
+  generate:
+    desc: Generate Go code.
+    dir: '{{.TASKFILE_DIR}}'
+    sources:
+      - .mockery.yaml
+      - docker/docker.go
+    cmd: go tool mockery
+
+  test:
+    desc: Run Go unit tests.
+    deps:
+      - generate
+    dir: '{{.TASKFILE_DIR}}'
+    cmd: go test ./...

@@ -1,0 +1,8 @@
+packages:
+  go.jlucktay.dev/golang-workbench/dtm/docker:
+    config:
+      filename: docker_mock.go
+      formatter: gofmt
+      pkgname: docker
+    interfaces:
+      Client:
