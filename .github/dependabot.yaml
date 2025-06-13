@@ -10,8 +10,6 @@ updates:
       interval: weekly
     assignees:
       - jlucktay
-    reviewers:
-      - jlucktay
 
     # Group all of the GHA updates together.
     groups:
@@ -30,8 +28,6 @@ updates:
     schedule:
       interval: weekly
     assignees:
-      - jlucktay
-    reviewers:
       - jlucktay
 
     # Bundle all non-major dependency bumps together into the same PR.
