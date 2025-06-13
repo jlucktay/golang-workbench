@@ -1,6 +1,7 @@
 module go.jlucktay.dev/golang-workbench/sigs.k8s.io/controller-runtime/pkg/client/fake
 
-go 1.21
+go 1.23.0
+
 toolchain go1.24.1
 
 require sigs.k8s.io/controller-runtime v0.14.4
@@ -36,11 +37,11 @@ require (
 	github.com/stretchr/testify v1.8.4 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/net v0.36.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/oauth2 v0.12.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/term v0.29.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/term v0.30.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.35.2 // indirect
