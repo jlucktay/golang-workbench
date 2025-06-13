@@ -1,0 +1,48 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+
+    # Workflow files stored in the default location: .github/workflows
+    directory: /
+
+    schedule:
+      interval: weekly
+    assignees:
+      - jlucktay
+    reviewers:
+      - jlucktay
+
+    # Group all of the GHA updates together.
+    groups:
+      'GitHub Actions':
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+    open-pull-requests-limit: 1
+
+  - package-ecosystem: gomod
+    directories:
+      - '**/*'
+    schedule:
+      interval: weekly
+    assignees:
+      - jlucktay
+    reviewers:
+      - jlucktay
+
+    # Bundle all non-major dependency bumps together into the same PR.
+    groups:
+      Go:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+    commit-message:
+      prefix: '[Go]'
+    open-pull-requests-limit: 1
