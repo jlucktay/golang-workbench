@@ -1,0 +1,6 @@
+# Built binary
+/fraudulent-activity-notifications
+
+# Input/output
+/input*.txt
+/output*.txt
