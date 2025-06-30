@@ -5,9 +5,9 @@ go 1.24.3
 tool github.com/vektra/mockery/v3
 
 require (
-	github.com/Masterminds/semver/v3 v3.3.1
+	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/charmbracelet/huh v0.7.0
-	github.com/docker/docker v28.2.2+incompatible
+	github.com/docker/docker v28.3.0+incompatible
 	github.com/matryer/is v1.4.1
 	github.com/stretchr/testify v1.10.0
 )

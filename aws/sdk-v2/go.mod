@@ -2,7 +2,7 @@ module go.jlucktay.dev/golang-workbench/aws/sdk-v2
 
 go 1.22
 
-require github.com/aws/aws-sdk-go-v2/service/s3 v1.81.0
+require github.com/aws/aws-sdk-go-v2/service/s3 v1.82.0
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.5 // indirect
