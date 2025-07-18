@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
 
 	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
@@ -128,7 +128,7 @@ func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
-	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.StandardClaims{}})
+	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.RegisteredClaims{}})
 	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	// Assert
@@ -171,7 +171,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
-	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.StandardClaims{}})
+	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.RegisteredClaims{}})
 	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	// Assert

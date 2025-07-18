@@ -7,13 +7,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
+
 	root "go.jlucktay.dev/golang-workbench/go_rest_api/pkg"
 )
 
 type claims struct {
 	Username string `json:"username"`
-	jwt.StandardClaims
+	jwt.Claims
 }
 
 type contextKey string
@@ -28,8 +29,8 @@ func newAuthCookie(user root.User) http.Cookie {
 	expireTime := time.Now().Add(time.Hour * 1)
 	c := claims{
 		user.Username,
-		jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expireTime),
 			Issuer:    "localhost!",
 		},
 	}
