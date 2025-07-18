@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var mySigningKey = []byte("captainjacksparrowsayshi")
@@ -20,19 +20,20 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 		if r.Header["Token"] != nil {
 			token, err := jwt.Parse(r.Header["Token"][0], func(token *jwt.Token) (interface{}, error) {
 				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-					return nil, fmt.Errorf("There was an error")
+					return nil, fmt.Errorf("there was an error")
 				}
+
 				return mySigningKey, nil
 			})
 			if err != nil {
-				fmt.Fprintf(w, err.Error())
+				fmt.Fprint(w, err.Error())
 			}
 
 			if token.Valid {
 				endpoint(w, r)
 			}
 		} else {
-			fmt.Fprintf(w, "Not Authorized")
+			fmt.Fprint(w, "Not Authorized")
 		}
 	})
 }

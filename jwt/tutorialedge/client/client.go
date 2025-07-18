@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var mySigningKey = []byte("captainjacksparrowsayshi")
@@ -26,7 +26,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Error: %s", err.Error())
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 	}
