@@ -2,7 +2,7 @@ module go.jlucktay.dev/golang-workbench/aws/iam
 
 go 1.21
 
-require github.com/aws/aws-sdk-go v1.55.7
+require github.com/aws/aws-sdk-go v1.55.8
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
