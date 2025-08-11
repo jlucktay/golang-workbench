@@ -229,13 +229,14 @@ func run(ctx context.Context, token string) error {
 
 	q := pool.New().WithErrors()
 	botCounter := &atomic.Uint64{}
+	releaseCounter := &atomic.Uint64{}
 	var i int
 
 	for i = 0; i < len(notifications); i++ {
 		index := i
 
 		q.Go(func() error {
-			return process(ctx, client, notifications[index], botCounter)
+			return process(ctx, client, notifications[index], botCounter, releaseCounter)
 		})
 	}
 
@@ -245,7 +246,8 @@ func run(ctx context.Context, token string) error {
 
 	slog.Info("count of notifications processed",
 		slog.Int("total", i),
-		slog.Uint64("bot", botCounter.Load()))
+		slog.Uint64("bot", botCounter.Load()),
+		slog.Uint64("release", releaseCounter.Load()))
 
 	return nil
 }
@@ -378,7 +380,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	return nots, resp.LastPage, nil
 }
 
-func process(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64) error {
+func process(ctx context.Context, client *github.Client, ghn *github.Notification, bot, release *atomic.Uint64) error {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("title", ghn.GetSubject().GetTitle()))
@@ -437,8 +439,13 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 
 		return nil
 
+	case "Release":
+		release.Add(1)
+
+		return nil
+
 	default:
-		slog.Warn("not an issue or a PR",
+		slog.Warn("not an issue, a PR, or a release",
 			slog.String("repo", ghn.GetRepository().GetFullName()),
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()))
