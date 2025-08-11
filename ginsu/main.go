@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -49,6 +48,29 @@ var (
 
 	botLogins = enum.New(loginDependabot, loginRenovate)
 )
+
+type processResult = enum.Member[string]
+
+var (
+	prBot                 = processResult{Value: "Bot"}
+	prCheckSuite          = processResult{Value: "CheckSuite"}
+	prOwnerNotOnAllowlist = processResult{Value: "OwnerNotOnAllowlist"}
+	prRelease             = processResult{Value: "Release"}
+
+	processResults = enum.New(prBot, prCheckSuite, prOwnerNotOnAllowlist, prRelease)
+)
+
+type resultCounter struct {
+	sync.RWMutex
+	resultCounts map[processResult]uint64
+}
+
+func (rc *resultCounter) increment(pr processResult) {
+	rc.Lock()
+	defer rc.Unlock()
+
+	rc.resultCounts[pr]++
+}
 
 // HTTP header keys.
 const (
@@ -228,26 +250,35 @@ func run(ctx context.Context, token string) error {
 		slog.Int("count", len(notifications)))
 
 	q := pool.New().WithErrors()
-	botCounter := &atomic.Uint64{}
-	releaseCounter := &atomic.Uint64{}
-	var i int
+	resultCounts := &resultCounter{
+		resultCounts: make(map[processResult]uint64),
+	}
 
-	for i = 0; i < len(notifications); i++ {
-		index := i
+	slog.Info("queueing notifications for pool")
 
+	for i := 0; i < len(notifications); i++ {
 		q.Go(func() error {
-			return process(ctx, client, notifications[index], botCounter, releaseCounter)
+			return process(ctx, client, notifications[i], resultCounts)
 		})
 	}
+
+	slog.Info("waiting for pool to finish")
 
 	if err := q.Wait(); err != nil {
 		return fmt.Errorf("working through notification pool: %w", err)
 	}
 
-	slog.Info("count of notifications processed",
-		slog.Int("total", i),
-		slog.Uint64("bot", botCounter.Load()),
-		slog.Uint64("release", releaseCounter.Load()))
+	slog.Info("finished waiting for pool")
+
+	ntAttrs := []any{slog.Int("total", len(notifications))}
+
+	for _, procRes := range processResults.Members() {
+		newAttr := slog.Uint64(procRes.Value, resultCounts.resultCounts[procRes])
+
+		ntAttrs = append(ntAttrs, newAttr)
+	}
+
+	slog.Info("count of notifications processed", ntAttrs...)
 
 	return nil
 }
@@ -380,7 +411,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	return nots, resp.LastPage, nil
 }
 
-func process(ctx context.Context, client *github.Client, ghn *github.Notification, bot, release *atomic.Uint64) error {
+func process(ctx context.Context, client *github.Client, ghn *github.Notification, resultCounts *resultCounter) error {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("title", ghn.GetSubject().GetTitle()))
@@ -409,43 +440,41 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 				return err
 			}
 
-			slog.Warn("issue owner not on allowlist",
-				slog.String("repo", ghn.GetRepository().GetFullName()),
-				slog.String("title", ghn.GetSubject().GetTitle()),
-				slog.String("type", ghn.GetSubject().GetType()),
-				slog.String("url", ghn.GetSubject().GetURL()),
-				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
-				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
-				slog.Any("err", err))
+			resultCounts.increment(prOwnerNotOnAllowlist)
 		}
 
 		return nil
 
 	case "PullRequest":
-		if err := lookAtPullRequest(ctx, client, ghn, bot); err != nil {
+		if err := lookAtPullRequest(ctx, client, ghn, resultCounts); err != nil {
 			if !errors.Is(err, errOwnerNotOnAllowlist) {
 				return err
 			}
 
-			slog.Warn("PR owner not on allowlist",
-				slog.String("repo", ghn.GetRepository().GetFullName()),
-				slog.String("title", ghn.GetSubject().GetTitle()),
-				slog.String("type", ghn.GetSubject().GetType()),
-				slog.String("url", ghn.GetSubject().GetURL()),
-				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
-				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
-				slog.Any("err", err))
+			resultCounts.increment(prOwnerNotOnAllowlist)
 		}
 
 		return nil
 
+	case "CheckSuite":
+		resultCounts.increment(prCheckSuite)
+
+		return nil
+
 	case "Release":
-		release.Add(1)
+		resultCounts.increment(prRelease)
 
 		return nil
 
 	default:
-		slog.Warn("not an issue, a PR, or a release",
+		prTypes := make([]string, 0)
+
+		for _, pr := range processResults.Members() {
+			prTypes = append(prTypes, pr.Value)
+		}
+
+		slog.Warn(
+			fmt.Sprintf("process result was not any of the following types: %s", strings.Join(prTypes, ",")),
 			slog.String("repo", ghn.GetRepository().GetFullName()),
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()))
@@ -522,7 +551,7 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 	return nil
 }
 
-func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64) error {
+func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, doneCounts *resultCounter) error {
 	slog.Debug("PR notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
@@ -562,7 +591,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 				slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 				slog.String("title", pr.GetTitle()))
 
-			bot.Add(1)
+			doneCounts.increment(prBot)
 
 			break
 		}
