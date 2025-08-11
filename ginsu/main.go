@@ -153,8 +153,7 @@ func main() {
 	token, tokenSet := os.LookupEnv(ghToken)
 	if !tokenSet {
 		slog.Error("no GitHub token set",
-			slog.String("env_var_key", ghToken),
-		)
+			slog.String("env_var_key", ghToken))
 
 		exitStatus = exitNoTokenSet
 		return
@@ -204,8 +203,7 @@ func run(ctx context.Context, token string) error {
 	}
 
 	slog.Debug("notification list pages",
-		slog.Int("last", lastPage),
-	)
+		slog.Int("last", lastPage))
 
 	p := pool.NewWithResults[[]*github.Notification]().WithContext(ctx)
 
@@ -214,6 +212,7 @@ func run(ctx context.Context, token string) error {
 
 		p.Go(func(ctx context.Context) ([]*github.Notification, error) {
 			result, _, err := listPageOfNotifications(ctx, client, page)
+
 			return result, err
 		})
 	}
@@ -226,8 +225,7 @@ func run(ctx context.Context, token string) error {
 	notifications := slices.Concat(firstPage, slices.Concat(pagesAfterFirst...))
 
 	slog.Debug("notifications",
-		slog.Int("count", len(notifications)),
-	)
+		slog.Int("count", len(notifications)))
 
 	q := pool.New().WithErrors()
 	botCounter := &atomic.Uint64{}
@@ -247,8 +245,7 @@ func run(ctx context.Context, token string) error {
 
 	slog.Info("count of notifications processed",
 		slog.Int("total", i),
-		slog.Uint64("bot", botCounter.Load()),
-	)
+		slog.Uint64("bot", botCounter.Load()))
 
 	return nil
 }
@@ -263,8 +260,7 @@ func checkTokenScopes(headers http.Header) error {
 
 	slog.Debug("scopes header",
 		slog.String("key", headerKeyScopes),
-		slog.String("slice", fmt.Sprintf("%#v", scopesHeader)),
-	)
+		slog.String("slice", fmt.Sprintf("%#v", scopesHeader)))
 
 	for index := range scopesHeader {
 		for _, foundScope := range strings.Split(scopesHeader[index], ",") {
@@ -294,16 +290,14 @@ func checkTokenSAML(headers http.Header) error {
 
 	slog.Debug("SAML SSO header",
 		slog.String("key", headerKeySAML),
-		slog.String("slice", fmt.Sprintf("%#v", samlHeader)),
-	)
+		slog.String("slice", fmt.Sprintf("%#v", samlHeader)))
 
 	for i := range samlHeader {
 		xValue := strings.Split(samlHeader[i], "; ")
 
 		slog.Debug("header value",
 			slog.Int("index", i),
-			slog.String("slice", fmt.Sprintf("%#v", xValue)),
-		)
+			slog.String("slice", fmt.Sprintf("%#v", xValue)))
 
 		for j := range xValue {
 			if !strings.HasPrefix(xValue[j], "organizations=") {
@@ -314,8 +308,7 @@ func checkTokenSAML(headers http.Header) error {
 
 			slog.Debug("raw org IDs",
 				slog.Int("index", j),
-				slog.String("slice", fmt.Sprintf("%#v", rawOrgIDs)),
-			)
+				slog.String("slice", fmt.Sprintf("%#v", rawOrgIDs)))
 
 			if len(rawOrgIDs) > 1 {
 				orgIDs = append(orgIDs, strings.Split(rawOrgIDs[1], ",")...)
@@ -333,9 +326,7 @@ func checkTokenSAML(headers http.Header) error {
 	return fmt.Errorf("%w: %s", errTokenMissingSAMLSSOAuth, strings.Join(orgAPIURLs, ";"))
 }
 
-func listPageOfNotifications(ctx context.Context, client *github.Client, page int) (
-	[]*github.Notification, int, error,
-) {
+func listPageOfNotifications(ctx context.Context, client *github.Client, page int) ([]*github.Notification, int, error) {
 	opts := &github.NotificationListOptions{
 		// If true, show notifications marked as read.
 		All: false,
@@ -350,12 +341,10 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	}
 
 	slog.Debug("started listing page of notifications",
-		slog.Int("page_number", opts.Page),
-	)
+		slog.Int("page_number", opts.Page))
 
 	defer slog.Debug("finished listing page of notifications",
-		slog.Int("page_number", opts.Page),
-	)
+		slog.Int("page_number", opts.Page))
 
 	nots, resp, err := client.Activity.ListNotifications(ctx, opts)
 	if err != nil {
@@ -365,8 +354,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 
 	slog.Debug("got page of notifications",
 		slog.Int("page_number", opts.Page),
-		slog.Int("count", len(nots)),
-	)
+		slog.Int("count", len(nots)))
 
 	// Check the token we're using has the necessary scopes and SAML SSO auth, but only once each.
 	var errTokenScopes, errSAML error
@@ -393,13 +381,11 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 func process(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64) error {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
-		slog.String("title", ghn.GetSubject().GetTitle()),
-	)
+		slog.String("title", ghn.GetSubject().GetTitle()))
 
 	defer slog.Debug("finished processing notification",
 		slog.String("type", ghn.GetSubject().GetType()),
-		slog.String("title", ghn.GetSubject().GetTitle()),
-	)
+		slog.String("title", ghn.GetSubject().GetTitle()))
 
 	if ghn.GetReason() == "mention" {
 		subjectURL := strings.Replace(ghn.GetSubject().GetURL(), "https://api.", "https://", 1)
@@ -409,8 +395,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		slog.Info("notification reason is 'mention'",
 			slog.String("subject_url", subjectURL),
 			slog.String("type", ghn.GetSubject().GetType()),
-			slog.String("title", ghn.GetSubject().GetTitle()),
-		)
+			slog.String("title", ghn.GetSubject().GetTitle()))
 
 		return nil
 	}
@@ -429,8 +414,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 				slog.String("url", ghn.GetSubject().GetURL()),
 				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
 				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
-				slog.Any("err", err),
-			)
+				slog.Any("err", err))
 		}
 
 		return nil
@@ -448,8 +432,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 				slog.String("url", ghn.GetSubject().GetURL()),
 				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
 				slog.String("allowlist", fmt.Sprintf("%+v", *flagOwnerAllowlist)),
-				slog.Any("err", err),
-			)
+				slog.Any("err", err))
 		}
 
 		return nil
@@ -458,8 +441,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 		slog.Warn("not an issue or a PR",
 			slog.String("repo", ghn.GetRepository().GetFullName()),
 			slog.String("type", ghn.GetSubject().GetType()),
-			slog.String("title", ghn.GetSubject().GetTitle()),
-		)
+			slog.String("title", ghn.GetSubject().GetTitle()))
 
 		return nil
 	}
@@ -513,8 +495,7 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 		slog.String("title", ghn.GetSubject().GetTitle()),
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("url", ghn.GetSubject().GetURL()),
-		slog.Time("updated_at", ghn.GetUpdatedAt().Time),
-	)
+		slog.Time("updated_at", ghn.GetUpdatedAt().Time))
 
 	issDets, err := parseForDetails(ghn)
 	if err != nil {
@@ -529,21 +510,18 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 
 	slog.Info("state of issue",
 		slog.Int("number", issue.GetNumber()),
-		slog.String("state", issue.GetState()),
-	)
+		slog.String("state", issue.GetState()))
 
 	return nil
 }
 
-func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64,
-) error {
+func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, bot *atomic.Uint64) error {
 	slog.Debug("PR notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("url", ghn.GetSubject().GetURL()),
-		slog.Time("updated_at", ghn.GetUpdatedAt().Time),
-	)
+		slog.Time("updated_at", ghn.GetUpdatedAt().Time))
 
 	prDets, err := parseForDetails(ghn)
 	if err != nil {
@@ -561,8 +539,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 				slog.String("title", ghn.GetSubject().GetTitle()),
 				slog.String("type", ghn.GetSubject().GetType()),
 				slog.String("url", ghn.GetSubject().GetURL()),
-				slog.Time("updated_at", ghn.GetUpdatedAt().Time),
-			)
+				slog.Time("updated_at", ghn.GetUpdatedAt().Time))
 
 			return nil
 		}
@@ -576,10 +553,10 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.Debug("bot PR",
 				slog.String("bot", bl.Value),
 				slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
-				slog.String("title", pr.GetTitle()),
-			)
+				slog.String("title", pr.GetTitle()))
 
 			bot.Add(1)
+
 			break
 		}
 	}
@@ -590,8 +567,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.String("user_login", pr.GetUser().GetLogin()),
 			slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 			slog.Int("number", prDets.number),
-			slog.String("state", pr.GetState()),
-		)
+			slog.String("state", pr.GetState()))
 
 		return nil
 	}
@@ -601,8 +577,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 		slog.String("user_login", pr.GetUser().GetLogin()),
 		slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
 		slog.Int("number", prDets.number),
-		slog.String("state", pr.GetState()),
-	)
+		slog.String("state", pr.GetState()))
 
 	return markAsDone(ctx, client, ghn)
 }
