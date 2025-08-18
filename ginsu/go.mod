@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/charmbracelet/log v0.4.2
 	github.com/google/go-github/v62 v62.0.0
-	github.com/orsinium-labs/enum v1.4.0
+	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/pflag v1.0.7
 	golang.org/x/oauth2 v0.30.0
