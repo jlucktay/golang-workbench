@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/huh v0.7.0
 	github.com/docker/docker v28.3.3+incompatible
 	github.com/matryer/is v1.4.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 )
 
 require (
