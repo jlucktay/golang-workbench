@@ -5,9 +5,9 @@ go 1.24.0
 require (
 	github.com/go-redis/redis/v7 v7.4.1
 	github.com/matryer/is v1.4.1
-	github.com/spf13/pflag v1.0.8
+	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.20.1
-	golang.org/x/sync v0.16.0
+	golang.org/x/sync v0.17.0
 )
 
 require (
