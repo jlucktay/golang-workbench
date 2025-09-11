@@ -30,12 +30,15 @@ func main() {
 	flag.Parse()
 
 	if targetSLOName == "" {
-		fmt.Fprintf(os.Stderr,
-			`The name of the SLO to emit must be supplied with the -s/--slo-name flag.
+		fmt.Fprintf(os.Stderr, "The name of the SLO to emit must be supplied with the -s/--slo-name flag.\n\n")
 
+		flag.Usage()
+
+		fmt.Fprintf(os.Stderr, `
 Example:
 	%[1]s -s='SLO name'
-	%[1]s --slo-name="SLO name"`, os.Args[0])
+	%[1]s --slo-name="SLO name"
+`, os.Args[0])
 
 		return
 	}
@@ -47,7 +50,7 @@ Example:
 
 	for evKey, evType := range requiredEnvVars {
 		if evValue, set := os.LookupEnv(evKey); !set || evValue == "" {
-			fmt.Fprintf(os.Stderr, "The %s environment variable must be set to a valid Datadog %s key.", evKey, evType)
+			fmt.Fprintf(os.Stderr, "The %s environment variable must be set to a valid Datadog %s key.\n", evKey, evType)
 
 			return
 		}
@@ -108,7 +111,7 @@ Example:
 	}
 
 	if targetSLOID == "" {
-		fmt.Fprintf(os.Stderr, "could not find SLO with name '%s'\n\nNOTE: this tool does not (yet) implement pagination, so if there are too many SLOs on Datadog then bother this tool's author to wire that up!\nhttps://github.com/DataDog/datadog-api-client-go?tab=readme-ov-file#pagination", targetSLOName)
+		fmt.Fprintf(os.Stderr, "could not find SLO with name '%s'\n\nNOTE: this tool does not (yet) implement pagination, so if there are too many SLOs on Datadog then bother this tool's author to wire that up!\nhttps://github.com/DataDog/datadog-api-client-go?tab=readme-ov-file#pagination\n", targetSLOName)
 
 		os.Exit(3)
 	}
