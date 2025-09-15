@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/monzo
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
@@ -9,5 +9,5 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.3 // indirect
-	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/net v0.44.0 // indirect
 )
