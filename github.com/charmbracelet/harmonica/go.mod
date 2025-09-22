@@ -3,7 +3,7 @@ module go.jlucktay.dev/golang-workbench/github.com/charmbracelet/harmonica
 go 1.24.0
 
 require (
-	github.com/charmbracelet/bubbletea v1.3.9
+	github.com/charmbracelet/bubbletea v1.3.10
 	github.com/charmbracelet/harmonica v0.2.0
 	github.com/charmbracelet/lipgloss v1.1.0
 )
