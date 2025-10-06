@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/bitfield/script v0.24.1
 	github.com/charmbracelet/huh v0.7.0
-	github.com/go-git/go-git/v5 v5.16.2
+	github.com/go-git/go-git/v5 v5.16.3
 	github.com/sourcegraph/conc v0.3.0
 )
 
