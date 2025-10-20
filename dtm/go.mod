@@ -6,7 +6,7 @@ tool github.com/vektra/mockery/v3
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
-	github.com/charmbracelet/huh v0.7.0
+	github.com/charmbracelet/huh v0.8.0
 	github.com/docker/docker v28.5.1+incompatible
 	github.com/matryer/is v1.4.1
 	github.com/stretchr/testify v1.11.1
@@ -19,7 +19,7 @@ require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/brunoga/deep v1.2.4 // indirect
 	github.com/catppuccin/go v0.3.0 // indirect
-	github.com/charmbracelet/bubbles v0.21.0 // indirect
+	github.com/charmbracelet/bubbles v0.21.1-0.20250623103423-23b8fd6302d7 // indirect
 	github.com/charmbracelet/bubbletea v1.3.10 // indirect
 	github.com/charmbracelet/colorprofile v0.3.1 // indirect
 	github.com/charmbracelet/lipgloss v1.1.0 // indirect
