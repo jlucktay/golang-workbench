@@ -3,7 +3,7 @@ module go.jlucktay.dev/golang-workbench/cpu-max
 go 1.24.0
 
 require (
-	github.com/schollz/progressbar/v3 v3.18.0
+	github.com/schollz/progressbar/v3 v3.19.0
 	github.com/spf13/pflag v1.0.10
 )
 
