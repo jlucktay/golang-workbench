@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/lmittmann/tint v1.1.2
-	golang.org/x/term v0.38.0
+	golang.org/x/term v0.39.0
 )
 
-require golang.org/x/sys v0.39.0 // indirect
+require golang.org/x/sys v0.40.0 // indirect
