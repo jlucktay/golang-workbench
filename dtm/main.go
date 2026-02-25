@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -86,13 +87,19 @@ func main() {
 			// If neither tag is 'latest', try parsing tag as semver and ordering that way.
 			verA, err := semver.NewVersion(a.tag)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", a.tag, err)
+				if !errors.Is(err, semver.ErrInvalidSemVer) {
+					fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", a.tag, err)
+				}
+
 				return -1
 			}
 
 			verB, err := semver.NewVersion(b.tag)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", b.tag, err)
+				if !errors.Is(err, semver.ErrInvalidSemVer) {
+					fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", b.tag, err)
+				}
+
 				return 1
 			}
 
@@ -121,7 +128,10 @@ func main() {
 
 			sv, err := semver.NewVersion(li.tag)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", li.tag, err)
+				if !errors.Is(err, semver.ErrInvalidSemVer) {
+					fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", li.tag, err)
+				}
+
 				continue
 			}
 
@@ -137,7 +147,10 @@ func main() {
 
 			hv, err := semver.NewVersion(nextLI.tag)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", nextLI.tag, err)
+				if !errors.Is(err, semver.ErrInvalidSemVer) {
+					fmt.Fprintf(os.Stderr, "could not parse semver from '%s': %v\n", nextLI.tag, err)
+				}
+
 				continue
 			}
 
