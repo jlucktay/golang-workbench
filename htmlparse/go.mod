@@ -1,5 +1,5 @@
 module go.jlucktay.dev/golang-workbench/htmlparse
 
-go 1.24.0
+go 1.25.0
 
-require golang.org/x/net v0.50.0
+require golang.org/x/net v0.51.0
