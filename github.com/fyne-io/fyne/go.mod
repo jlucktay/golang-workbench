@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/fyne-io/fyne
 
-go 1.24.0
+go 1.25.0
 
 require fyne.io/fyne v1.4.3
 
@@ -18,7 +18,7 @@ require (
 	github.com/srwiley/rasterx v0.0.0-20200120212402-85cb7272f5e9 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	golang.org/x/image v0.23.0 // indirect
-	golang.org/x/net v0.50.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
