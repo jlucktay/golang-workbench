@@ -12,7 +12,7 @@ type secrets struct {
 
 // ReadTokenFromSecrets will read the JSON file located at 'path' and return
 // the value of the 'token' key within. Super secure local token storage!
-func ReadTokenFromSecrets(path string) (token string) {
+func ReadTokenFromSecrets(path string) string {
 	fileContents, readErr := ioutil.ReadFile(path)
 	if readErr != nil {
 		log.Fatal(readErr)
@@ -25,8 +25,8 @@ func ReadTokenFromSecrets(path string) (token string) {
 	}
 
 	if t, ok := tokenMap["token"]; ok {
-		token = t
+		return t
 	}
 
-	return
+	return ""
 }

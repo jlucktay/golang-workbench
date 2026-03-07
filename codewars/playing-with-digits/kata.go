@@ -28,8 +28,8 @@ func DigPow(n, p uint) int {
 	return 0
 }
 
-func splitIntoDigits(in uint) (out []uint) {
-	out = make([]uint, 0, 1)
+func splitIntoDigits(in uint) []uint {
+	out := make([]uint, 0, 1)
 
 	for ; in > 0; in /= 10 {
 		out = append(out, in%10)
@@ -40,13 +40,14 @@ func splitIntoDigits(in uint) (out []uint) {
 		out[i], out[opp] = out[opp], out[i]
 	}
 
-	return
+	return out
 }
 
-func successivePowers(n, p uint) (total uint) {
+func successivePowers(n, p uint) uint {
 	digits := splitIntoDigits(n)
 	exponent := float64(p)
 	// fmt.Println("n:", n)
+	total := uint(0)
 
 	for _, digit := range digits {
 		// fmt.Println("total:", total)
@@ -56,5 +57,5 @@ func successivePowers(n, p uint) (total uint) {
 		exponent++
 	}
 
-	return
+	return total
 }

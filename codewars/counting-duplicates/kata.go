@@ -6,8 +6,9 @@ import (
 
 // Write a function that will return the count of distinct case-insensitive alphabetic characters and numeric digits that occur more than once in the input string.
 // The input string can be assumed to contain only alphabets (both uppercase and lowercase) and numeric digits.
-func duplicateCount(s string) (result int) {
+func duplicateCount(s string) int {
 	parse := map[rune]uint{}
+	result := 0
 
 	for _, r := range strings.ToLower(s) {
 		if parse[r]++; parse[r] == 2 {
@@ -15,5 +16,5 @@ func duplicateCount(s string) (result int) {
 		}
 	}
 
-	return
+	return result
 }

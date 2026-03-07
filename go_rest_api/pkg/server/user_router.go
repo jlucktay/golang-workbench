@@ -35,7 +35,6 @@ func (s *userRouter) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.userService.CreateUser(&user)
-
 	if err != nil {
 		Error(w, http.StatusInternalServerError, err.Error())
 		return

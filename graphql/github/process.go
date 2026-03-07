@@ -1,23 +1,15 @@
 package main
 
-func process(qor queryOwnedRepos, ownedRepos *[]string) (hasNextPage bool, endCursor string) {
-	if qor.RepositoryOwner == nil {
-		return
+func process(qor queryOwnedRepos, ownedRepos *[]string) (bool, string) {
+	if qor.RepositoryOwner == nil || qor.RepositoryOwner.Repositories == nil || qor.RepositoryOwner.Repositories.PageInfo == nil {
+		return false, ""
 	}
 
-	if qor.RepositoryOwner.Repositories == nil {
-		return
-	}
-
-	if qor.RepositoryOwner.Repositories.PageInfo == nil {
-		return
-	}
-
-	hasNextPage = qor.RepositoryOwner.Repositories.PageInfo.HasNextPage
-	endCursor = qor.RepositoryOwner.Repositories.PageInfo.EndCursor
+	hasNextPage := qor.RepositoryOwner.Repositories.PageInfo.HasNextPage
+	endCursor := qor.RepositoryOwner.Repositories.PageInfo.EndCursor
 
 	if qor.RepositoryOwner.Repositories.Edges == nil {
-		return
+		return hasNextPage, endCursor
 	}
 
 	for i := range qor.RepositoryOwner.Repositories.Edges {
@@ -26,5 +18,5 @@ func process(qor queryOwnedRepos, ownedRepos *[]string) (hasNextPage bool, endCu
 		}
 	}
 
-	return
+	return hasNextPage, endCursor
 }

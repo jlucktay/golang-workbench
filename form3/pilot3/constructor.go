@@ -2,10 +2,10 @@ package main
 
 import "net/http"
 
-func newApiServer() (a *apiServer) {
-	a = &apiServer{
+func newApiServer() *apiServer {
+	a := &apiServer{
 		router: http.NewServeMux(),
 	}
 	a.routes()
-	return
+	return a
 }

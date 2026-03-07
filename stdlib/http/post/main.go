@@ -75,7 +75,6 @@ func main() {
 	var respBody translateResponseBody
 
 	err = json.Unmarshal(respBodyBytes, &respBody)
-
 	if err != nil {
 		log.Fatal(err)
 	}

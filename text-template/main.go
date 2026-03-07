@@ -20,7 +20,6 @@ func main() {
 	}
 
 	err = tmpl.Execute(os.Stdout, sweaters)
-
 	if err != nil {
 		panic(err)
 	}

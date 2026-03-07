@@ -18,7 +18,6 @@ func main() {
 	var sgsupport aws2tf.SGFile
 
 	err = json.Unmarshal(raw, &sgsupport)
-
 	if err != nil {
 		panic(err)
 	}

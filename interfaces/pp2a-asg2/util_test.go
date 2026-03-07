@@ -30,10 +30,10 @@ func split(r rune) bool {
 }
 
 // mustOpen helps with inlining benchmark functions
-func mustOpen(filename string) (fp *os.File) {
+func mustOpen(filename string) *os.File {
 	fp, errOpen := os.Open(filename)
 	if errOpen != nil {
 		panic(errOpen)
 	}
-	return
+	return fp
 }

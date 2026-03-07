@@ -13,7 +13,10 @@ func cleanup(href string) string {
 	return strings.Replace(href, " ", "%20", 0)
 }
 
-func neighborsFromPaths(paths []string, ref url.URL) (neighbors []url.URL, errors []string) {
+func neighborsFromPaths(paths []string, ref url.URL) ([]url.URL, []string) {
+	neighbors := make([]url.URL, 0)
+	errors := make([]string, 0)
+
 	for _, p := range paths {
 		p = cleanup(p)
 
@@ -38,7 +41,7 @@ func neighborsFromPaths(paths []string, ref url.URL) (neighbors []url.URL, error
 		neighbors = append(neighbors, *u)
 	}
 
-	return
+	return neighbors, errors
 }
 
 func paths(doc string) []string {

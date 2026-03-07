@@ -69,8 +69,8 @@ func main() {
 	fmt.Println("Roles processed:", rolesProcessed)
 }
 
-func genRoleNames(filename string) (output chan string) {
-	output = make(chan string)
+func genRoleNames(filename string) chan string {
+	output := make(chan string)
 
 	go func() {
 		inFile, _ := os.Open(filename)
@@ -86,11 +86,11 @@ func genRoleNames(filename string) (output chan string) {
 		close(output)
 	}()
 
-	return
+	return output
 }
 
-func genRoles(input chan string) (output chan *iam.GetRoleOutput) {
-	output = make(chan *iam.GetRoleOutput)
+func genRoles(input chan string) chan *iam.GetRoleOutput {
+	output := make(chan *iam.GetRoleOutput)
 
 	go func() {
 		for roleName := range input {
@@ -115,11 +115,11 @@ func genRoles(input chan string) (output chan *iam.GetRoleOutput) {
 		close(output)
 	}()
 
-	return
+	return output
 }
 
-func genInstanceProfiles(getRole *iam.GetRoleOutput) (output chan *iam.ListInstanceProfilesForRoleOutput) {
-	output = make(chan *iam.ListInstanceProfilesForRoleOutput)
+func genInstanceProfiles(getRole *iam.GetRoleOutput) chan *iam.ListInstanceProfilesForRoleOutput {
+	output := make(chan *iam.ListInstanceProfilesForRoleOutput)
 
 	go func() {
 		profilesForRole, errGetProfiles := svcIam.ListInstanceProfilesForRole(
@@ -136,7 +136,7 @@ func genInstanceProfiles(getRole *iam.GetRoleOutput) (output chan *iam.ListInsta
 		close(output)
 	}()
 
-	return
+	return output
 }
 
 type roleIPRemove struct {
@@ -173,8 +173,8 @@ func deleteRole(roleName string) {
 	}
 }
 
-func genRolePolicies(getRole *iam.GetRoleOutput) (output chan *iam.ListRolePoliciesOutput) {
-	output = make(chan *iam.ListRolePoliciesOutput)
+func genRolePolicies(getRole *iam.GetRoleOutput) chan *iam.ListRolePoliciesOutput {
+	output := make(chan *iam.ListRolePoliciesOutput)
 
 	go func() {
 		policiesForRole, errGetRolePolicies := svcIam.ListRolePolicies(
@@ -191,7 +191,7 @@ func genRolePolicies(getRole *iam.GetRoleOutput) (output chan *iam.ListRolePolic
 		close(output)
 	}()
 
-	return
+	return output
 }
 
 type rolePolicyRemove struct {
@@ -215,8 +215,8 @@ func deletePoliciesFromRole(removeThese rolePolicyRemove) {
 	}
 }
 
-func genAttachedPolicies(getRole *iam.GetRoleOutput) (output chan *iam.ListAttachedRolePoliciesOutput) {
-	output = make(chan *iam.ListAttachedRolePoliciesOutput)
+func genAttachedPolicies(getRole *iam.GetRoleOutput) chan *iam.ListAttachedRolePoliciesOutput {
+	output := make(chan *iam.ListAttachedRolePoliciesOutput)
 
 	go func() {
 		policiesAttachedToRole, errPoliciesAttachedToRole := svcIam.ListAttachedRolePolicies(
@@ -233,7 +233,7 @@ func genAttachedPolicies(getRole *iam.GetRoleOutput) (output chan *iam.ListAttac
 		close(output)
 	}()
 
-	return
+	return output
 }
 
 type rolePolicyDetach struct {
