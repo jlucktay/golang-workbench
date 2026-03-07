@@ -13,8 +13,7 @@ func BenchmarkConcatString(b *testing.B) {
 
 	i := 0
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		str += "x"
 
 		i++
@@ -30,8 +29,7 @@ func BenchmarkConcatBuffer(b *testing.B) {
 
 	i := 0
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		buffer.WriteString("x")
 
 		i++
@@ -47,8 +45,7 @@ func BenchmarkConcatBuilder(b *testing.B) {
 
 	i := 0
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		builder.WriteString("x")
 
 		i++

@@ -36,11 +36,14 @@ type ListObjectsV2Pager interface {
 func CountObjects(ctx context.Context, pager ListObjectsV2Pager) (count int, err error) {
 	for pager.HasMorePages() {
 		var output *s3.ListObjectsV2Output
+
 		output, err = pager.NextPage(ctx)
 		if err != nil {
 			return count, err
 		}
-		count += int(output.KeyCount)
+
+		count += int(*output.KeyCount)
 	}
+
 	return count, nil
 }

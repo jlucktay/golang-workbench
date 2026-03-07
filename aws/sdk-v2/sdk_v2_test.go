@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+
 	sdk_v2 "go.jlucktay.dev/golang-workbench/aws/sdk-v2"
 )
 
@@ -98,13 +99,13 @@ func TestCountObjects(t *testing.T) {
 	pager := &mockListObjectsV2Pager{
 		Pages: []*s3.ListObjectsV2Output{
 			{
-				KeyCount: 5,
+				KeyCount: new(int32(5)),
 			},
 			{
-				KeyCount: 10,
+				KeyCount: new(int32(10)),
 			},
 			{
-				KeyCount: 15,
+				KeyCount: new(int32(15)),
 			},
 		},
 	}

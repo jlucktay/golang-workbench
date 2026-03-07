@@ -21,7 +21,7 @@ var pool = sync.Pool{
 func BenchmarkNoPool(b *testing.B) {
 	var book *Book
 
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		book = &Book{
 			Title:  "The Art of Computer Programming, Vol. 1",
 			Author: "Donald E. Knuth",
@@ -33,7 +33,7 @@ func BenchmarkNoPool(b *testing.B) {
 }
 
 func BenchmarkPool(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		book := pool.Get().(*Book)
 		book.Title = "The Art of Computer Programming, Vol. 1"
 		book.Author = "Donald E. Knuth"

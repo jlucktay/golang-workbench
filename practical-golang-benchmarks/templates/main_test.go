@@ -34,7 +34,7 @@ var book = &Book{
 func BenchmarkExecute(b *testing.B) {
 	t := template.Must(template.New("book").Parse(bookTemplate))
 
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		err := t.Execute(ioutil.Discard, book)
 		if err != nil {
 			panic(err)

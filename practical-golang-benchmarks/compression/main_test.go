@@ -15,8 +15,7 @@ func BenchmarkWrite(b *testing.B) {
 
 	zw := gzip.NewWriter(ioutil.Discard)
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		_, err = zw.Write(data)
 		if err != nil {
 			panic(err)
@@ -45,8 +44,7 @@ func BenchmarkRead(b *testing.B) {
 	r := bytes.NewReader(buf.Bytes())
 	zr, _ := gzip.NewReader(r)
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		r.Reset(buf.Bytes())
 		zr.Reset(r)
 		_, err := ioutil.ReadAll(zr)

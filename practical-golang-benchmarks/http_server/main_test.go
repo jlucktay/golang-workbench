@@ -90,8 +90,7 @@ func BenchmarkHTTP(b *testing.B) {
 
 	client := &http.Client{}
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		sendRequest(client, "http://127.0.0.1:8080/")
 	}
 }
@@ -105,8 +104,7 @@ func BenchmarkHTTPNoKeepAlive(b *testing.B) {
 		},
 	}
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		sendRequest(client, "http://127.0.0.1:8080/")
 	}
 }
@@ -121,8 +119,7 @@ func BenchmarkHTTPSNoKeepAlive(b *testing.B) {
 		},
 	}
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		sendRequest(client, "https://127.0.0.1:8443/")
 	}
 }

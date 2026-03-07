@@ -10,8 +10,7 @@ func BenchmarkEncode(b *testing.B) {
 	data := make([]byte, 1024)
 	rand.Read(data)
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		base64.StdEncoding.EncodeToString([]byte(data))
 	}
 }
@@ -21,8 +20,7 @@ func BenchmarkDecode(b *testing.B) {
 	rand.Read(data)
 	encoded := base64.StdEncoding.EncodeToString([]byte(data))
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		_, err := base64.StdEncoding.DecodeString(encoded)
 		if err != nil {
 			panic(err)

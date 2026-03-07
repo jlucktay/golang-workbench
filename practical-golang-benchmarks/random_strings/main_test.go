@@ -38,13 +38,13 @@ func randomString(bytes []byte) string {
 }
 
 func BenchmarkMathRandString(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		randomString(randomBytes(16))
 	}
 }
 
 func BenchmarkCryptoRandString(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		randomString(cryptoRandomBytes(16))
 	}
 }

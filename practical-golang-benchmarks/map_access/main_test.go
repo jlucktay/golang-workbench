@@ -21,8 +21,7 @@ func BenchmarkMapStringKeys(b *testing.B) {
 	i := 0
 	l := len(m)
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		if _, ok := m[k[i]]; ok {
 		}
 
@@ -46,8 +45,7 @@ func BenchmarkMapIntKeys(b *testing.B) {
 	i := 0
 	l := len(m)
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		if _, ok := m[k[i]]; ok {
 		}
 

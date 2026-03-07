@@ -15,7 +15,7 @@ func generateSlice(n int) []int {
 }
 
 func BenchmarkSort1000(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		b.StopTimer()
 		s := generateSlice(1000)
 		b.StartTimer()
@@ -24,7 +24,7 @@ func BenchmarkSort1000(b *testing.B) {
 }
 
 func BenchmarkSort10000(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		b.StopTimer()
 		s := generateSlice(10000)
 		b.StartTimer()
@@ -33,7 +33,7 @@ func BenchmarkSort10000(b *testing.B) {
 }
 
 func BenchmarkSort100000(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		b.StopTimer()
 		s := generateSlice(100000)
 		b.StartTimer()
@@ -42,7 +42,7 @@ func BenchmarkSort100000(b *testing.B) {
 }
 
 func BenchmarkSort1000000(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		b.StopTimer()
 		s := generateSlice(1000000)
 		b.StartTimer()

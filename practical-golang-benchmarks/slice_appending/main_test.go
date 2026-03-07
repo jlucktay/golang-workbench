@@ -10,8 +10,8 @@ func BenchmarkSliceAppend(b *testing.B) {
 	s := make([]byte, 0)
 
 	i := 0
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+
+	for b.Loop() {
 		s = append(s, 1)
 
 		i++
@@ -28,8 +28,8 @@ func BenchmarkSliceAppendPrealloc(b *testing.B) {
 	s := make([]byte, 0, numItems)
 
 	i := 0
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+
+	for b.Loop() {
 		s = append(s, 1)
 
 		i++

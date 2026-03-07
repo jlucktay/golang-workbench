@@ -2,7 +2,7 @@ package crawler
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -159,7 +159,7 @@ func (c *crawl) getRequest(u url.URL) {
 				http.StatusText(resp.StatusCode),
 			)
 		} else {
-			contents, err := ioutil.ReadAll(resp.Body)
+			contents, err := io.ReadAll(resp.Body)
 			if err != nil {
 				panic("can't read response body?") // TODO
 			}
@@ -237,7 +237,7 @@ func (c *crawl) noteError(s string, args ...any) {
 	c.errors = append(c.errors, msg)
 }
 
-func (c *crawl) wait() (graph *WebsiteGraph, errors []string) {
+func (c *crawl) wait() (*WebsiteGraph, []string) {
 	c.wg.Wait()
 	return c.graph, c.errors
 }

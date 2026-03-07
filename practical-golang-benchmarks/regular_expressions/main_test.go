@@ -8,7 +8,7 @@ import (
 var testRegexp = `^[A-Za-z0-9._%+-][email protected][A-Za-z0-9.-]+\.[A-Za-z]+$`
 
 func BenchmarkMatchString(b *testing.B) {
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		_, err := regexp.MatchString(testRegexp, "[email protected]")
 		if err != nil {
 			panic(err)
@@ -22,8 +22,7 @@ func BenchmarkMatchStringCompiled(b *testing.B) {
 		panic(err)
 	}
 
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		r.MatchString("[email protected]")
 	}
 }
