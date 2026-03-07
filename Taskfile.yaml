@@ -12,25 +12,73 @@ tasks:
     cmd:
       for:
         var: GO_MODULE_DIRS
-      cmd: go -C "{{.ITEM}}" fix ./...
+      vars:
+        GO_MODULE_DIR: '{{.ITEM}}'
+      task: fix-one
+
+  fix-one:
+    internal: true
+    requires:
+      vars:
+        - GO_MODULE_DIR
+    label: 'fix:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
+    sources:
+      - '{{.GO_MODULE_DIR}}/**/*.go'
+    cmd: go -C "{{.GO_MODULE_DIR}}" fix ./...
 
   modernise:
     cmd:
       for:
         var: GO_MODULE_DIRS
-      cmd: go -C "{{.ITEM}}" run golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest -fix -test ./...
+      vars:
+        GO_MODULE_DIR: '{{.ITEM}}'
+      task: modernise-one
+
+  modernise-one:
+    internal: true
+    requires:
+      vars:
+        - GO_MODULE_DIR
+    label: 'modernise:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
+    sources:
+      - '{{.GO_MODULE_DIR}}/**/*.go'
+    cmd: go -C "{{.GO_MODULE_DIR}}" run golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest -fix -test ./...
 
   format:
     cmd:
       for:
         var: GO_MODULE_DIRS
-      cmd: gofumpt -w -extra . "{{.ITEM}}"
+      vars:
+        GO_MODULE_DIR: '{{.ITEM}}'
+      task: format-one
+
+  format-one:
+    internal: true
+    requires:
+      vars:
+        - GO_MODULE_DIR
+    label: 'format:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
+    sources:
+      - '{{.GO_MODULE_DIR}}/**/*.go'
+    cmd: gofumpt -w -extra . "{{.GO_MODULE_DIR}}"
 
   lint:
     cmd:
       for:
         var: GO_MODULE_DIRS
-      cmd: cd "{{.ITEM}}" && golangci-lint run ./...
+      vars:
+        GO_MODULE_DIR: '{{.ITEM}}'
+      task: lint-one
+
+  lint-one:
+    internal: true
+    requires:
+      vars:
+        - GO_MODULE_DIR
+    label: 'lint:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
+    sources:
+      - '{{.GO_MODULE_DIR}}/**/*.go'
+    cmd: cd "{{.GO_MODULE_DIR}}" && golangci-lint run ./...
 
   toil:
     cmds:
