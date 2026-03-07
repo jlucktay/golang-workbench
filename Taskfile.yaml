@@ -1,0 +1,40 @@
+---
+version: 3
+
+vars:
+  GO_MODULE_DIRS:
+    sh: fd --absolute-path --type file '^go.mod$' --exec bash -c 'echo {//}'
+
+tasks:
+  default: task --list-all
+
+  fix:
+    cmd:
+      for:
+        var: GO_MODULE_DIRS
+      cmd: go -C "{{.ITEM}}" fix ./...
+
+  modernise:
+    cmd:
+      for:
+        var: GO_MODULE_DIRS
+      cmd: go -C "{{.ITEM}}" run golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest -fix -test ./...
+
+  format:
+    cmd:
+      for:
+        var: GO_MODULE_DIRS
+      cmd: gofumpt -w -extra . "{{.ITEM}}"
+
+  lint:
+    cmd:
+      for:
+        var: GO_MODULE_DIRS
+      cmd: cd "{{.ITEM}}" && golangci-lint run ./...
+
+  toil:
+    cmds:
+      - task: fix
+      - task: modernise
+      - task: format
+      - task: lint
