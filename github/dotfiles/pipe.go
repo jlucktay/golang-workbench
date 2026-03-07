@@ -90,7 +90,7 @@ func genGithubURL(input chan url.URL) chan url.URL {
 			}
 
 			resp := fmt.Sprint(getResponse(*apiURL))
-			var responseHolder map[string]interface{}
+			var responseHolder map[string]any
 			json.Unmarshal([]byte(resp), &responseHolder)
 
 			if htmlURL, urlOK := responseHolder["html_url"]; urlOK {

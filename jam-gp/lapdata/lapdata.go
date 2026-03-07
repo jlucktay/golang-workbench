@@ -7,7 +7,7 @@ type Event struct {
 	EventDate string `json:"event_date"`
 	EventName string `json:"event_name"`
 
-	Officials []interface{} `json:"officials"`
+	Officials []any `json:"officials"`
 
 	Session Session `json:"session"`
 
@@ -23,15 +23,15 @@ type Session struct {
 
 	StartTime time.Time `json:"start_time"`
 
-	Com               interface{} `json:"com"`
-	GridLastGenerated interface{} `json:"grid_last_generated"`
-	GridVer           interface{} `json:"grid_ver"`
-	ResLastIssued     interface{} `json:"res_last_issued"`
-	ResVer            interface{} `json:"res_ver"`
-	Tc                interface{} `json:"tc"`
-	Temp              interface{} `json:"temp"`
-	TimingSystem      interface{} `json:"timing_system"`
-	Weather           interface{} `json:"weather"`
+	Com               any `json:"com"`
+	GridLastGenerated any `json:"grid_last_generated"`
+	GridVer           any `json:"grid_ver"`
+	ResLastIssued     any `json:"res_last_issued"`
+	ResVer            any `json:"res_ver"`
+	Tc                any `json:"tc"`
+	Temp              any `json:"temp"`
+	TimingSystem      any `json:"timing_system"`
+	Weather           any `json:"weather"`
 
 	Name          string `json:"name"`
 	NumberAndName string `json:"number_and_name"`
@@ -44,7 +44,7 @@ type Session struct {
 
 	Competitors []Competitors `json:"competitors"`
 
-	Pens []interface{} `json:"pens"`
+	Pens []any `json:"pens"`
 
 	Results []Results `json:"results"`
 
@@ -92,11 +92,11 @@ type Class struct {
 type Competitors struct {
 	ID ID `json:"_id"`
 
-	Ch  interface{} `json:"ch"`
-	Cid interface{} `json:"cid"`
-	E   interface{} `json:"e"`
-	N   interface{} `json:"n"`
-	Rt  interface{} `json:"rt"`
+	Ch  any `json:"ch"`
+	Cid any `json:"cid"`
+	E   any `json:"e"`
+	N   any `json:"n"`
+	Rt  any `json:"rt"`
 
 	// KartType is the type of kart driven by the team.
 	KartType string `json:"c"`
@@ -153,9 +153,9 @@ type Sectors struct {
 type Results struct {
 	ID ID `json:"_id"`
 
-	Bs2Or interface{} `json:"bs2or"`
-	Bs1Or interface{} `json:"bs1or"`
-	Pen   interface{} `json:"pen"`
+	Bs2Or any `json:"bs2or"`
+	Bs1Or any `json:"bs1or"`
+	Pen   any `json:"pen"`
 
 	Avg   string `json:"avg"`
 	B     string `json:"b"`
@@ -170,7 +170,7 @@ type Results struct {
 	// Total time elapsed.
 	T string `json:"t"`
 
-	Ty []interface{} `json:"ty"`
+	Ty []any `json:"ty"`
 
 	// Best lap number.
 	Bln int `json:"bln"`

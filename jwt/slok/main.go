@@ -32,7 +32,7 @@ func exampleNew(mySigningKey []byte) (string, error) {
 }
 
 func exampleParse(myToken, myKey string) {
-	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(myToken, func(token *jwt.Token) (any, error) {
 		return []byte(myKey), nil
 	})
 

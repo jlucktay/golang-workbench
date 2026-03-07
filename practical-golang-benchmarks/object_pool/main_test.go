@@ -13,7 +13,7 @@ type Book struct {
 }
 
 var pool = sync.Pool{
-	New: func() interface{} {
+	New: func() any {
 		return &Book{}
 	},
 }

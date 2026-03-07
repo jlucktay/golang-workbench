@@ -4,7 +4,7 @@ package flatten
 import "fmt"
 
 // Flatten will take a slice of arbitrarily nested (slices of) interfaces and/or ints, and return a flat slice of ints.
-func Flatten(input interface{}) []int {
+func Flatten(input any) []int {
 	result := make([]int, 0)
 
 	switch typeSwitch := input.(type) {
@@ -18,7 +18,7 @@ func Flatten(input interface{}) []int {
 		result = append(result, typeSwitch...)
 
 	// Nested with the same type; make recursive call(s)
-	case []interface{}:
+	case []any:
 		for _, data := range typeSwitch {
 			result = append(result, Flatten(data)...)
 		}

@@ -44,7 +44,7 @@ func main() {
 			BarStart: "[", BarEnd: "]", Saucer: "🔥", SaucerHead: "😡", SaucerPadding: "  ",
 		}))
 
-	for i := 0; i < progressGranularity; i++ {
+	for range progressGranularity {
 		if err := bar.Add(1); err != nil {
 			fmt.Fprintf(os.Stderr, "error adding to progress bar: %v", err)
 		}

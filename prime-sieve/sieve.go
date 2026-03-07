@@ -28,7 +28,7 @@ func main() {
 	ch := make(chan int) // Create a new channel.
 	go generate(ch)      // Launch generate goroutine.
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		prime := <-ch
 		fmt.Println(prime)
 		ch1 := make(chan int)

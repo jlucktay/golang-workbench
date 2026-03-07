@@ -50,7 +50,7 @@ func gen(limit int64) <-chan int64 {
 	go func() {
 		fmt.Println("gen/inner: start")
 
-		for index := int64(0); index < limit; index++ {
+		for index := range limit {
 			out <- index
 		}
 

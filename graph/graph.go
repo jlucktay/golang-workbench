@@ -3,6 +3,7 @@ package graph
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/cheekybits/genny/generic"
@@ -48,15 +49,15 @@ func (g *ItemGraph) AddEdge(n1, n2 *Node) {
 // AddEdge adds an edge to the graph
 func (g *ItemGraph) String() {
 	g.lock.RLock()
-	s := ""
+	var s strings.Builder
 	for i := 0; i < len(g.nodes); i++ {
-		s += g.nodes[i].String() + " -> "
+		s.WriteString(g.nodes[i].String() + " -> ")
 		near := g.edges[*g.nodes[i]]
 		for j := 0; j < len(near); j++ {
-			s += near[j].String() + " "
+			s.WriteString(near[j].String() + " ")
 		}
-		s += "\n"
+		s.WriteString("\n")
 	}
-	fmt.Println(s)
+	fmt.Println(s.String())
 	g.lock.RUnlock()
 }

@@ -70,7 +70,7 @@ func TestIntAsString(t *testing.T) {
 
 			return err == nil && parsed == int64(number)
 		},
-		gen.IntRange(1, math.MaxInt32).SuchThat(func(v interface{}) bool {
+		gen.IntRange(1, math.MaxInt32).SuchThat(func(v any) bool {
 			return v.(int)%3 != 0 && v.(int)%5 != 0
 		}),
 	))

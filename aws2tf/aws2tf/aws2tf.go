@@ -8,6 +8,7 @@ package aws2tf
 
 import (
 	"fmt"
+	"strings"
 )
 
 type ipRange struct {
@@ -66,19 +67,19 @@ type ipPermissionIngress struct {
 type ipPermissionIngresses []ipPermissionIngress
 
 func (ipi ipPermissionIngresses) String() string {
-	var s string
+	var s strings.Builder
 
 	for _, i := range ipi {
 		for _, j := range i.IPRanges {
-			s += j.printIngress(i)
+			s.WriteString(j.printIngress(i))
 		}
 
 		for _, k := range i.UserIDGroupPairs {
-			s += k.printIngress(i)
+			s.WriteString(k.printIngress(i))
 		}
 	}
 
-	return s
+	return s.String()
 }
 
 type ipPermissionEgress struct {
@@ -88,19 +89,19 @@ type ipPermissionEgress struct {
 type ipPermissionEgresses []ipPermissionEgress
 
 func (ipe ipPermissionEgresses) String() string {
-	var s string
+	var s strings.Builder
 
 	for _, i := range ipe {
 		for _, j := range i.IPRanges {
-			s += j.printEgress(i)
+			s.WriteString(j.printEgress(i))
 		}
 
 		for _, k := range i.UserIDGroupPairs {
-			s += k.printEgress(i)
+			s.WriteString(k.printEgress(i))
 		}
 	}
 
-	return s
+	return s.String()
 }
 
 type userIDGroupPair struct {
@@ -160,15 +161,16 @@ func (t tag) String() string {
 type tags []tag
 
 func (t tags) String() string {
-	s := "  tags {\n"
+	var s strings.Builder
+	s.WriteString("  tags {\n")
 
 	for _, x := range t {
-		s += fmt.Sprintf("%s", x)
+		s.WriteString(fmt.Sprintf("%s", x))
 	}
 
-	s += "  }\n"
+	s.WriteString("  }\n")
 
-	return s
+	return s.String()
 }
 
 type securityGroup struct {
@@ -211,11 +213,11 @@ type SGFile struct {
 }
 
 func (sgf SGFile) String() string {
-	var s string
+	var s strings.Builder
 
 	for _, sg := range sgf.SecurityGroups {
-		s += fmt.Sprintf("%s\n", sg)
+		s.WriteString(fmt.Sprintf("%s\n", sg))
 	}
 
-	return s
+	return s.String()
 }

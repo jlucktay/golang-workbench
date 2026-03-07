@@ -8,7 +8,7 @@ import (
 
 func generateSlice(n int) []int {
 	s := make([]int, 0, n)
-	for i := 0; i < n; i++ {
+	for range n {
 		s = append(s, rand.Intn(1e9))
 	}
 	return s

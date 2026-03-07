@@ -50,7 +50,7 @@ func main() {
 	// Set up queries to send to GraphQL and hold results, and variables for each run
 	var queryMine, queryForked queryOwnedRepos
 
-	queryVariables := map[string]interface{}{
+	queryVariables := map[string]any{
 		"login":   githubv4.String(githubLogin),
 		"perPage": githubv4.Int(perPage),
 	}

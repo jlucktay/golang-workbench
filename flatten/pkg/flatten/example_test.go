@@ -12,8 +12,8 @@ func ExampleFlatten() {
 }
 
 func ExampleFlatten_complex() {
-	complex := []interface{}{
-		[]interface{}{
+	complex := []any{
+		[]any{
 			1,
 			[]int{2, 3},
 		},

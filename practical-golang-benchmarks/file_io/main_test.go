@@ -15,7 +15,7 @@ func BenchmarkWriteFile(b *testing.B) {
 			panic(err)
 		}
 
-		for i := 0; i < 100000; i++ {
+		for range 100000 {
 			f.WriteString("some text!\n")
 		}
 
@@ -32,7 +32,7 @@ func BenchmarkWriteFileBuffered(b *testing.B) {
 
 		w := bufio.NewWriter(f)
 
-		for i := 0; i < 100000; i++ {
+		for range 100000 {
 			w.WriteString("some text!\n")
 		}
 

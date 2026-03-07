@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 )
 
 // Complete the sockMerchant function below.
 func sockMerchant(n int32, ar []int32) int32 {
-	sort.Slice(ar, func(i, j int) bool { return ar[i] < ar[j] })
+	slices.Sort(ar)
 
 	currentIndex := 0
 	pairCount := int32(0)

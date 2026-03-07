@@ -4,13 +4,13 @@ import (
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
+	"crypto/sha3"
 	"crypto/sha512"
 	"hash"
 	"math/rand"
 	"testing"
 
 	"golang.org/x/crypto/blake2b"
-	"golang.org/x/crypto/sha3"
 )
 
 func benchmarkHash(b *testing.B, h hash.Hash) {
@@ -41,11 +41,11 @@ func BenchmarkSHA512(b *testing.B) {
 }
 
 func BenchmarkSHA3256(b *testing.B) {
-	benchmarkHash(b, sha3.New256())
+	benchmarkHash(b, hash.Hash(sha3.New256()))
 }
 
 func BenchmarkSHA3512(b *testing.B) {
-	benchmarkHash(b, sha3.New512())
+	benchmarkHash(b, hash.Hash(sha3.New512()))
 }
 
 func BenchmarkBLAKE2b256(b *testing.B) {

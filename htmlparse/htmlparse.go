@@ -49,20 +49,20 @@ func main() {
 <article class="day-desc">
 */
 func getDayDesc(n *html.Node) string {
-	var s string
+	var s strings.Builder
 
 	// s += "Data: <" + n.Data + ">\n"
 
 	if n.Type == html.ElementNode && n.Data == "article" {
 		for _, a := range n.Attr {
 			if a.Key == "class" && strings.Contains(a.Val, "day-desc") {
-				s += `
+				s.WriteString(`
 				*****
 				*   *
 				* x *
 				*   *
 				*****
-`
+`)
 				break
 			}
 		}
@@ -70,8 +70,8 @@ func getDayDesc(n *html.Node) string {
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
 		// s += "Type: '" + string(c.Type) + "'\n"
-		s += getDayDesc(c)
+		s.WriteString(getDayDesc(c))
 	}
 
-	return s
+	return s.String()
 }

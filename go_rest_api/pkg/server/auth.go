@@ -54,7 +54,7 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		token, err := jwt.ParseWithClaims(cookie.Value, &claims{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(cookie.Value, &claims{}, func(token *jwt.Token) (any, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected siging method")
 			}

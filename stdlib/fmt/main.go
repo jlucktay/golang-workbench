@@ -117,7 +117,7 @@ func loadConfig(path string) (*Config, error) {
 }
 
 func main() {
-	var e interface{} = 2.7182
+	var e any = 2.7182
 	fmt.Printf("e = %v (%T)\n", e, e)
 	fmt.Printf("%10d\n", 353)
 	fmt.Printf("%*d\n", 10, 353)

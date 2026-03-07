@@ -9,12 +9,12 @@ import (
 
 func TestFlatten(t *testing.T) {
 	testCases := map[string]struct {
-		input    interface{}
+		input    any
 		expected []int
 	}{
 		"Hello world - [[1,2,[3]],4] -> [1,2,3,4]": {
-			input: []interface{}{
-				[]interface{}{
+			input: []any{
+				[]any{
 					1,
 					2,
 					[]int{3},
@@ -24,14 +24,14 @@ func TestFlatten(t *testing.T) {
 			expected: []int{1, 2, 3, 4},
 		},
 		"Nested": {
-			input: []interface{}{
-				[]interface{}{
+			input: []any{
+				[]any{
 					1,
 					[]int{2},
-					[]interface{}{
+					[]any{
 						3,
 						[]int{4, 5},
-						[]interface{}{
+						[]any{
 							6,
 							[]int{7, 8},
 							9, 10,

@@ -51,7 +51,7 @@ func gen(max int, num uint64) chan uint64 {
 	out := make(chan uint64)
 
 	go func() {
-		for index := uint64(0); index < num; index++ {
+		for range num {
 			// Re-roll the random seed each time
 			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			out <- uint64(r.Intn(max) + 1) // Get [1,max] rather than [0,max)

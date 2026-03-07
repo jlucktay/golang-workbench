@@ -271,7 +271,6 @@ func TestConvertURL(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
-		tC := tC // pin!
 		desc := fmt.Sprintf("[%s + %s -> %s]", tC.base, tC.href, tC.urlResult.String())
 		t.Run(desc, func(t *testing.T) {
 			actual := convertURL(tC.base, tC.href)

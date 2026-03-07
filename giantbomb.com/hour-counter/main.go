@@ -64,7 +64,7 @@ func parseResults(stdout io.Writer, results *sync.Map, expectedCount int) error 
 
 	rdb := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
 
-	results.Range(func(_, value interface{}) bool {
+	results.Range(func(_, value any) bool {
 		xVideos, ok := value.([]Video)
 		if !ok {
 			return false

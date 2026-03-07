@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	start := []interface{}{
-		[]interface{}{
+	start := []any{
+		[]any{
 			1,
 			2,
 			[]int{3},

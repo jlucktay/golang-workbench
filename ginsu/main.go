@@ -256,7 +256,7 @@ func run(ctx context.Context, token string) error {
 
 	slog.Info("queueing notifications for pool")
 
-	for i := 0; i < len(notifications); i++ {
+	for i := range notifications {
 		q.Go(func() error {
 			return process(ctx, client, notifications[i], resultCounts)
 		})
@@ -296,7 +296,7 @@ func checkTokenScopes(headers http.Header) error {
 		slog.String("slice", fmt.Sprintf("%#v", scopesHeader)))
 
 	for index := range scopesHeader {
-		for _, foundScope := range strings.Split(scopesHeader[index], ",") {
+		for foundScope := range strings.SplitSeq(scopesHeader[index], ",") {
 			trimmedScope := strings.TrimSpace(foundScope)
 			scopesFound[trimmedScope] = struct{}{}
 		}

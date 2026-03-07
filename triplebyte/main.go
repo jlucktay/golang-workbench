@@ -49,21 +49,21 @@ func (b *board) add(x, y int, token string) {
 }
 
 func (b *board) String() string {
-	output := ""
+	var output strings.Builder
 
 	for _, ySpaces := range b.board {
 		for xIndex, xSpace := range ySpaces {
-			output += fmt.Sprint(xSpace.String())
+			output.WriteString(fmt.Sprint(xSpace.String()))
 
 			if xIndex+1 < len(ySpaces) {
-				output += fmt.Sprint("|")
+				output.WriteString(fmt.Sprint("|"))
 			} else {
-				output += fmt.Sprintln()
+				output.WriteString(fmt.Sprintln())
 			}
 		}
 	}
 
-	return output
+	return output.String()
 }
 
 func (b *board) isFull() bool {

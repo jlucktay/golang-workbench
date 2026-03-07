@@ -1,8 +1,9 @@
 package main
 
 import (
+	"cmp"
 	"fmt"
-	"sort"
+	"slices"
 
 	"golang.org/x/exp/constraints"
 )
@@ -58,22 +59,14 @@ func Merge[T any](slices ...[]T) (mergedSlice []T) {
 // Includes - given a slice of type T and a value of type T,
 // determines whether the value is contained by the slice.
 func Includes[T comparable](slice []T, value T) bool {
-	for _, el := range slice {
-		if el == value {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(slice, value)
 }
 
 // // Sort - sorts given a slice of any orderable type T
 // The constraints.Ordered constraint in the Sort() function guarantees that
 // the function can sort values of any type supporting the operators <, <=, >=, >.
-func Sort[T constraints.Ordered](s []T) {
-	sort.Slice(s, func(i, j int) bool {
-		return s[i] < s[j]
-	})
+func Sort[T cmp.Ordered](s []T) {
+	slices.Sort(s)
 }
 
 // Keys returns the keys of the map m in a slice.

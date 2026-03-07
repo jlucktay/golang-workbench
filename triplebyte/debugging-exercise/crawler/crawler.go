@@ -228,7 +228,7 @@ func (c *crawl) headRequest(u url.URL) {
 	c.finalizeCrawl(u)
 }
 
-func (c *crawl) noteError(s string, args ...interface{}) {
+func (c *crawl) noteError(s string, args ...any) {
 	msg := fmt.Sprintf(s, args...)
 	c.log.noteError(msg)
 	c.mx.Lock()

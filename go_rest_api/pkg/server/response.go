@@ -12,7 +12,7 @@ func Error(w http.ResponseWriter, code int, message string) {
 }
 
 // JSON marshals a JSON payload and writes it out to the response, with some headers.
-func JSON(w http.ResponseWriter, code int, payload interface{}) {
+func JSON(w http.ResponseWriter, code int, payload any) {
 	response, _ := json.Marshal(payload)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -21,7 +21,7 @@ func JSON(w http.ResponseWriter, code int, payload interface{}) {
 }
 
 // JSONWithCookie marshals a JSON payload, sets a cookie, and writes out to the response, with some headers.
-func JSONWithCookie(w http.ResponseWriter, code int, payload interface{}, cookie http.Cookie) {
+func JSONWithCookie(w http.ResponseWriter, code int, payload any, cookie http.Cookie) {
 	response, _ := json.Marshal(payload)
 	http.SetCookie(w, &cookie)
 

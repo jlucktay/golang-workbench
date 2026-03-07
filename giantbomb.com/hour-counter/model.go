@@ -37,7 +37,7 @@ type Video struct {
 
 	Associations    []Associations    `json:"associations,omitempty"`
 	Image           *Image            `json:"image,omitempty"`
-	SavedTime       interface{}       `json:"saved_time,omitempty"`
+	SavedTime       any               `json:"saved_time,omitempty"`
 	VideoCategories []VideoCategories `json:"video_categories,omitempty"`
 	VideoShow       *VideoShow        `json:"video_show,omitempty"`
 }

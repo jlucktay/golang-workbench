@@ -7,7 +7,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]interface{}) ([]string, error) {
+func runQuery(client *githubv4.Client, query *queryOwnedRepos, vars map[string]any) ([]string, error) {
 	var (
 		ownedRepos []string
 		endCursor  string

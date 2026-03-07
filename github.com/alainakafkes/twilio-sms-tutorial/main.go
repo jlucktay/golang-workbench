@@ -80,7 +80,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		fmt.Fprintf(os.Stderr, "could not decode response body: %v\n", err)
 		os.Exit(1)
