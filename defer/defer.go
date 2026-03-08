@@ -13,7 +13,7 @@ func main() {
 }
 
 type deferredPrinter interface {
-	deferredPrint(string)
+	deferredPrint(s string)
 }
 
 type one struct{}

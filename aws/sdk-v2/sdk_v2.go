@@ -30,7 +30,7 @@ func GetObjectFromS3(ctx context.Context, api S3GetObjectAPI, bucket, key string
 
 type ListObjectsV2Pager interface {
 	HasMorePages() bool
-	NextPage(context.Context, ...func(*s3.Options)) (*s3.ListObjectsV2Output, error)
+	NextPage(ctx context.Context, opts ...func(*s3.Options)) (*s3.ListObjectsV2Output, error)
 }
 
 func CountObjects(ctx context.Context, pager ListObjectsV2Pager) (int, error) {

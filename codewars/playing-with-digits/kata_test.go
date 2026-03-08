@@ -1,8 +1,10 @@
-package kata
+package kata_test
 
 import (
 	"fmt"
 	"testing"
+
+	kata "go.jlucktay.dev/golang-workbench/codewars/playing-with-digits"
 )
 
 // digPow(89, 1) should return 1 since 8¹ + 9² = 89 = 89 * 1
@@ -26,7 +28,7 @@ func Test(t *testing.T) {
 
 	for _, tC := range testCases {
 		t.Run(fmt.Sprintf("n: %v, p: %v, k: %v", tC.n, tC.p, tC.k), func(t *testing.T) {
-			if result := DigPow(tC.n, tC.p); result != tC.k {
+			if result := kata.DigPow(tC.n, tC.p); result != tC.k {
 				t.Fatalf("DigPow(%v, %v) == '%v', wanted '%v'", tC.n, tC.p, result, tC.k)
 			}
 		})

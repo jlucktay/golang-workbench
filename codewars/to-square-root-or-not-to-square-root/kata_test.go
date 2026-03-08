@@ -1,9 +1,11 @@
-package kata
+package kata_test
 
 import (
 	"reflect"
 	"strconv"
 	"testing"
+
+	kata "go.jlucktay.dev/golang-workbench/codewars/to-square-root-or-not-to-square-root"
 )
 
 func TestSquareOrSquareRoot(t *testing.T) {
@@ -15,7 +17,7 @@ func TestSquareOrSquareRoot(t *testing.T) {
 
 	for i, tC := range tests {
 		t.Run(strconv.Itoa(i+1), func(t *testing.T) {
-			if result := SquareOrSquareRoot(tC[0]); !reflect.DeepEqual(result, tC[1]) {
+			if result := kata.SquareOrSquareRoot(tC[0]); !reflect.DeepEqual(result, tC[1]) {
 				t.Fatalf("SquareOrSquareRoot(%v) == '%v', wanted '%v'", tC[0], result, tC[1])
 			}
 		})

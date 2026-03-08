@@ -21,9 +21,17 @@ linters:
     - errcheck
     - exptostd
     - gocheckcompilerdirectives
+    - inamedparam
+    - iotamixing
     - nlreturn
     - nolintlint
     - nonamedreturns
+    - nosprintfhostport
+    - sloglint
+    - tagalign
+    - testableexamples
+    - testpackage
+    - usestdlibvars
 
   exclusions:
     generated: strict

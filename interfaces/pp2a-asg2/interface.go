@@ -12,8 +12,8 @@ const WCSIZE = 250000
 type WordCollection interface {
 	MakeCollection() int
 	FreeCollection()
-	AddCollection(string) int
-	SearchCollection(string) int
+	AddCollection(word string) int
+	SearchCollection(word string) int
 	SizeCollection() int
-	DisplayCollection(io.Writer)
+	DisplayCollection(stdout io.Writer)
 }

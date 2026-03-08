@@ -4,9 +4,9 @@ import "testing"
 
 const TestString = "test"
 
-func benchmarkConcat(size int, SelfConcat func(string, int) string, b *testing.B) {
+func benchmarkConcat(size int, selfConcat func(string, int) string, b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		SelfConcat(TestString, size)
+		selfConcat(TestString, size)
 	}
 }
 

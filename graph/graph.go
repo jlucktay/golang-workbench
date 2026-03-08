@@ -17,6 +17,12 @@ type Node struct {
 	value Item
 }
 
+func NewNode(value string) Node {
+	return Node{
+		value: value,
+	}
+}
+
 func (n *Node) String() string {
 	return fmt.Sprintf("%v", n.value)
 }

@@ -70,7 +70,7 @@ func sendRequest(client *http.Client, addr string) {
 		panic(err)
 	}
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		panic("request failed")
 	}
 

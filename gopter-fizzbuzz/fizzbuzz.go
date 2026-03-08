@@ -7,7 +7,7 @@ import (
 )
 
 // Fizzbuzz: See https://wikipedia.org/wiki/Fizz_buzz
-func fizzbuzz(number int) (string, error) {
+func Fizzbuzz(number int) (string, error) {
 	if number <= 0 {
 		return "", errors.New("undefined")
 	}

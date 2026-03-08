@@ -9,7 +9,7 @@ import (
 )
 
 func getResponse(get url.URL) (io.Reader, error) {
-	req, errReq := http.NewRequest("GET", get.String(), nil)
+	req, errReq := http.NewRequest(http.MethodGet, get.String(), nil)
 	if errReq != nil {
 		Error.Printf("URL '%s': request error: %v\n", get.String(), errReq)
 
@@ -29,7 +29,7 @@ func getResponse(get url.URL) (io.Reader, error) {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("URL '%s': status code error: [%d] %s", get.String(), res.StatusCode, res.Status)
 	}
 

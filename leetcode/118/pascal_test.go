@@ -1,9 +1,11 @@
-package pascal
+package pascal_test
 
 import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
+	pascal "go.jlucktay.dev/golang-workbench/leetcode/118"
 )
 
 func TestGenerate(t *testing.T) {
@@ -22,7 +24,7 @@ func TestGenerate(t *testing.T) {
 	}
 	for desc, tc := range testCases {
 		t.Run(desc, func(t *testing.T) {
-			result := generate(tc.input)
+			result := pascal.Generate(tc.input)
 
 			t.Logf("result from input '%v':\n%+v", tc.input, result)
 

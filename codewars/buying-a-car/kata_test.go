@@ -1,8 +1,10 @@
-package kata
+package kata_test
 
 import (
 	"reflect"
 	"testing"
+
+	kata "go.jlucktay.dev/golang-workbench/codewars/buying-a-car"
 )
 
 func TestNbMonths(t *testing.T) {
@@ -27,7 +29,7 @@ func TestNbMonths(t *testing.T) {
 
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			ans := NbMonths(tC.startPriceOld, tC.startPriceNew, tC.savingperMonth, tC.percentLossByMonth)
+			ans := kata.NbMonths(tC.startPriceOld, tC.startPriceNew, tC.savingperMonth, tC.percentLossByMonth)
 
 			if !reflect.DeepEqual(ans, tC.exp) {
 				t.Fatalf("NbMonths(%v, %v, %v, %v) == '%v', wanted '%v'",

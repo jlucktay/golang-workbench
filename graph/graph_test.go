@@ -1,18 +1,20 @@
-package graph
+package graph_test
 
 import (
 	"testing"
+
+	"go.jlucktay.dev/golang-workbench/graph"
 )
 
-var g ItemGraph
+var g graph.ItemGraph
 
 func fillGraph() {
-	nA := Node{"A"}
-	nB := Node{"B"}
-	nC := Node{"C"}
-	nD := Node{"D"}
-	nE := Node{"E"}
-	nF := Node{"F"}
+	nA := graph.NewNode("A")
+	nB := graph.NewNode("B")
+	nC := graph.NewNode("C")
+	nD := graph.NewNode("D")
+	nE := graph.NewNode("E")
+	nF := graph.NewNode("F")
 	g.AddNode(&nA)
 	g.AddNode(&nB)
 	g.AddNode(&nC)

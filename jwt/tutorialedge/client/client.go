@@ -20,7 +20,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "http://localhost:9000/", nil)
+	req, _ := http.NewRequest(http.MethodGet, "http://localhost:9000/", nil)
 	req.Header.Set("Token", validToken)
 	res, err := client.Do(req)
 	if err != nil {

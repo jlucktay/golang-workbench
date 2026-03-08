@@ -10,7 +10,7 @@ import (
 )
 
 func getResponse(get url.URL) io.Reader {
-	req, reqErr := http.NewRequest("GET", get.String(), nil)
+	req, reqErr := http.NewRequest(http.MethodGet, get.String(), nil)
 	if reqErr != nil {
 		log.Fatal(reqErr)
 	}
@@ -24,7 +24,7 @@ func getResponse(get url.URL) io.Reader {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != http.StatusOK {
 		log.Fatalf("URL '%s': status code error: %d %s", get.String(), res.StatusCode, res.Status)
 	}
 

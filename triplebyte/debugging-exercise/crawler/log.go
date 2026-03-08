@@ -7,12 +7,12 @@ import (
 
 // Log is an output manager for crawler
 type Log interface {
-	enqueue(url.URL)
-	finalizeCrawl(url.URL)
-	spawn(url.URL)
-	headRequest(url.URL)
-	getRequest(url.URL)
-	noteError(string)
+	enqueue(u url.URL)
+	finalizeCrawl(u url.URL)
+	spawn(u url.URL)
+	headRequest(u url.URL)
+	getRequest(u url.URL)
+	noteError(err string)
 }
 
 type (

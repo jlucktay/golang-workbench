@@ -1,6 +1,6 @@
 package pascal
 
-func generate(numRows int) [][]int {
+func Generate(numRows int) [][]int {
 	result := make([][]int, numRows)
 
 	result[0] = append(result[0], 1)

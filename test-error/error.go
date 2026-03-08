@@ -2,7 +2,7 @@ package testerr
 
 import "errors"
 
-func returnSomeErr(input int) error {
+func ReturnSomeErr(input int) error {
 	if input > 0 {
 		return nil
 	}

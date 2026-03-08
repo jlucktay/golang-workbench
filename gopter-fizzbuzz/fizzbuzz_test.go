@@ -1,4 +1,4 @@
-package fizzbuzz
+package fizzbuzz_test
 
 import (
 	"math"
@@ -9,6 +9,8 @@ import (
 	"github.com/leanovate/gopter"
 	"github.com/leanovate/gopter/gen"
 	"github.com/leanovate/gopter/prop"
+
+	fizzbuzz "go.jlucktay.dev/golang-workbench/gopter-fizzbuzz"
 )
 
 func TestUndefined(t *testing.T) {
@@ -16,7 +18,7 @@ func TestUndefined(t *testing.T) {
 
 	properties.Property("Undefined for all <= 0", prop.ForAll(
 		func(number int) bool {
-			result, err := fizzbuzz(number)
+			result, err := fizzbuzz.Fizzbuzz(number)
 
 			return err != nil && result == ""
 		},
@@ -31,7 +33,7 @@ func TestStartFizz(t *testing.T) {
 
 	properties.Property("Start with Fizz for all multiples of 3", prop.ForAll(
 		func(i int) bool {
-			result, err := fizzbuzz(i * 3)
+			result, err := fizzbuzz.Fizzbuzz(i * 3)
 
 			return err == nil && strings.HasPrefix(result, "Fizz")
 		},
@@ -46,7 +48,7 @@ func TestEndBuzz(t *testing.T) {
 
 	properties.Property("End with Buzz for all multiples of 5", prop.ForAll(
 		func(i int) bool {
-			result, err := fizzbuzz(i * 5)
+			result, err := fizzbuzz.Fizzbuzz(i * 5)
 
 			return err == nil && strings.HasSuffix(result, "Buzz")
 		},
@@ -61,7 +63,7 @@ func TestIntAsString(t *testing.T) {
 
 	properties.Property("Int as string for all non-divisible by 3 or 5", prop.ForAll(
 		func(number int) bool {
-			result, err := fizzbuzz(number)
+			result, err := fizzbuzz.Fizzbuzz(number)
 			if err != nil {
 				return false
 			}

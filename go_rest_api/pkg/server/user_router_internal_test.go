@@ -44,7 +44,7 @@ func createUserHandlerShouldPassUserObjectToUserServiceCreateUser(t *testing.T) 
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("PUT", "/", payload)
+	r, _ := http.NewRequest(http.MethodPut, "/", payload)
 	r.Header.Set("Content-Type", "application/json")
 	testMux.ServeHTTP(w, r)
 
@@ -70,7 +70,7 @@ func createUserHandlerShouldReturnStatusBadRequestIfPayloadIsInvalid(t *testing.
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("PUT", "/", nil)
+	r, _ := http.NewRequest(http.MethodPut, "/", nil)
 	r.Header.Set("Content-Type", "application/json")
 	testMux.ServeHTTP(w, r)
 
@@ -94,7 +94,7 @@ func createUserHandlerShouldReturnStatusInternalServerErrorIfUserServiceReturnsE
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("PUT", "/", payload)
+	r, _ := http.NewRequest(http.MethodPut, "/", payload)
 	r.Header.Set("Content-Type", "application/json")
 	testMux.ServeHTTP(w, r)
 
@@ -127,7 +127,7 @@ func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("GET", "/profile", nil)
+	r, _ := http.NewRequest(http.MethodGet, "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
 	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{jwt.RegisteredClaims{}, testUsername})
@@ -149,7 +149,7 @@ func profileHandlerShouldReturnStatusBadRequestIfNoAuthContext(t *testing.T) {
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("GET", "/profile", nil)
+	r, _ := http.NewRequest(http.MethodGet, "/profile", nil)
 	testMux.ServeHTTP(w, r)
 
 	// Assert
@@ -170,7 +170,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("GET", "/profile", nil)
+	r, _ := http.NewRequest(http.MethodGet, "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
 	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{jwt.RegisteredClaims{}, testUsername})
@@ -206,7 +206,7 @@ func getUserHandlerShouldCallGetUserByUsernameWithUsernameFromQuerystring(t *tes
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("GET", "/"+testUsername, nil)
+	r, _ := http.NewRequest(http.MethodGet, "/"+testUsername, nil)
 	testMux.ServeHTTP(w, r)
 
 	// Assert
@@ -230,7 +230,7 @@ func getUserHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("GET", "/"+testUsername, nil)
+	r, _ := http.NewRequest(http.MethodGet, "/"+testUsername, nil)
 	testMux.ServeHTTP(w, r)
 
 	// Assert
@@ -266,7 +266,7 @@ func loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser(t *testing.
 
 	// Act
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("POST", "/login", payload)
+	r, _ := http.NewRequest(http.MethodPost, "/login", payload)
 	testMux.ServeHTTP(w, r)
 
 	// Assert

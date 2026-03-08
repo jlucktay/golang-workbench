@@ -49,23 +49,23 @@ type Image struct {
 }
 
 type Item struct {
-	Text        string    `json:"text" xml:",chardata"`
-	Title       string    `json:"title" xml:"title"`
-	Link        string    `json:"link" xml:"link"`
+	Text        string    `json:"text"        xml:",chardata"`
+	Title       string    `json:"title"       xml:"title"`
+	Link        string    `json:"link"        xml:"link"`
 	Description string    `json:"description" xml:"description"`
-	Enclosure   Enclosure `json:"enclosure" xml:"enclosure"`
-	Guid        Guid      `json:"guid" xml:"guid"`
-	PubDate     string    `json:"pub_date" xml:"pubDate"`
+	Enclosure   Enclosure `json:"enclosure"   xml:"enclosure"`
+	Guid        Guid      `json:"guid"        xml:"guid"`
+	PubDate     string    `json:"pub_date"    xml:"pubDate"`
 }
 
 type Enclosure struct {
-	Text   string `json:"text" xml:",chardata"`
-	URL    string `json:"url" xml:"url,attr"`
+	Text   string `json:"text"   xml:",chardata"`
+	URL    string `json:"url"    xml:"url,attr"`
 	Length string `json:"length" xml:"length,attr"`
-	Type   string `json:"type" xml:"type,attr"`
+	Type   string `json:"type"   xml:"type,attr"`
 }
 
 type Guid struct {
-	Text        string `json:"text" xml:",chardata"`
+	Text        string `json:"text"         xml:",chardata"`
 	IsPermaLink string `json:"is_permalink" xml:"isPermaLink,attr"`
 }
