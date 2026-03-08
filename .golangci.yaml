@@ -15,6 +15,9 @@ linters:
   enable:
     - bodyclose
     - containedctx
+    - contextcheck
+    - copyloopvar
+    - embeddedstructfieldcheck
     - nlreturn
     - nolintlint
     - nonamedreturns

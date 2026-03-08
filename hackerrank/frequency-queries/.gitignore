@@ -1,0 +1,6 @@
+# Built binary
+/frequency-queries
+
+# Expected inputs and outputs
+/input*.txt
+/output*.txt
