@@ -48,7 +48,9 @@ func Filter[T any](s []T, f func(T) bool) []T {
 }
 
 // Merge - receives slices of type T and merges them into a single slice of type T.
-func Merge[T any](slices ...[]T) (mergedSlice []T) {
+func Merge[T any](slices ...[]T) []T {
+	mergedSlice := make([]T, 0)
+
 	for _, slice := range slices {
 		mergedSlice = append(mergedSlice, slice...)
 	}
@@ -79,6 +81,7 @@ func Keys[K comparable, V any](m map[K]V) []K {
 	for k := range m {
 		r = append(r, k)
 	}
+
 	return r
 }
 
@@ -88,6 +91,7 @@ func Sum[K comparable, V constraints.Float | constraints.Integer](m map[K]V) V {
 	for _, v := range m {
 		s += v
 	}
+
 	return s
 }
 

@@ -18,6 +18,7 @@ func (s *Session) Open() error {
 		return err
 	}
 	s.session.SetMode(mgo.Monotonic, true)
+
 	return nil
 }
 

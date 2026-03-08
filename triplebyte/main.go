@@ -49,16 +49,16 @@ func (b *board) add(x, y int, token string) {
 }
 
 func (b *board) String() string {
-	var output strings.Builder
+	output := &strings.Builder{}
 
 	for _, ySpaces := range b.board {
 		for xIndex, xSpace := range ySpaces {
-			output.WriteString(fmt.Sprint(xSpace.String()))
+			fmt.Fprint(output, xSpace.String())
 
 			if xIndex+1 < len(ySpaces) {
-				output.WriteString(fmt.Sprint("|"))
+				fmt.Fprint(output, "|")
 			} else {
-				output.WriteString(fmt.Sprintln())
+				fmt.Fprint(output, "\n")
 			}
 		}
 	}
@@ -83,6 +83,7 @@ func (b *board) aiMove() error {
 		for x := range b.board[y] {
 			if b.board[y][x].t == "-" {
 				b.board[y][x].t = "X"
+
 				return nil
 			}
 		}
@@ -97,11 +98,15 @@ func main() {
 	b.init()
 	scanner := bufio.NewScanner(os.Stdin)
 
-	// b.add(1, 1, "X")
+	b.add(1, 1, "X")
 	fmt.Printf("%s\n", b.String())
 	fmt.Println(b.isFull())
-	// b.aiMove()
-	// fmt.Printf("%s\n", b.String())
+
+	if err := b.aiMove(); err != nil {
+		fmt.Fprintf(os.Stderr, "moving on board: %v", err)
+	}
+
+	fmt.Printf("%s\n", b.String())
 
 	// play loop
 	for scanner.Scan() {

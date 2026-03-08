@@ -15,6 +15,7 @@ func selfConcatOperator(input string, n int) string {
 	for i := 0; i < n; i++ {
 		concatOperator(&output, input)
 	}
+
 	return output
 }
 
@@ -27,5 +28,6 @@ func selfConcatBuffer(input string, n int) string {
 	for i := 0; i < n; i++ {
 		concatBuffer(&output, input)
 	}
-	return string(output.Bytes())
+
+	return output.String()
 }

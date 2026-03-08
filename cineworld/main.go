@@ -43,6 +43,7 @@ func main() {
 	// If we're not currently in the UK, the Cineworld API gets upset at us.
 	if err := checkCountry("GB"); err != nil {
 		slog.Error("checking country", slog.Any("err", err))
+
 		return
 	}
 
@@ -138,7 +139,7 @@ var ErrCountryMismatch = errors.New("expected and actual countries do not match"
 
 func checkCountry(expected string) error {
 	httpClient := http.Client{
-		Timeout: time.Second * 5, //nolint:gomnd,mnd // Five seconds.
+		Timeout: time.Second * 5,
 	}
 
 	getIPInfo, err := http.NewRequestWithContext(context.TODO(), http.MethodGet, "https://ipinfo.io", nil)
@@ -209,7 +210,7 @@ func (b Body) String() string {
 	var sBuilder strings.Builder
 
 	tabW := new(tabwriter.Writer)
-	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0) //nolint:gomnd,mnd // Arbitrary padding value.
+	tabW.Init(&sBuilder, 0, 0, 3, ' ', 0)
 
 	if len(b.Events) >= 1 {
 		xedt := strings.Split(b.Events[0].EventDateTime, "T")
@@ -363,7 +364,8 @@ func (e Event) String() string {
 
 	split := strings.Split(e.EventDateTime, "T")
 
-	if len(split) < 2 { //nolint:gomnd,mnd // If there is no second element, the return below will panic.
+	// If there is no second element, the return below will panic.
+	if len(split) < 2 {
 		return e.EventDateTime
 	}
 

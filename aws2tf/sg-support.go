@@ -4,13 +4,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"go.jlucktay.dev/golang-workbench/aws2tf/aws2tf"
 )
 
 func main() {
-	raw, err := ioutil.ReadFile("sg-support.json")
+	raw, err := os.ReadFile("sg-support.json")
 	if err != nil {
 		panic(err)
 	}

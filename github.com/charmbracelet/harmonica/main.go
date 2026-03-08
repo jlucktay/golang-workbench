@@ -42,6 +42,7 @@ func animate() tea.Cmd {
 func wait(d time.Duration) tea.Cmd {
 	return func() tea.Msg {
 		time.Sleep(d)
+
 		return nil
 	}
 }
@@ -53,7 +54,7 @@ type model struct {
 }
 
 func (model) Init() tea.Cmd {
-	return tea.Sequentially(wait(time.Second/2), animate())
+	return tea.Sequence(wait(time.Second/2), animate())
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -70,7 +71,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Quit when we're basically at the target position.
 		if math.Abs(m.x-targetX) < 0.01 {
-			return m, tea.Sequentially(wait(time.Second*3/4), tea.Quit)
+			return m, tea.Sequence(wait(time.Second*3/4), tea.Quit)
 		}
 
 		// Request next frame
@@ -104,7 +105,7 @@ func main() {
 		spring: harmonica.NewSpring(harmonica.FPS(fps), frequency, damping),
 	}
 
-	if err := tea.NewProgram(m).Start(); err != nil {
+	if _, err := tea.NewProgram(m).Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
 	}

@@ -103,6 +103,7 @@ func root(cmd *cobra.Command, args []string) error {
 	// Cf. https://clig.dev/#help
 	if cmd.Flags().HasFlags() && cmd.Flags().NFlag() == 0 {
 		fmt.Fprintf(cmd.OutOrStdout(), "%s\n\n%s", cmd.Long, cmd.UsageString())
+
 		return nil
 	}
 

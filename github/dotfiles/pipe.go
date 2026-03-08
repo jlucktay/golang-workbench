@@ -63,7 +63,11 @@ func genFilterGoRepos(input chan url.URL) chan url.URL {
 		for i := range input {
 			resp := fmt.Sprint(getResponse(i))
 			var responseHolder map[string]int
-			json.Unmarshal([]byte(resp), &responseHolder)
+			if err := json.Unmarshal([]byte(resp), &responseHolder); err != nil {
+				log.Println("unmarshalling response bytes:", err)
+
+				continue
+			}
 
 			if filterForGoRepos(responseHolder) {
 				output <- i
@@ -91,7 +95,11 @@ func genGithubURL(input chan url.URL) chan url.URL {
 
 			resp := fmt.Sprint(getResponse(*apiURL))
 			var responseHolder map[string]any
-			json.Unmarshal([]byte(resp), &responseHolder)
+			if err := json.Unmarshal([]byte(resp), &responseHolder); err != nil {
+				log.Println("unmarshalling response bytes:", err)
+
+				continue
+			}
 
 			if htmlURL, urlOK := responseHolder["html_url"]; urlOK {
 				if str, strOK := htmlURL.(string); strOK {

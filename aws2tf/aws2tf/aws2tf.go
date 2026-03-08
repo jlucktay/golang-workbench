@@ -28,8 +28,8 @@ func (ir ipRange) String() string {
 
 func (ir ipRange) printIngress(ip ipPermissionIngress) string {
 	s := "  ingress {\n"
-	s += fmt.Sprintf("%s", ip)
-	s += fmt.Sprintf("%s", ir)
+	s += ip.String()
+	s += ir.String()
 	s += "  }\n"
 
 	return s
@@ -37,8 +37,8 @@ func (ir ipRange) printIngress(ip ipPermissionIngress) string {
 
 func (ir ipRange) printEgress(ip ipPermissionEgress) string {
 	s := "  egress {\n"
-	s += fmt.Sprintf("%s", ip)
-	s += fmt.Sprintf("%s", ir)
+	s += ip.String()
+	s += ir.String()
 	s += "  }\n"
 
 	return s
@@ -133,8 +133,8 @@ func (uigp userIDGroupPair) String() string {
 
 func (uigp userIDGroupPair) printIngress(ip ipPermissionIngress) string {
 	s := "  ingress {\n"
-	s += fmt.Sprintf("%s", ip)
-	s += fmt.Sprintf("%s", uigp)
+	s += ip.String()
+	s += uigp.String()
 	s += "  }\n"
 
 	return s
@@ -142,8 +142,8 @@ func (uigp userIDGroupPair) printIngress(ip ipPermissionIngress) string {
 
 func (uigp userIDGroupPair) printEgress(ip ipPermissionEgress) string {
 	s := "  egress {\n"
-	s += fmt.Sprintf("%s", ip)
-	s += fmt.Sprintf("%s", uigp)
+	s += ip.String()
+	s += uigp.String()
 	s += "  }\n"
 
 	return s
@@ -161,11 +161,12 @@ func (t tag) String() string {
 type tags []tag
 
 func (t tags) String() string {
-	var s strings.Builder
+	s := &strings.Builder{}
+
 	s.WriteString("  tags {\n")
 
 	for _, x := range t {
-		s.WriteString(fmt.Sprintf("%s", x))
+		fmt.Fprintf(s, "%s", x)
 	}
 
 	s.WriteString("  }\n")
@@ -190,15 +191,15 @@ func (sg securityGroup) String() string {
 	s += fmt.Sprintf("  vpc_id      = \"%s\"\n", sg.VpcID)
 
 	if len(sg.IPPermissions) > 0 {
-		s += fmt.Sprintf("%s", sg.IPPermissions)
+		s += sg.IPPermissions.String()
 	}
 
 	if len(sg.IPPermissionsEgress) > 0 {
-		s += fmt.Sprintf("%s", sg.IPPermissionsEgress)
+		s += sg.IPPermissionsEgress.String()
 	}
 
 	if len(sg.Tags) > 0 {
-		s += fmt.Sprintf("%s", sg.Tags)
+		s += sg.Tags.String()
 	}
 
 	s += "}\n"
@@ -213,10 +214,10 @@ type SGFile struct {
 }
 
 func (sgf SGFile) String() string {
-	var s strings.Builder
+	s := &strings.Builder{}
 
 	for _, sg := range sgf.SecurityGroups {
-		s.WriteString(fmt.Sprintf("%s\n", sg))
+		fmt.Fprintf(s, "%s\n", sg)
 	}
 
 	return s.String()

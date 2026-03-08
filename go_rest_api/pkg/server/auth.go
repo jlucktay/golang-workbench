@@ -43,6 +43,7 @@ func newAuthCookie(user root.User) http.Cookie {
 		Expires:  expireTime,
 		HttpOnly: true,
 	}
+
 	return cookie
 }
 
@@ -51,6 +52,7 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 		cookie, err := req.Cookie("Auth")
 		if err != nil {
 			Error(res, http.StatusUnauthorized, "No authorization cookie")
+
 			return
 		}
 
@@ -63,6 +65,7 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 		})
 		if err != nil {
 			Error(res, http.StatusUnauthorized, "Invalid token")
+
 			return
 		}
 
@@ -71,6 +74,7 @@ func validate(next http.HandlerFunc) http.HandlerFunc {
 			next(res, req.WithContext(ctx))
 		} else {
 			Error(res, http.StatusUnauthorized, "Unauthorized")
+
 			return
 		}
 	})

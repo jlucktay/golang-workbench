@@ -59,6 +59,7 @@ func BuildTree(preorder, inorder []int) *TreeNode {
 	for a := range inorder {
 		if inorder[a] == preorder[0] {
 			k = a
+
 			break
 		}
 	}

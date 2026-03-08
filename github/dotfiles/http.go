@@ -29,7 +29,9 @@ func getResponse(get url.URL) io.Reader {
 	}
 
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(res.Body)
+	if _, err := buf.ReadFrom(res.Body); err != nil {
+		log.Println("error reading from response body:", err)
+	}
 
 	return buf
 }

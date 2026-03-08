@@ -7,5 +7,6 @@ func newApiServer() *apiServer {
 		router: http.NewServeMux(),
 	}
 	a.routes()
+
 	return a
 }

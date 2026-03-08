@@ -131,6 +131,7 @@ func openAndRefreshGit(ctx context.Context) ([]string, error) {
 
 	if err := refIter.ForEach(func(pRef *plumbing.Reference) error {
 		branches = append(branches, pRef.Name().Short())
+
 		return nil
 	}); err != nil {
 		return nil, fmt.Errorf("iterating over branch references in repo at '%s': %w", gitTop, err)

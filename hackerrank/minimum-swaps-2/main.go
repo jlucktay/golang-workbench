@@ -21,6 +21,7 @@ func minimumSwaps(arr []int32) int32 {
 					if arr[i] == int32(j)+1 || arr[j] == int32(i)+1 {
 						arr[i], arr[j] = arr[j], arr[i]
 						counter++
+
 						break
 					}
 				}

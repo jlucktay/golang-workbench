@@ -31,6 +31,7 @@ func createUserHandlerShouldPassUserObjectToUserServiceCreateUser(t *testing.T) 
 	var result *root.User
 	us.CreateUserFn = func(u *root.User) error {
 		result = u
+
 		return nil
 	}
 
@@ -117,6 +118,7 @@ func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 	var result string
 	us.GetUserByUsernameFn = func(username string) (root.User, error) {
 		result = username
+
 		return root.User{}, nil
 	}
 
@@ -196,6 +198,7 @@ func getUserHandlerShouldCallGetUserByUsernameWithUsernameFromQuerystring(t *tes
 	var result string
 	us.GetUserByUsernameFn = func(username string) (root.User, error) {
 		result = username
+
 		return root.User{}, nil
 	}
 
@@ -271,7 +274,7 @@ func loginHandlerShouldProvideNewAuthCookieIfUserServiceReturnsAUser(t *testing.
 		t.Fatal("expected Login() to be invoked")
 	}
 
-	request := &http.Request{Header: http.Header{"Cookie": w.HeaderMap["Set-Cookie"]}}
+	request := &http.Request{Header: http.Header{"Cookie": w.Result().Header["Set-Cookie"]}}
 	cookie, err := request.Cookie("Auth")
 	if err != nil || cookie == nil {
 		panic("Expected Cookie named 'Auth'")

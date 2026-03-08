@@ -67,6 +67,7 @@ func (c *crawl) enqueue(u url.URL, from *url.URL) {
 		c.running++
 		c.wg.Add(1)
 		c.spawn(u)
+
 		return
 	}
 
@@ -239,6 +240,7 @@ func (c *crawl) noteError(s string, args ...any) {
 
 func (c *crawl) wait() (*WebsiteGraph, []string) {
 	c.wg.Wait()
+
 	return c.graph, c.errors
 }
 

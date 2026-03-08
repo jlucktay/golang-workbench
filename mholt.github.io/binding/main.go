@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/mholt/binding"
 )
@@ -42,5 +43,8 @@ func handler(resp http.ResponseWriter, req *http.Request) {
 
 func main() {
 	http.HandleFunc("/contact", handler)
-	http.ListenAndServe(":3000", nil)
+
+	if err := http.ListenAndServe(":3000", nil); err != nil {
+		fmt.Fprintf(os.Stderr, "server returned error: %v\n", err)
+	}
 }

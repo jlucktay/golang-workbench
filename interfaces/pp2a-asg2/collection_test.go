@@ -5,9 +5,9 @@ import (
 	"math/rand"
 	"reflect"
 	"testing"
-	"time"
 
 	"github.com/matryer/is"
+
 	p2 "go.jlucktay.dev/golang-workbench/interfaces/pp2a-asg2"
 )
 
@@ -53,7 +53,6 @@ func TestDriver(t *testing.T) {
 			tC.collection.DisplayCollection(b)
 			t.Logf("DisplayCollection buffer:\n%s", b)
 
-			rand.Seed(time.Now().UnixNano())
 			needle := names[rand.Intn(len(names))]
 			t.Logf(`Searching for "%s"...`, needle)
 			i.Equal(tC.collection.SearchCollection(needle), SUCCESS)

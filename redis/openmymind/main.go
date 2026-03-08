@@ -29,6 +29,7 @@ func main() {
 	}
 	if err := env.Parse(&cfg, opt); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
+
 		return
 	}
 
@@ -46,10 +47,12 @@ func main() {
 	ping, err := rdb.Ping(ctx).Result()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
+
 		return
 	}
 	if ping != "PONG" {
 		fmt.Fprintf(os.Stderr, "%s\n", ping)
+
 		return
 	}
 
@@ -61,12 +64,14 @@ func main() {
 	resp, err := http.Get(cfg.RSSURL)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "http.Get error: %v\n", err)
+
 		return
 	}
 
 	rss := Rss{}
 	if err := xml.NewDecoder(resp.Body).Decode(&rss); err != nil {
 		fmt.Fprintf(os.Stderr, "xml.Decode error: %v\n", err)
+
 		return
 	}
 

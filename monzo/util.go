@@ -19,6 +19,7 @@ func convertURL(base, input string) *url.URL {
 	urlBase, errBaseParse := url.Parse(base)
 	if errBaseParse != nil {
 		Error.Printf("Error parsing base URL '%s': %v\n", base, errBaseParse)
+
 		return nil
 	}
 
@@ -45,6 +46,7 @@ func convertURL(base, input string) *url.URL {
 	urlOut, errParse := url.Parse(prefix + input)
 	if errParse != nil {
 		Error.Printf("Error parsing input '%s': %v\n", prefix+input, errParse)
+
 		return nil
 	}
 
@@ -70,7 +72,7 @@ func convertURL(base, input string) *url.URL {
 	urlOut = urlBase.ResolveReference(urlOut)
 
 	for strings.Contains(urlOut.Path, "//") {
-		urlOut.Path = strings.Replace(urlOut.Path, "//", "/", -1)
+		urlOut.Path = strings.ReplaceAll(urlOut.Path, "//", "/")
 	}
 
 	return urlOut

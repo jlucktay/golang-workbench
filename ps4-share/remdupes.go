@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,7 +21,7 @@ func main() {
 
 	err := filepath.Walk(pathToWalk, func(fullPath string, info os.FileInfo, err error) error {
 		if err != nil {
-			return fmt.Errorf("failure accessing path %q: %w\n", fullPath, err)
+			return fmt.Errorf("failure accessing path %q: %w", fullPath, err)
 		}
 
 		if !info.Mode().IsRegular() {
@@ -54,7 +53,7 @@ func main() {
 					continue
 				}
 
-				file1, errRead1 := ioutil.ReadFile(dir + fi1.Name())
+				file1, errRead1 := os.ReadFile(dir + fi1.Name())
 				if errRead1 != nil {
 					fmt.Fprintf(os.Stderr, "could not read '%s': %v", dir+fi1.Name(), errRead1)
 
@@ -63,7 +62,7 @@ func main() {
 
 				hash1 := xxh3.Hash(file1)
 
-				file2, errRead2 := ioutil.ReadFile(dir + fi2.Name())
+				file2, errRead2 := os.ReadFile(dir + fi2.Name())
 				if errRead2 != nil {
 					fmt.Fprintf(os.Stderr, "could not read '%s': %v", dir+fi2.Name(), errRead2)
 

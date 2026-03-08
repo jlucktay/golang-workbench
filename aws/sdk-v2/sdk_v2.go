@@ -33,11 +33,11 @@ type ListObjectsV2Pager interface {
 	NextPage(context.Context, ...func(*s3.Options)) (*s3.ListObjectsV2Output, error)
 }
 
-func CountObjects(ctx context.Context, pager ListObjectsV2Pager) (count int, err error) {
-	for pager.HasMorePages() {
-		var output *s3.ListObjectsV2Output
+func CountObjects(ctx context.Context, pager ListObjectsV2Pager) (int, error) {
+	count := 0
 
-		output, err = pager.NextPage(ctx)
+	for pager.HasMorePages() {
+		output, err := pager.NextPage(ctx)
 		if err != nil {
 			return count, err
 		}

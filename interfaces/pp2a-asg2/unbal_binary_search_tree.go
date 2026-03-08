@@ -55,6 +55,7 @@ func (u *UnbalBinarySearchTree) AddCollection(word string) int {
 
 	if previous == nil {
 		u.root = newNode
+
 		return SUCCESS
 	}
 

@@ -7,22 +7,23 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/iam"
+	"github.com/aws/aws-sdk-go/aws"         //nolint:staticcheck // TODO: needs to be migrated.
+	"github.com/aws/aws-sdk-go/aws/session" //nolint:staticcheck // TODO: needs to be migrated.
+	"github.com/aws/aws-sdk-go/service/iam" //nolint:staticcheck // TODO: needs to be migrated.
 )
 
 func init() {
-	os.Setenv("AWS_PROFILE", "celab")
-
-	sess, errNewSess := session.NewSession()
-	if errNewSess != nil {
-		log.Fatalln("[NewSession()]", errNewSess)
+	if err := os.Setenv("AWS_PROFILE", "celab"); err != nil {
+		log.Fatalln("[os.Setenv()]", err)
 	}
 
-	_, errCredGet := sess.Config.Credentials.Get()
-	if errCredGet != nil {
-		log.Fatalln("[Config.Credentials.Get()]", errCredGet)
+	sess, err := session.NewSession()
+	if err != nil {
+		log.Fatalln("[NewSession()]", err)
+	}
+
+	if _, err := sess.Config.Credentials.Get(); err != nil {
+		log.Fatalln("[Config.Credentials.Get()]", err)
 	}
 
 	svcIam = iam.New(sess)
@@ -30,7 +31,6 @@ func init() {
 
 var (
 	rolesProcessed uint
-	sess           *session.Session
 	svcIam         *iam.IAM
 )
 

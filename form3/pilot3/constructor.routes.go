@@ -18,7 +18,7 @@ func (a *apiServer) routes() {
 
 	//.HandleFunc("/api/", s.handleAPI())
 	// s.router.HandleFunc("/about", s.handleAbout())
-	// s.router.HandleFunc("/", s.handleIndex())
+	a.router.HandleFunc("/", a.handleIndex())
 }
 
 /*

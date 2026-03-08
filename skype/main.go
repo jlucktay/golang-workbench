@@ -3,14 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 	"text/tabwriter"
 )
 
 func main() {
-	raw, errRead := ioutil.ReadFile("messages.json")
+	raw, errRead := os.ReadFile("messages.json")
 	if errRead != nil {
 		panic(errRead)
 	}

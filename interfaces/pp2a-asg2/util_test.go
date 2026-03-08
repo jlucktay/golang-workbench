@@ -35,5 +35,6 @@ func mustOpen(filename string) *os.File {
 	if errOpen != nil {
 		panic(errOpen)
 	}
+
 	return fp
 }

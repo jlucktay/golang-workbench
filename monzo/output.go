@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/kennygrant/sanitize"
 )
@@ -39,6 +39,7 @@ func outputToJSON(urlScheme string) {
 	jsonBytes, errMarshal := json.MarshalIndent(cpSlice, "", "  ")
 	if errMarshal != nil {
 		Error.Printf("Error marshaling JSON: %v\n", errMarshal)
+
 		return
 	}
 
@@ -46,7 +47,7 @@ func outputToJSON(urlScheme string) {
 		".json")
 
 	// Emit the JSON to file
-	errWrite := ioutil.WriteFile(filename, jsonBytes, 0o644)
+	errWrite := os.WriteFile(filename, jsonBytes, 0o644)
 	if errWrite != nil {
 		Error.Printf("Error writing to file '%s': %v\n", filename, errWrite)
 	}

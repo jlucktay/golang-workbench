@@ -35,6 +35,7 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 		if errWrite != nil {
 			log.Fatal(errWrite)
 		}
+
 		return
 	}
 	defer cursor.Close(ctx)
@@ -57,6 +58,7 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 		if errWrite != nil {
 			log.Fatal(errWrite)
 		}
+
 		return
 	}
 

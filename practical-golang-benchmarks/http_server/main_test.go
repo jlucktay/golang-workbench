@@ -2,7 +2,7 @@ package main
 
 import (
 	"crypto/tls"
-	"io/ioutil"
+	"io"
 	"net"
 	"net/http"
 	"testing"
@@ -74,7 +74,7 @@ func sendRequest(client *http.Client, addr string) {
 		panic("request failed")
 	}
 
-	_, err = ioutil.ReadAll(res.Body)
+	_, err = io.ReadAll(res.Body)
 	if err != nil {
 		panic(err)
 	}

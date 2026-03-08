@@ -13,6 +13,7 @@ func (dss *dummyStoreSlice) Create(new widget) error {
 		return fmt.Errorf("widget with name '%s' already exists", new.name)
 	}
 	dss.w = append(dss.w, new)
+
 	return nil
 }
 
@@ -21,6 +22,7 @@ func (dss *dummyStoreSlice) Read(name string) (widget, error) {
 	if e >= 0 {
 		return dss.w[e], nil
 	}
+
 	return widget{}, fmt.Errorf("nothing in store named '%s'", name)
 }
 
@@ -28,8 +30,10 @@ func (dss *dummyStoreSlice) Update(name string, data uint64) error {
 	e := dss.exists(name)
 	if e >= 0 {
 		dss.w[e].data = data
+
 		return nil
 	}
+
 	return fmt.Errorf("nothing in store named '%s'", name)
 }
 
@@ -37,8 +41,10 @@ func (dss *dummyStoreSlice) Delete(name string) error {
 	e := dss.exists(name)
 	if e >= 0 {
 		dss.w = append(dss.w[:e], dss.w[e+1:]...)
+
 		return nil
 	}
+
 	return fmt.Errorf("nothing in store named '%s'", name)
 }
 
@@ -48,5 +54,6 @@ func (dss *dummyStoreSlice) exists(name string) int {
 			return index
 		}
 	}
+
 	return -1
 }

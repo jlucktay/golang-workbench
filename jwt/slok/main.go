@@ -28,6 +28,7 @@ func exampleNew(mySigningKey []byte) (string, error) {
 
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString(mySigningKey)
+
 	return tokenString, err
 }
 

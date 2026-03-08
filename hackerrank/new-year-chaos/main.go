@@ -17,6 +17,7 @@ func minimumBribes(q []int32) {
 	for i := int32(len(q)) - 1; i >= 0; i-- {
 		if q[i]-(i+1) > 2 {
 			fmt.Println("Too chaotic")
+
 			return
 		}
 

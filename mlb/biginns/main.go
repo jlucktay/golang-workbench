@@ -83,6 +83,7 @@ func main() {
 	for _, tableRow := range tableRows {
 		if tableRow.Error != nil {
 			slog.Error("table row", tint.Err(tableRow.Error))
+
 			continue
 		}
 
@@ -91,12 +92,14 @@ func main() {
 
 		if len(xft) < 3 {
 			slog.Warn("full text had less than 3 fields", slog.Any("xft", xft))
+
 			continue
 		}
 
 		xxft1 := strings.Split(xft[1], "/")
 		if len(xxft1) < 3 {
 			slog.Warn("date had less than 3 fields", slog.String("xft[1]", xft[1]))
+
 			continue
 		}
 
@@ -113,6 +116,7 @@ func main() {
 			parseLayout = fmt.Sprintf("%s2006%s", parseLayoutPrefix, parseLayoutSuffix)
 		} else {
 			slog.Warn("year field in date was not 2 nor 4 characters", slog.String("year-field", xxft1[2]))
+
 			continue
 		}
 

@@ -31,12 +31,14 @@ func (s *userRouter) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := decodeUser(r)
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
+
 		return
 	}
 
 	err = s.userService.CreateUser(&user)
 	if err != nil {
 		Error(w, http.StatusInternalServerError, err.Error())
+
 		return
 	}
 
@@ -48,6 +50,7 @@ func (s *userRouter) profileHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !ok {
 		Error(w, http.StatusBadRequest, "no context")
+
 		return
 	}
 
@@ -55,6 +58,7 @@ func (s *userRouter) profileHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := s.userService.GetUserByUsername(username)
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
+
 		return
 	}
 
@@ -69,6 +73,7 @@ func (s *userRouter) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := s.userService.GetUserByUsername(username)
 	if err != nil {
 		Error(w, http.StatusNotFound, err.Error())
+
 		return
 	}
 
@@ -80,6 +85,7 @@ func (s *userRouter) loginHandler(w http.ResponseWriter, r *http.Request) {
 	credentials, err := decodeCredentials(r)
 	if err != nil {
 		Error(w, http.StatusBadRequest, "Invalid request payload")
+
 		return
 	}
 

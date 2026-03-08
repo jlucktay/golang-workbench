@@ -5,12 +5,19 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 func main() {
-	doc, err := goquery.NewDocument("https://blog.golang.org")
+	resp, err := http.DefaultClient.Get("https://blog.golang.org")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}

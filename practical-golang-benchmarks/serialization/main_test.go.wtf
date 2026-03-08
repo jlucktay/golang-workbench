@@ -161,7 +161,7 @@ func BenchmarkMessagePackUnmarshal(b *testing.B) {
 func BenchmarkGobMarshal(b *testing.B) {
 	obj := generateObject()
 
-	enc := gob.NewEncoder(ioutil.Discard)
+	enc := gob.NewEncoder(io.Discard)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {

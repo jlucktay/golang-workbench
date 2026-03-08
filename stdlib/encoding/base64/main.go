@@ -12,6 +12,6 @@ func main() {
 	if errDecode != nil {
 		log.Fatal(errDecode)
 	}
-	fmt.Println("serialDecoded:", serialDecoded, string(serialDecoded))
+	fmt.Println("serialDecoded:", string(serialDecoded), string(serialDecoded))
 	fmt.Printf("%%s: %s\n", serialDecoded)
 }

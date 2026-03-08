@@ -41,6 +41,7 @@ func NbMonths(startPriceOld, startPriceNew, savingperMonth int, percentLossByMon
 
 	if fOld >= fNew {
 		*bank = int(fOld - fNew)
+
 		return result
 	}
 

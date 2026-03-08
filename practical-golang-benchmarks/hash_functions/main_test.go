@@ -2,12 +2,12 @@ package main
 
 import (
 	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha3"
 	"crypto/sha512"
 	"hash"
-	"math/rand"
 	"testing"
 
 	"golang.org/x/crypto/blake2b"
@@ -15,7 +15,10 @@ import (
 
 func benchmarkHash(b *testing.B, h hash.Hash) {
 	data := make([]byte, 1024)
-	rand.Read(data)
+
+	if _, err := rand.Read(data); err != nil {
+		b.Fatalf("reading random data: %v", err)
+	}
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {

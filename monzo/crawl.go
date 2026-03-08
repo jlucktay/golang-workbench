@@ -11,6 +11,7 @@ func crawl(urlTarget url.URL) {
 		Info.Printf("'%+v' didn't pass the domain filter '%s', returning.\n",
 			urlTarget.String(), flagURL)
 		pageOutsideDomain++ // Stats
+
 		return
 	}
 
@@ -18,6 +19,7 @@ func crawl(urlTarget url.URL) {
 	if _, ok := fetched.m[urlTarget]; ok {
 		fetched.Unlock()
 		Info.Printf("Already fetched '%+v', returning.\n", urlTarget.String())
+
 		return
 	}
 
@@ -27,6 +29,7 @@ func crawl(urlTarget url.URL) {
 	resp, errResp := getResponse(urlTarget)
 	if errResp != nil {
 		Error.Printf("Response: %+v\n", errResp)
+
 		return
 	}
 
@@ -37,6 +40,7 @@ func crawl(urlTarget url.URL) {
 	doc, errRead := goquery.NewDocumentFromReader(resp)
 	if errRead != nil {
 		Error.Printf("Reading from response: %+v\n", errRead)
+
 		return
 	}
 
@@ -80,6 +84,7 @@ func getLinks(urlTarget url.URL, doc *goquery.Document) []url.URL {
 	if _, ok := crawled.m[urlTarget]; ok {
 		crawled.Unlock()
 		Info.Printf("Already crawled '%+v', returning.\n", urlTarget)
+
 		return nil
 	}
 

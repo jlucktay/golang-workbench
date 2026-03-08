@@ -92,7 +92,7 @@ func main() {
 	createWorkerPool(threadLimit)
 	<-done
 
-	diff := time.Now().Sub(start)
+	diff := time.Since(start)
 	fmt.Printf("\n# of jobs: %3d\nWorkers in pool: %2d\nTotal time taken: %.3f seconds\n",
 		noOfJobs, threadLimit, diff.Seconds())
 }

@@ -1,8 +1,7 @@
 package main
 
 import (
-	crand "crypto/rand"
-	"math/rand"
+	"crypto/rand"
 	"testing"
 )
 
@@ -19,16 +18,6 @@ func randomBytes(n int) []byte {
 	return bytes
 }
 
-func cryptoRandomBytes(n int) []byte {
-	bytes := make([]byte, n)
-	_, err := crand.Read(bytes)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes
-}
-
 func randomString(bytes []byte) string {
 	for i, b := range bytes {
 		bytes[i] = letters[b%64]
@@ -37,14 +26,8 @@ func randomString(bytes []byte) string {
 	return string(bytes)
 }
 
-func BenchmarkMathRandString(b *testing.B) {
-	for b.Loop() {
-		randomString(randomBytes(16))
-	}
-}
-
 func BenchmarkCryptoRandString(b *testing.B) {
 	for b.Loop() {
-		randomString(cryptoRandomBytes(16))
+		randomString(randomBytes(16))
 	}
 }

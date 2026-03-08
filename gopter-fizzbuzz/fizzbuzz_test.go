@@ -71,7 +71,12 @@ func TestIntAsString(t *testing.T) {
 			return err == nil && parsed == int64(number)
 		},
 		gen.IntRange(1, math.MaxInt32).SuchThat(func(v any) bool {
-			return v.(int)%3 != 0 && v.(int)%5 != 0
+			cast, ok := v.(int)
+			if !ok {
+				return false
+			}
+
+			return cast%3 != 0 && cast%5 != 0
 		}),
 	))
 

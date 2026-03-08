@@ -141,6 +141,7 @@ func main() {
 		fmt.Print(helpOutput)
 
 		exitStatus = exitHelp
+
 		return
 	}
 
@@ -178,6 +179,7 @@ func main() {
 			slog.String("env_var_key", ghToken))
 
 		exitStatus = exitNoTokenSet
+
 		return
 	}
 

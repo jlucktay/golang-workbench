@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"testing"
@@ -66,7 +66,7 @@ func catchStdOut(t *testing.T, runnable func([]int32), input []int32) string {
 		t.Fatal(errStdoutClose)
 	}
 
-	newOutBytes, errRead := ioutil.ReadAll(r)
+	newOutBytes, errRead := io.ReadAll(r)
 	if errRead != nil {
 		t.Fatal(errRead)
 	}

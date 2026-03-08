@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -32,9 +31,6 @@ func main() {
 		"So it goes.",
 		"We must be careful about what we pretend to be.",
 	}
-
-	// Set up rand
-	rand.Seed(time.Now().Unix())
 
 	// Pack up the data for our message
 	msgData := url.Values{}

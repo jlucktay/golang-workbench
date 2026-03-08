@@ -21,7 +21,10 @@ func (a *App) Initialize() {
 	if err != nil {
 		log.Fatalln("unable to connect to mongodb")
 	}
-	u := mongo.NewUserService(a.session.Copy())
+	u, err := mongo.NewUserService(a.session.Copy())
+	if err != nil {
+		log.Fatalln("unable to initialise a new user service", err)
+	}
 	a.server = server.NewServer(u)
 }
 

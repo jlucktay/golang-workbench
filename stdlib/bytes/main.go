@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -25,7 +24,7 @@ func main() {
 	t := io.TeeReader(&c, os.Stdout)
 
 	fmt.Println("before ReadAll(t)")
-	xc, _ := ioutil.ReadAll(t)
+	xc, _ := io.ReadAll(t)
 	fmt.Println("after ReadAll(t)")
 
 	fmt.Printf("Contents of 'xc' as string: '%s'\n", xc)

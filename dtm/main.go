@@ -34,6 +34,7 @@ func main() {
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "creating new client: %v", err)
+
 		return
 	}
 	defer cli.Close()
@@ -42,6 +43,7 @@ func main() {
 	images, err := cli.ImageList(ctx, image.ListOptions{})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "listing images: %v", err)
+
 		return
 	}
 
@@ -183,6 +185,7 @@ func main() {
 
 		if err := form.Run(); err != nil {
 			fmt.Fprintf(os.Stderr, "running form: %v", err)
+
 			continue
 		}
 
@@ -205,6 +208,7 @@ func main() {
 		removeResult, err := cli.ImageRemove(ctx, deleteImageTag, image.RemoveOptions{})
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "removing image '%s': %v", deleteImageTag, err)
+
 			continue
 		}
 

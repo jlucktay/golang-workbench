@@ -24,10 +24,11 @@ func main() {
 	args := flag.Args()
 	if len(args) != 1 {
 		flag.Usage()
+
 		return
 	}
 
-	var log crawler.Log = crawler.Silent()
+	log := crawler.Silent()
 	if *verbose {
 		log = crawler.Verbose()
 	}

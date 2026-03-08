@@ -34,7 +34,11 @@ func BenchmarkNoPool(b *testing.B) {
 
 func BenchmarkPool(b *testing.B) {
 	for b.Loop() {
-		book := pool.Get().(*Book)
+		book, ok := pool.Get().(*Book)
+		if !ok {
+			b.Fatal("casting by type was not OK")
+		}
+
 		book.Title = "The Art of Computer Programming, Vol. 1"
 		book.Author = "Donald E. Knuth"
 		book.Pages = 672

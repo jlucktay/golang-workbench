@@ -35,6 +35,7 @@ func TestHtmlhelp(t *testing.T) {
 	expect := []string{"javascript:doThing", "http://example.com/cynical.html", "http://example.com/page2.html"}
 	if len(ns) != len(expect) {
 		t.Errorf("unexpected neighbors: %v", ns)
+
 		return
 	}
 

@@ -1,15 +1,11 @@
 package types
 
-import (
-	"github.com/julienschmidt/httprouter"
-)
-
 type Server struct {
 	// db     *someDatabase
-	router *httprouter.Router
+	// router *httprouter.Router
 	// email  EmailSender
 }
 
-func (s *Server) routes() {
-	// s.router.HandleFunc()
-}
+// func (s *Server) routes() {
+// 	// s.router.HandleFunc()
+// }

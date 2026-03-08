@@ -22,7 +22,7 @@ func BenchmarkMapStringKeys(b *testing.B) {
 	l := len(m)
 
 	for b.Loop() {
-		if _, ok := m[k[i]]; ok {
+		if _, ok := m[k[i]]; ok { //nolint:staticcheck // Part of the purpose of this benchmark.
 		}
 
 		i++
@@ -46,7 +46,7 @@ func BenchmarkMapIntKeys(b *testing.B) {
 	l := len(m)
 
 	for b.Loop() {
-		if _, ok := m[k[i]]; ok {
+		if _, ok := m[k[i]]; ok { //nolint:staticcheck // Part of the purpose of this benchmark.
 		}
 
 		i++

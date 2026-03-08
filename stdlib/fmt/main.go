@@ -55,6 +55,7 @@ func (ai *AuthInfo) String() string {
 	if key != "" {
 		key = keyMask
 	}
+
 	return fmt.Sprintf("Login:%s, ACL:%08b, APIKey: %s", ai.Login, ai.ACL, key)
 }
 

@@ -4,19 +4,19 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 )
 
 func main() {
-	actorContent, actorErr := ioutil.ReadFile("actor.history.csv")
+	actorContent, actorErr := os.ReadFile("actor.history.csv")
 	if actorErr != nil {
 		log.Fatal(actorErr)
 	}
 
 	fmt.Printf("Actor history: %s", actorContent)
 
-	// taskContent, taskErr := ioutil.ReadFile("tasks.csv")
+	// taskContent, taskErr := os.ReadFile("tasks.csv")
 	// if taskErr != nil {
 	// 	log.Fatal(taskErr)
 	// }

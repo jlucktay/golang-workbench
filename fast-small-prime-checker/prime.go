@@ -19,6 +19,7 @@ func i32Prime(n uint32) bool {
 			return false
 		}
 	}
+
 	return true
 }
 

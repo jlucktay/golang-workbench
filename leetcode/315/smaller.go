@@ -25,6 +25,7 @@ func countSmaller(nums []int) []int {
 		res[i] = sum(bit, mp[nums[i]]-1)
 		add(bit, mp[nums[i]], 1)
 	}
+
 	return res
 }
 
@@ -43,5 +44,6 @@ func sum(b BIT, index int) int {
 	for i := index + 1; i > 0; i = i - i&(-i) {
 		sum += b[i]
 	}
+
 	return sum
 }

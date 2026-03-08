@@ -2,18 +2,13 @@ package secrets
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
+	"os"
 )
 
-type secrets struct {
-	Token string
-}
-
-// ReadTokenFromSecrets will read the JSON file located at 'path' and return
-// the value of the 'token' key within. Super secure local token storage!
+// ReadTokenFromSecrets will read the JSON file located at 'path' and return the value of the 'token' key within. Super secure local token storage!
 func ReadTokenFromSecrets(path string) string {
-	fileContents, readErr := ioutil.ReadFile(path)
+	fileContents, readErr := os.ReadFile(path)
 	if readErr != nil {
 		log.Fatal(readErr)
 	}

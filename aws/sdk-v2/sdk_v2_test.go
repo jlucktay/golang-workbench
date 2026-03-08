@@ -86,12 +86,13 @@ func (m *mockListObjectsV2Pager) HasMorePages() bool {
 	return m.PageNum < len(m.Pages)
 }
 
-func (m *mockListObjectsV2Pager) NextPage(ctx context.Context, f ...func(*s3.Options)) (output *s3.ListObjectsV2Output, err error) {
+func (m *mockListObjectsV2Pager) NextPage(ctx context.Context, f ...func(*s3.Options)) (*s3.ListObjectsV2Output, error) {
 	if m.PageNum >= len(m.Pages) {
 		return nil, fmt.Errorf("no more pages")
 	}
-	output = m.Pages[m.PageNum]
+	output := m.Pages[m.PageNum]
 	m.PageNum++
+
 	return output, nil
 }
 

@@ -4,14 +4,15 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
 func main() {
-	cert, err := ioutil.ReadFile("../certs/ca.crt")
+	cert, err := os.ReadFile("../certs/ca.crt")
 	if err != nil {
 		log.Fatalf("could not open certificate file: %v", err)
 	}
@@ -40,7 +41,7 @@ func main() {
 		log.Fatalf("error making get request: %v", err)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("error reading response: %v", err)
 	}

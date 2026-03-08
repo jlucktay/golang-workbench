@@ -12,6 +12,7 @@ func getResponse(get url.URL) (io.Reader, error) {
 	req, errReq := http.NewRequest("GET", get.String(), nil)
 	if errReq != nil {
 		Error.Printf("URL '%s': request error: %v\n", get.String(), errReq)
+
 		return nil, errReq
 	}
 
@@ -23,6 +24,7 @@ func getResponse(get url.URL) (io.Reader, error) {
 	// 2) return a nil buffer and the error from http.DefaultClient
 	if errDo != nil {
 		Error.Printf("URL '%s': response error: %v\n", get.String(), errDo)
+
 		return nil, errDo
 	}
 	defer res.Body.Close()

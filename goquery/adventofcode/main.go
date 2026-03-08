@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -29,7 +30,13 @@ func getAdventDayDescriptions(firstDay, lastDay int, m map[int]map[string]string
 
 		fmt.Println("Fetching '" + url + "'...")
 
-		doc, err := goquery.NewDocument(url)
+		resp, err := http.DefaultClient.Get(url)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer resp.Body.Close()
+
+		doc, err := goquery.NewDocumentFromReader(resp.Body)
 		if err != nil {
 			log.Fatal(err)
 		}

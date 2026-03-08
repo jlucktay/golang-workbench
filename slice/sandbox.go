@@ -18,5 +18,5 @@ func main() {
 	fmt.Println("slice after offset chop:", slice)
 
 	// chop way too much
-	slice = slice[100:]
+	slice = slice[100:] //nolint:staticcheck // Part of the purpose of this exercise.
 }

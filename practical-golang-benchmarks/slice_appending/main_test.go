@@ -12,7 +12,7 @@ func BenchmarkSliceAppend(b *testing.B) {
 	i := 0
 
 	for b.Loop() {
-		s = append(s, 1)
+		s = append(s, 1) //nolint:staticcheck // Part of the purpose of this benchmark.
 
 		i++
 		if i == numItems {
@@ -30,7 +30,7 @@ func BenchmarkSliceAppendPrealloc(b *testing.B) {
 	i := 0
 
 	for b.Loop() {
-		s = append(s, 1)
+		s = append(s, 1) //nolint:staticcheck // Part of the purpose of this benchmark.
 
 		i++
 		if i == numItems {

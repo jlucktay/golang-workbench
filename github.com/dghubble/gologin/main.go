@@ -47,6 +47,7 @@ func New(config *Config) *http.ServeMux {
 	stateConfig := gologin.DebugOnlyCookieConfig
 	mux.Handle("/google/login", google.StateHandler(stateConfig, google.LoginHandler(oauth2Config, nil)))
 	mux.Handle("/google/callback", google.StateHandler(stateConfig, google.CallbackHandler(oauth2Config, issueSession(), nil)))
+
 	return mux
 }
 
@@ -57,6 +58,7 @@ func issueSession() http.Handler {
 		googleUser, err := google.UserFromContext(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 		// 2. Implement a success handler to issue some form of session
@@ -65,10 +67,12 @@ func issueSession() http.Handler {
 		session.Set(sessionUsername, googleUser.Name)
 		if err := session.Save(w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 		http.Redirect(w, req, "/profile", http.StatusFound)
 	}
+
 	return http.HandlerFunc(fn)
 }
 
@@ -79,6 +83,7 @@ func profileHandler(w http.ResponseWriter, req *http.Request) {
 		// welcome with login button
 		page, _ := os.ReadFile("home.html")
 		fmt.Fprint(w, string(page))
+
 		return
 	}
 	// authenticated profile

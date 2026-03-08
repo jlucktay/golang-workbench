@@ -26,6 +26,7 @@ func GetPersonEndpoint(response http.ResponseWriter, request *http.Request) {
 	if errDecode != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{ "message": "` + errDecode.Error() + `" }`))
+
 		return
 	}
 

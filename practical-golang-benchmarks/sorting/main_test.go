@@ -11,6 +11,7 @@ func generateSlice(n int) []int {
 	for range n {
 		s = append(s, rand.Intn(1e9))
 	}
+
 	return s
 }
 

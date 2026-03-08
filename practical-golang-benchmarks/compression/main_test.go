@@ -3,17 +3,18 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
+	"io"
+	"os"
 	"testing"
 )
 
 func BenchmarkWrite(b *testing.B) {
-	data, err := ioutil.ReadFile("test.json")
+	data, err := os.ReadFile("test.json")
 	if err != nil {
 		panic(err)
 	}
 
-	zw := gzip.NewWriter(ioutil.Discard)
+	zw := gzip.NewWriter(io.Discard)
 
 	for b.Loop() {
 		_, err = zw.Write(data)
@@ -24,7 +25,7 @@ func BenchmarkWrite(b *testing.B) {
 }
 
 func BenchmarkRead(b *testing.B) {
-	data, err := ioutil.ReadFile("test.json")
+	data, err := os.ReadFile("test.json")
 	if err != nil {
 		panic(err)
 	}
@@ -46,8 +47,12 @@ func BenchmarkRead(b *testing.B) {
 
 	for b.Loop() {
 		r.Reset(buf.Bytes())
-		zr.Reset(r)
-		_, err := ioutil.ReadAll(zr)
+
+		if err := zr.Reset(r); err != nil {
+			panic(err)
+		}
+
+		_, err := io.ReadAll(zr)
 		if err != nil {
 			panic(err)
 		}

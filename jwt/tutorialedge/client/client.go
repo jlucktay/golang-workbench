@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -30,14 +31,17 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Fprintf(w, string(body))
+	fmt.Fprint(w, string(body))
 	fmt.Println("Endpoint Hit: homePage")
 }
 
 func generateJWT() (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
-	claims := token.Claims.(jwt.MapClaims)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", errors.New("casting token.Claims as jwt.MapClaims")
+	}
 
 	claims["authorized"] = true
 	claims["client"] = "Elliot Forbes"

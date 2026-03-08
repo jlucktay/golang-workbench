@@ -63,6 +63,7 @@ func getDayDesc(n *html.Node) string {
 				*   *
 				*****
 `)
+
 				break
 			}
 		}

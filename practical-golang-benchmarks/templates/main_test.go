@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"io"
 	"testing"
 	"text/template"
 )
@@ -35,7 +35,7 @@ func BenchmarkExecute(b *testing.B) {
 	t := template.Must(template.New("book").Parse(bookTemplate))
 
 	for b.Loop() {
-		err := t.Execute(ioutil.Discard, book)
+		err := t.Execute(io.Discard, book)
 		if err != nil {
 			panic(err)
 		}

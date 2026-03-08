@@ -29,6 +29,7 @@ func (u *userModel) comparePassword(password string) error {
 	incoming := []byte(password + u.Salt)
 	existing := []byte(u.PasswordHash)
 	err := bcrypt.CompareHashAndPassword(existing, incoming)
+
 	return err
 }
 

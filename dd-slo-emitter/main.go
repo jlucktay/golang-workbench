@@ -106,6 +106,7 @@ Example:
 	for _, slo := range listResp.GetData() {
 		if strings.EqualFold(slo.GetName(), targetSLOName) {
 			targetSLOID = slo.GetId()
+
 			break
 		}
 	}

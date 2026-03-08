@@ -7,10 +7,9 @@ import (
 	"strings"
 )
 
-// Browsers do all kinds of crazy things to make their hrefs valid even when
-// they're sketchy. For example, spaces get autoescaped on Chrome.
+// Browsers do all kinds of crazy things to make their hrefs valid even when they're sketchy. For example, spaces get autoescaped on Chrome.
 func cleanup(href string) string {
-	return strings.Replace(href, " ", "%20", 0)
+	return strings.ReplaceAll(href, " ", "%20")
 }
 
 func neighborsFromPaths(paths []string, ref url.URL) ([]url.URL, []string) {
@@ -28,10 +27,17 @@ func neighborsFromPaths(paths []string, ref url.URL) ([]url.URL, []string) {
 		if err != nil || check.String() != p {
 			msg := fmt.Sprintf("The page %v has an href of %s, which is not a valid URI", &ref, p)
 			errors = append(errors, msg)
+
 			continue
 		}
 
 		u, err := ref.Parse(p)
+		if err != nil {
+			errors = append(errors, err.Error())
+
+			continue
+		}
+
 		if u.Scheme == "mailto" {
 			continue
 		}
@@ -65,7 +71,8 @@ func paths(doc string) []string {
 }
 
 // Neighbors processes a url
-func Neighbors(doc string, ref url.URL) (neighbors []url.URL, errors []string) {
+func Neighbors(doc string, ref url.URL) ([]url.URL, []string) {
 	ps := paths(doc)
+
 	return neighborsFromPaths(ps, ref)
 }
