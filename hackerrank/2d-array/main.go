@@ -50,7 +50,7 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var arr [][]int32
-	for i := 0; i < 6; i++ {
+	for range 6 {
 		arrRowTemp := strings.Split(readLine(reader), " ")
 
 		var arrRow []int32

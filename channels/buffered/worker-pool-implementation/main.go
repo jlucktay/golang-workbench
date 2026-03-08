@@ -53,7 +53,7 @@ func worker(wg *sync.WaitGroup) {
 func createWorkerPool(noOfWorkers int) {
 	var wg sync.WaitGroup
 
-	for i := 0; i < noOfWorkers; i++ {
+	for range noOfWorkers {
 		wg.Add(1)
 		go worker(&wg)
 	}
@@ -63,7 +63,7 @@ func createWorkerPool(noOfWorkers int) {
 }
 
 func allocate(noOfJobs int) {
-	for i := 0; i < noOfJobs; i++ {
+	for i := range noOfJobs {
 		randomNum := rand.Intn(1000000)
 		job := job{i, randomNum}
 		jobs <- job

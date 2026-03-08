@@ -13,7 +13,7 @@ import (
 func arrayManipulation(n int32, qs [][]int32) int64 {
 	a := make([]int64, n+1)
 
-	for i := 0; i < len(qs); i++ {
+	for i := range qs {
 		p := int(qs[i][0])
 		q := qs[i][1]
 		sum := int64(qs[i][2])

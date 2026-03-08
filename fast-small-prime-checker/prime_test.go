@@ -32,21 +32,21 @@ func TestIPrime(t *testing.T) {
 
 func BenchmarkPrime(b *testing.B) {
 	prime := uint32(num)
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		i32Prime(prime)
 	}
 }
 
 func BenchmarkPPrime(b *testing.B) {
 	prime := big.NewInt(num)
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		prime.ProbablyPrime(0)
 	}
 }
 
 func BenchmarkIPrime(b *testing.B) {
 	prime := uint64(num)
-	for n := 0; n < b.N; n++ {
+	for b.Loop() {
 		isPrime(prime)
 	}
 }

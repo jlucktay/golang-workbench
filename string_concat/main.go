@@ -12,7 +12,7 @@ func concatOperator(original *string, concat string) {
 
 func selfConcatOperator(input string, n int) string {
 	output := ""
-	for i := 0; i < n; i++ {
+	for range n {
 		concatOperator(&output, input)
 	}
 
@@ -25,7 +25,7 @@ func concatBuffer(original *bytes.Buffer, concat string) {
 
 func selfConcatBuffer(input string, n int) string {
 	var output bytes.Buffer
-	for i := 0; i < n; i++ {
+	for range n {
 		concatBuffer(&output, input)
 	}
 

@@ -94,7 +94,7 @@ func (ai *AuthInfo) Format(state fmt.State, verb rune) {
 }
 
 func init() {
-	typ := reflect.TypeOf(AuthInfo{})
+	typ := reflect.TypeFor[AuthInfo]()
 	authInfoFields = make([]string, typ.NumField())
 	for i := 0; i < typ.NumField(); i++ {
 		authInfoFields[i] = typ.Field(i).Name

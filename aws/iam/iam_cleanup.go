@@ -98,7 +98,7 @@ func genRoles(input chan string) chan *iam.GetRoleOutput {
 
 			iamRole, errGetRole := svcIam.GetRole(
 				&iam.GetRoleInput{
-					RoleName: aws.String(roleName),
+					RoleName: new(roleName),
 				},
 			)
 			if errGetRole != nil {
@@ -163,7 +163,7 @@ func removeInstanceProfilesFromRole(removeThese roleIPRemove) {
 func deleteRole(roleName string) {
 	deleteRole, errDeleteRole := svcIam.DeleteRole(
 		&iam.DeleteRoleInput{
-			RoleName: aws.String(roleName),
+			RoleName: new(roleName),
 		},
 	)
 	if errDeleteRole != nil {

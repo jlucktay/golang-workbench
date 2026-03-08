@@ -27,7 +27,7 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 	fmt.Println("GetPeopleEndpoint - after context.WithTimeout()")
 
 	fmt.Println("GetPeopleEndpoint - before collection.Find()")
-	cursor, errFind := collection.Find(ctx, bson.M{})
+	cursor, errFind := collection.Find(ctx, bson.M{}) //nolint:contextcheck // TODO: needs a refactor.
 	fmt.Println("GetPeopleEndpoint - after collection.Find()")
 	if errFind != nil {
 		response.WriteHeader(http.StatusInternalServerError)
@@ -38,10 +38,10 @@ func GetPeopleEndpoint(response http.ResponseWriter, request *http.Request) {
 
 		return
 	}
-	defer cursor.Close(ctx)
+	defer cursor.Close(ctx) //nolint:contextcheck // TODO: needs a refactor.
 
 	fmt.Println("GetPeopleEndpoint - before cursor.Next()")
-	for cursor.Next(ctx) {
+	for cursor.Next(ctx) { //nolint:contextcheck // TODO: needs a refactor.
 		fmt.Println("GetPeopleEndpoint - cursor.Next()")
 		var person Person
 		errDecode := cursor.Decode(&person)

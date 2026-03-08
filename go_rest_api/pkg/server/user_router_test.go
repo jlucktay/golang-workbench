@@ -130,7 +130,7 @@ func profileHandlerShouldReturnUserFromContext(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
-	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.RegisteredClaims{}})
+	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{jwt.RegisteredClaims{}, testUsername})
 	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	// Assert
@@ -173,7 +173,7 @@ func profileHandlerShouldReturnStatusNotFoundIfNoUserFound(t *testing.T) {
 	r, _ := http.NewRequest("GET", "/profile", nil)
 	testCookie := newAuthCookie(testUser)
 	r.AddCookie(&testCookie)
-	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{testUsername, jwt.RegisteredClaims{}})
+	ctx := context.WithValue(r.Context(), contextKeyAuthtoken, claims{jwt.RegisteredClaims{}, testUsername})
 	testMux.ServeHTTP(w, r.WithContext(ctx))
 
 	// Assert

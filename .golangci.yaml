@@ -18,6 +18,9 @@ linters:
     - contextcheck
     - copyloopvar
     - embeddedstructfieldcheck
+    - errcheck
+    - exptostd
+    - gocheckcompilerdirectives
     - nlreturn
     - nolintlint
     - nonamedreturns

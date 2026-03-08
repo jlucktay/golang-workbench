@@ -29,7 +29,7 @@ func main() {
 	fmt.Println(val)
 
 	for k, v := range val {
-		fmt.Println(k, ":", reflect.TypeOf(v))
+		fmt.Println(k, ":", reflect.TypeFor[Timestamp]())
 		fmt.Printf("%s : %T\n", k, v)
 	}
 

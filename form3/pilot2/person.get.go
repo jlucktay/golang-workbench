@@ -22,7 +22,7 @@ func GetPersonEndpoint(response http.ResponseWriter, request *http.Request) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	errDecode := collection.FindOne(ctx, Person{ID: id}).Decode(&person)
+	errDecode := collection.FindOne(ctx, Person{ID: id}).Decode(&person) //nolint:contextcheck // TODO: needs a refactor.
 	if errDecode != nil {
 		response.WriteHeader(http.StatusInternalServerError)
 		response.Write([]byte(`{ "message": "` + errDecode.Error() + `" }`))

@@ -27,8 +27,8 @@ type FacebookMessage struct {
 
 	Missed bool `json:"missed,omitempty"`
 
-	Share   FacebookMessageShare   `json:"share,omitempty"`
-	Sticker FacebookMessageSticker `json:"sticker,omitempty"`
+	Share   FacebookMessageShare   `json:"share"`
+	Sticker FacebookMessageSticker `json:"sticker"`
 
 	Files     []FacebookMessageFile     `json:"files,omitempty"`
 	Photos    []FacebookMessagePhoto    `json:"photos,omitempty"`

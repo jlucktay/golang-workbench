@@ -145,7 +145,6 @@ func paraGet(stdout io.Writer, pageLimit int) (*sync.Map, error) {
 	results := sync.Map{}
 
 	for page := 0; page <= pageLimit; page++ {
-		page := page
 
 		g.Go(func() error {
 			fmt.Fprintf(stdout, "/%d", page)

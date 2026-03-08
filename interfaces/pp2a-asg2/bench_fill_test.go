@@ -10,8 +10,7 @@ import (
 )
 
 func BenchmarkFillOAL(b *testing.B) {
-	b.StopTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		wc := &p2.OrdArrayLinear{}
 		fillCollection(wc, mustOpen(dictionary), b)
 		wc.FreeCollection()
@@ -19,8 +18,7 @@ func BenchmarkFillOAL(b *testing.B) {
 }
 
 func BenchmarkFillOAB(b *testing.B) {
-	b.StopTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		wc := &p2.OrdArrayBinary{}
 		fillCollection(wc, mustOpen(dictionary), b)
 		wc.FreeCollection()
@@ -28,8 +26,7 @@ func BenchmarkFillOAB(b *testing.B) {
 }
 
 func BenchmarkFillOLL(b *testing.B) {
-	b.StopTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		wc := &p2.OrdLinkedList{}
 		fillCollection(wc, mustOpen(dictionary), b)
 		wc.FreeCollection()
@@ -37,8 +34,7 @@ func BenchmarkFillOLL(b *testing.B) {
 }
 
 func BenchmarkFillUBST(b *testing.B) {
-	b.StopTimer()
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		wc := &p2.UnbalBinarySearchTree{}
 		fillCollection(wc, mustOpen(dictionary), b)
 		wc.FreeCollection()

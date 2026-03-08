@@ -169,7 +169,7 @@ func (c *crawl) getRequest(u url.URL) {
 			if strings.HasPrefix(mime, "text/") {
 				neighbors, errors := htmlhelp.Neighbors(string(contents), u)
 				for _, e := range errors {
-					c.noteError(e)
+					c.noteError("%s", e)
 				}
 
 				for _, n := range neighbors {

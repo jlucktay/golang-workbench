@@ -21,7 +21,7 @@ func CreatePersonEndpoint(response http.ResponseWriter, request *http.Request) {
 	collection := client.Database("thepolyglotdeveloper").Collection("people")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, _ := collection.InsertOne(ctx, person)
+	result, _ := collection.InsertOne(ctx, person) //nolint:contextcheck // TODO: needs a refactor.
 
 	errEncode := json.NewEncoder(response).Encode(result)
 	if errEncode != nil {

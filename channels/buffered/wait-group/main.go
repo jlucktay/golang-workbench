@@ -17,7 +17,7 @@ func main() {
 	no := 3
 	var wg sync.WaitGroup
 
-	for i := 0; i < no; i++ {
+	for i := range no {
 		wg.Add(1)
 		go process(i, &wg)
 	}

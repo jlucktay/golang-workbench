@@ -78,9 +78,9 @@ func play(strategy0, strategy1 strategy) int {
 func roundRobin(strategies []strategy) ([]int, int) {
 	wins := make([]int, len(strategies))
 
-	for i := 0; i < len(strategies); i++ {
+	for i := range strategies {
 		for j := i + 1; j < len(strategies); j++ {
-			for k := 0; k < gamesPerSeries; k++ {
+			for range gamesPerSeries {
 				winner := play(strategies[i], strategies[j])
 
 				if winner == 0 {

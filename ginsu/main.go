@@ -62,6 +62,7 @@ var (
 
 type resultCounter struct {
 	sync.RWMutex
+
 	resultCounts map[processResult]uint64
 }
 
@@ -232,8 +233,6 @@ func run(ctx context.Context, token string) error {
 	p := pool.NewWithResults[[]*github.Notification]().WithContext(ctx)
 
 	for page := 2; page <= lastPage; page++ {
-		page := page
-
 		p.Go(func(ctx context.Context) ([]*github.Notification, error) {
 			result, _, err := listPageOfNotifications(ctx, client, page)
 

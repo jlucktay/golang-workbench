@@ -10,14 +10,13 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
 	"text/tabwriter"
 	"time"
-
-	"golang.org/x/exp/slices"
 )
 
 const (

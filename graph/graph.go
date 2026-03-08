@@ -53,7 +53,7 @@ func (g *ItemGraph) String() {
 	for i := 0; i < len(g.nodes); i++ {
 		s.WriteString(g.nodes[i].String() + " -> ")
 		near := g.edges[*g.nodes[i]]
-		for j := 0; j < len(near); j++ {
+		for j := range near {
 			s.WriteString(near[j].String() + " ")
 		}
 		s.WriteString("\n")

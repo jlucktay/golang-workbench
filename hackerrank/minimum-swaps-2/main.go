@@ -15,7 +15,7 @@ func minimumSwaps(arr []int32) int32 {
 	counter := int32(0)
 
 	for !sort.SliceIsSorted(arr, func(i, j int) bool { return arr[i] < arr[j] }) {
-		for i := 0; i < len(arr); i++ {
+		for i := range arr {
 			if arr[i] != int32(i)+1 {
 				for j := i + 1; j < len(arr); j++ {
 					if arr[i] == int32(j)+1 || arr[j] == int32(i)+1 {

@@ -12,7 +12,7 @@ func deferHello() {
 func deferCount() {
 	fmt.Println("counting")
 
-	for i := 0; i < 10; i++ {
+	for i := range 10 {
 		defer fmt.Println(i)
 	}
 

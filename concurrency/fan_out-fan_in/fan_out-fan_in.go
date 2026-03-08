@@ -66,7 +66,7 @@ func gen(max, num int) <-chan int {
 	out := make(chan int, 100)
 
 	go func() {
-		for index := 0; index < num; index++ {
+		for range num {
 			// Re-roll the random seed each time
 			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			out <- r.Intn(max) + 1 // Get [1,max] rather than [0,max)

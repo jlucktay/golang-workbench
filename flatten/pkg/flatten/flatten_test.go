@@ -46,7 +46,6 @@ func TestFlatten(t *testing.T) {
 		},
 	}
 	for desc, tC := range testCases {
-		tC := tC // pin!
 		t.Run(desc, func(t *testing.T) {
 			actual := flatten.Flatten(tC.input)
 

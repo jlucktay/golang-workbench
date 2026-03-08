@@ -13,8 +13,9 @@ import (
 )
 
 type claims struct {
-	Username string `json:"username"`
 	jwt.Claims
+
+	Username string `json:"username"`
 }
 
 type contextKey string
@@ -28,11 +29,11 @@ var contextKeyAuthtoken = contextKey("auth-token")
 func newAuthCookie(user root.User) http.Cookie {
 	expireTime := time.Now().Add(time.Hour * 1)
 	c := claims{
-		user.Username,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expireTime),
 			Issuer:    "localhost!",
 		},
+		user.Username,
 	}
 
 	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, c).SignedString([]byte("secret"))

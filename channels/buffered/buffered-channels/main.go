@@ -6,7 +6,7 @@ import (
 )
 
 func write(ch chan int) {
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		ch <- i
 		fmt.Printf("Successfully wrote '%d' to ch.\n", i)
 	}

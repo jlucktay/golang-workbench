@@ -13,7 +13,7 @@ import (
 func main() {
 	var sum uint64
 
-	for i := uint64(0); i < 2000000; i++ {
+	for i := range uint64(2000000) {
 		if isPrime(i) {
 			fmt.Print(i, "...")
 			sum += i

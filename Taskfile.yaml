@@ -23,6 +23,8 @@ tasks:
         - GO_MODULE_DIR
     label: 'fix:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
     sources:
+      - '{{.GO_MODULE_DIR}}/go.mod'
+      - '{{.GO_MODULE_DIR}}/go.sum'
       - '{{.GO_MODULE_DIR}}/**/*.go'
     cmd: go -C "{{.GO_MODULE_DIR}}" fix ./...
 
@@ -41,6 +43,8 @@ tasks:
         - GO_MODULE_DIR
     label: 'modernise:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
     sources:
+      - '{{.GO_MODULE_DIR}}/go.mod'
+      - '{{.GO_MODULE_DIR}}/go.sum'
       - '{{.GO_MODULE_DIR}}/**/*.go'
     cmd: go -C "{{.GO_MODULE_DIR}}" run golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest -fix -test ./...
 
@@ -78,6 +82,8 @@ tasks:
     label: 'lint:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
     sources:
       - '{{.ROOT_DIR}}/.golangci.yaml'
+      - '{{.GO_MODULE_DIR}}/go.mod'
+      - '{{.GO_MODULE_DIR}}/go.sum'
       - '{{.GO_MODULE_DIR}}/**/*.go'
     cmd: cd "{{.GO_MODULE_DIR}}" && golangci-lint run --fix ./...
 

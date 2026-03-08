@@ -18,15 +18,17 @@ var (
 	// TODO: time permitting, consolidate this down to one map
 
 	fetched = struct {
-		m map[url.URL]error
 		sync.Mutex
+
+		m map[url.URL]error
 	}{m: make(map[url.URL]error)}
 
 	errFetchInProgress = errors.New("URL retrieval in progress")
 
 	crawled = struct {
-		m map[url.URL][]url.URL
 		sync.Mutex
+
+		m map[url.URL][]url.URL
 	}{m: make(map[url.URL][]url.URL)}
 )
 
