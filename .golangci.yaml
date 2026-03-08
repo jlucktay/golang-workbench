@@ -1,15 +1,27 @@
 ---
 version: '2'
 
-linters:
+formatters:
   enable:
+    - gofumpt
+
+  settings:
+    gofumpt:
+      extra-rules: true
+
+linters:
+  default: standard
+
+  enable:
+    - bodyclose
+    - containedctx
     - nlreturn
     - nolintlint
     - nonamedreturns
 
   exclusions:
-    paths:
-      - ^triplebyte$
+    generated: strict
+    warn-unused: true
 
   settings:
     errcheck:

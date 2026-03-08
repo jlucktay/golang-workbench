@@ -40,6 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error making get request: %v", err)
 	}
+	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

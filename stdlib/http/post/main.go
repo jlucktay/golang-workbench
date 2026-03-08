@@ -66,6 +66,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
 	respBodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
