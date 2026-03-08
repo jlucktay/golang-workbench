@@ -3,6 +3,8 @@ version: '2'
 
 linters:
   enable:
+    - nlreturn
+    - nolintlint
     - nonamedreturns
 
   exclusions:
@@ -18,12 +20,32 @@ linters:
       # List of functions to exclude from checking, where each entry is a single function to exclude.
       # See https://github.com/kisielk/errcheck#excluding-functions for details.
       exclude-functions:
+        - (*bufio.Writer).Flush
+        - (*bufio.Writer).WriteString
+        - (*github.com/docker/docker/client.Client).Close
+        - (*github.com/go-redis/redis/v9.baseClient).Close
+        - (*go.mongodb.org/mongo-driver/mongo.Cursor).Close
+        - (*golang.org/x/text/message.Printer).Printf
+        - (*os.File).Close
+        - (*os.File).WriteString
+        - (*text/tabwriter.Writer).Flush
         - (io.Closer).Close
         - (net/http.ResponseWriter).Write
+        - fmt.Fprint
         - fmt.Fprintf
+        - fmt.Fprintln
         - io.Copy(*bytes.Buffer)
         - io.Copy(os.Stdout)
-        - io/ioutil.ReadFile
 
       # Display function signature instead of selector.
       verbose: true
+
+    nolintlint:
+      # Exclude following linters from requiring an explanation.
+      allow-no-explanation: []
+
+      # Enable to require an explanation of nonzero length after each nolint directive.
+      require-explanation: true
+
+      # Enable to require nolint directives to mention the specific linter being suppressed.
+      require-specific: true

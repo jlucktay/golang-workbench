@@ -77,8 +77,9 @@ tasks:
         - GO_MODULE_DIR
     label: 'lint:{{trimPrefix (printf "%s/" .ROOT_DIR) .GO_MODULE_DIR}}'
     sources:
+      - '{{.ROOT_DIR}}/.golangci.yaml'
       - '{{.GO_MODULE_DIR}}/**/*.go'
-    cmd: cd "{{.GO_MODULE_DIR}}" && golangci-lint run ./...
+    cmd: cd "{{.GO_MODULE_DIR}}" && golangci-lint run --fix ./...
 
   toil:
     cmds:
