@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/go-playground/mold
 
-go 1.24.0
+go 1.26
 
 require (
 	github.com/go-playground/form/v4 v4.3.0

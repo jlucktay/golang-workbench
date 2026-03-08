@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/BurntSushi/go-sumtype
 
-go 1.24.0
+go 1.26
 
 tool github.com/BurntSushi/go-sumtype
 

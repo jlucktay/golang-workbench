@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/mlb/biginns
 
-go 1.25.0
+go 1.26
 
 require (
 	github.com/anaskhan96/soup v1.2.5

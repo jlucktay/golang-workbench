@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/pace.dev/blog/2020/03/02/dynamically-generate-social-images-in-golang-by-mat-ryer
 
-go 1.23.0
+go 1.26
 
 toolchain go1.24.5
 

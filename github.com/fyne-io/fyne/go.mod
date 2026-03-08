@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/fyne-io/fyne
 
-go 1.25.0
+go 1.26
 
 require fyne.io/fyne v1.4.3
 

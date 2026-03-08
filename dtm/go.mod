@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/dtm
 
-go 1.24.3
+go 1.26
 
 tool github.com/vektra/mockery/v3
 

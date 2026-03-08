@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github/astronomer
 
-go 1.25.0
+go 1.26
 
 require (
 	github.com/PuerkitoBio/goquery v1.11.0

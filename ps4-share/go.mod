@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/ps4-share
 
-go 1.22
+go 1.26
 
 require github.com/zeebo/xxh3 v1.1.0
 

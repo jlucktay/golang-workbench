@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/github.com/manifoldco/promptui
 
-go 1.21
+go 1.26
 
 require github.com/manifoldco/promptui v0.9.0
 

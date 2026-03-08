@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/cineworld
 
-go 1.24.0
+go 1.26
 
 require (
 	github.com/carlmjohnson/versioninfo v0.22.5

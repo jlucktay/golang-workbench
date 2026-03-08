@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/ginsu
 
-go 1.25.6
+go 1.26
 
 require (
 	github.com/charmbracelet/log v0.4.2

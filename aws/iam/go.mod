@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/aws/iam
 
-go 1.21
+go 1.26
 
 require github.com/aws/aws-sdk-go v1.55.8
 
