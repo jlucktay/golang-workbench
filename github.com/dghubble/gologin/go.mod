@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/dghubble/gologin/v2 v2.5.0
 	github.com/dghubble/sessions v0.4.1
-	golang.org/x/oauth2 v0.35.0
+	golang.org/x/oauth2 v0.36.0
 )
 
 require (
