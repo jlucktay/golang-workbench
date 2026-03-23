@@ -6,7 +6,7 @@ tool github.com/vektra/mockery/v3
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
-	github.com/charmbracelet/huh v0.8.0
+	github.com/charmbracelet/huh v1.0.0
 	github.com/docker/docker v28.5.2+incompatible
 	github.com/matryer/is v1.4.1
 	github.com/stretchr/testify v1.11.1
