@@ -218,7 +218,7 @@ func main() {
 func run(ctx context.Context, token string) error {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	hc := oauth2.NewClient(ctx, ts)
-	hc.Timeout = 5 * time.Second
+	hc.Timeout = 10 * time.Second
 	client := github.NewClient(hc)
 
 	// Start sifting through notifications.
@@ -430,6 +430,13 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 			slog.String("subject_url", subjectURL),
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()))
+
+		return nil
+	}
+
+	if ghn.GetRepository().GetArchived() {
+		slog.Info("repo is archived",
+			slog.String("repo", ghn.GetRepository().GetFullName()))
 
 		return nil
 	}
