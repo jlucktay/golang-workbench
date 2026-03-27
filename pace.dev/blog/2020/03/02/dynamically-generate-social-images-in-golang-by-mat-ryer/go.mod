@@ -2,8 +2,6 @@ module go.jlucktay.dev/golang-workbench/pace.dev/blog/2020/03/02/dynamically-gen
 
 go 1.26
 
-toolchain go1.24.5
-
 require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/fogleman/gg v1.3.0
@@ -12,5 +10,5 @@ require (
 
 require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	golang.org/x/image v0.29.0 // indirect
+	golang.org/x/image v0.38.0 // indirect
 )
