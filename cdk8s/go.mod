@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/aws/jsii-runtime-go v1.128.0
 	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.54
-	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.0
+	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.3
 )
 
 require (
@@ -13,7 +13,7 @@ require (
 	github.com/aws/constructs-go/constructs/v10 v10.4.5 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-isatty v0.0.21 // indirect
 	github.com/yuin/goldmark v1.7.16 // indirect
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067 // indirect
 	golang.org/x/mod v0.34.0 // indirect
