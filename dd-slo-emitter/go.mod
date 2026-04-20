@@ -2,7 +2,7 @@ module go.jlucktay.dev/golang-workbench/dd-slo-emitter
 
 go 1.26
 
-require github.com/DataDog/datadog-api-client-go/v2 v2.57.0
+require github.com/DataDog/datadog-api-client-go/v2 v2.58.0
 
 require (
 	github.com/DataDog/zstd v1.5.2 // indirect
