@@ -4,10 +4,10 @@ github.com/aws/constructs-go/constructs/v10 v10.4.5 h1:sI7BEPucBQmbotxUF78qpCh4w
 github.com/aws/constructs-go/constructs/v10 v10.4.5/go.mod h1:L0tXWpvmTRneeFNX4efyD1haL1wQudQGHVXZWuLw74k=
 github.com/aws/jsii-runtime-go v1.129.0 h1:HirIS6zroS7KXW9flKeK8Yai9g7K6VGPOY6bg42bECQ=
 github.com/aws/jsii-runtime-go v1.129.0/go.mod h1:+Hxuq6OMXQjzeApX0FpitOW9H6bC3nYAvTP3d2jfF+U=
-github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.60 h1:l9UUpie3JFFFSElPfC2pycKYsrqmAwGcJ8hbSki4QDo=
-github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.60/go.mod h1:IqvyJTCW0NCZr/IoWU6v7EvfqUdSmnqdUcxL7qHhWl4=
-github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.9 h1:WNX5cOIOHuPb8UvliUUX1a+MP7vWyb0ZH78HTEBazJU=
-github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.9/go.mod h1:+ZQjaiJL44P4G1I1T1eIC5UJlZRMXr89xEWjPbmWqD0=
+github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.61 h1:+C4kI3wdqkUMnB3DNdVeV1ZsZlmw27Rtp0GBmT/kdlQ=
+github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.61/go.mod h1:IqvyJTCW0NCZr/IoWU6v7EvfqUdSmnqdUcxL7qHhWl4=
+github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.11 h1:M5hx0vvZadfE9x0z7lNEx86s+hRL9pT9+iW5bcofM6w=
+github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.11/go.mod h1:0eia6QPzmq21aai/JP0NdeA02p7ykqUvDKaF/LetKGk=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fatih/color v1.19.0 h1:Zp3PiM21/9Ld6FzSKyL5c/BULoe/ONr9KlbYVOfG8+w=
