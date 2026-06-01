@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/go-playground/form/v4 v4.3.0
 	github.com/go-playground/mold/v4 v4.5.1
-	github.com/go-playground/validator/v10 v10.30.2
+	github.com/go-playground/validator/v10 v10.30.3
 )
 
 require (
