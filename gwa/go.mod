@@ -1,9 +1,9 @@
 module go.jlucktay.dev/golang-workbench/gwa
 
-go 1.26
+go 1.26.4
 
 require (
-	github.com/bitfield/script v0.24.1
+	github.com/bitfield/script v0.24.2
 	github.com/charmbracelet/huh v1.0.0
 	github.com/go-git/go-git/v5 v5.19.1
 	github.com/sourcegraph/conc v0.3.0
