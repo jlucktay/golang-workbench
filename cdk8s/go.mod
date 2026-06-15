@@ -3,9 +3,9 @@ module go.jlucktay.dev/golang-workbench/cdk8s
 go 1.25.0
 
 require (
-	github.com/aws/jsii-runtime-go v1.134.0
-	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.72
-	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.24
+	github.com/aws/jsii-runtime-go v1.135.0
+	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.75
+	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.27
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/yuin/goldmark v1.7.16 // indirect
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067 // indirect
 	golang.org/x/mod v0.36.0 // indirect
-	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.44.0 // indirect
 	golang.org/x/telemetry v0.0.0-20260508192327-42602be52be6 // indirect
 	golang.org/x/tools v0.45.0 // indirect
