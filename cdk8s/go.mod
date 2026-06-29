@@ -3,9 +3,9 @@ module go.jlucktay.dev/golang-workbench/cdk8s
 go 1.25.0
 
 require (
-	github.com/aws/jsii-runtime-go v1.136.0
-	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.79
-	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.29
+	github.com/aws/jsii-runtime-go v1.137.0
+	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.80
+	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.32
 )
 
 require (
