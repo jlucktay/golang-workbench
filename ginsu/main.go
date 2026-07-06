@@ -73,6 +73,23 @@ func (rc *resultCounter) increment(pr processResult) {
 	rc.resultCounts[pr]++
 }
 
+type deletionQueue struct {
+	sync.RWMutex
+
+	queue []*github.Notification
+}
+
+func (dq *deletionQueue) add(n *github.Notification) {
+	dq.Lock()
+	defer dq.Unlock()
+
+	if dq.queue == nil {
+		dq.queue = make([]*github.Notification, 0)
+	}
+
+	dq.queue = append(dq.queue, n)
+}
+
 // HTTP header keys.
 const (
 	// headerKeyScopes will list the scopes the token has authorised.
@@ -249,17 +266,28 @@ func run(ctx context.Context, token string) error {
 	slog.Debug("notifications",
 		slog.Int("count", len(notifications)))
 
-	// https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2026-03-10#avoid-concurrent-requests
-	q := pool.New().WithErrors().WithMaxGoroutines(1)
+	q := pool.New().WithErrors()
 	resultCounts := &resultCounter{
 		resultCounts: make(map[processResult]uint64),
 	}
 
-	slog.Info("queueing notifications for pool")
+	toBeMarkedAsDone := deletionQueue{}
+
+	slog.Info("queueing notifications for pool",
+		slog.Int("count", len(notifications)))
 
 	for i := range notifications {
 		q.Go(func() error {
-			return process(ctx, client, notifications[i], resultCounts)
+			markThisAsDone, err := process(ctx, client, notifications[i], resultCounts)
+			if err != nil {
+				return err
+			}
+
+			if markThisAsDone != nil {
+				toBeMarkedAsDone.add(markThisAsDone)
+			}
+
+			return nil
 		})
 	}
 
@@ -270,6 +298,25 @@ func run(ctx context.Context, token string) error {
 	}
 
 	slog.Info("finished waiting for pool")
+
+	slog.Info("setting up queue for deletions to mark as done",
+		slog.Int("count", len(toBeMarkedAsDone.queue)))
+
+	r := pool.New().WithErrors().WithMaxGoroutines(1)
+
+	for i := range toBeMarkedAsDone.queue {
+		r.Go(func() error {
+			return markAsDone(ctx, client, toBeMarkedAsDone.queue[i])
+		})
+	}
+
+	slog.Info("waiting for deletion queue to finish marking as done")
+
+	if err := r.Wait(); err != nil {
+		return fmt.Errorf("working through deletion queue: %w", err)
+	}
+
+	slog.Info("finished waiting for deletion queue")
 
 	ntAttrs := []any{slog.Int("total", len(notifications))}
 
@@ -412,7 +459,7 @@ func listPageOfNotifications(ctx context.Context, client *github.Client, page in
 	return nots, resp.LastPage, nil
 }
 
-func process(ctx context.Context, client *github.Client, ghn *github.Notification, resultCounts *resultCounter) error {
+func process(ctx context.Context, client *github.Client, ghn *github.Notification, resultCounts *resultCounter) (*github.Notification, error) {
 	slog.Debug("starting to process notification",
 		slog.String("type", ghn.GetSubject().GetType()),
 		slog.String("title", ghn.GetSubject().GetTitle()))
@@ -431,48 +478,50 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()))
 
-		return nil
+		return nil, nil
 	}
 
 	if ghn.GetRepository().GetArchived() {
 		slog.Info("repo is archived",
 			slog.String("repo", ghn.GetRepository().GetFullName()))
 
-		return nil
+		return nil, nil
 	}
 
 	switch ghn.GetSubject().GetType() {
 	case "Issue":
 		if err := lookAtIssue(ctx, client, ghn); err != nil {
 			if !errors.Is(err, errOwnerNotOnAllowlist) {
-				return err
+				return nil, err
 			}
 
 			resultCounts.increment(prOwnerNotOnAllowlist)
 		}
 
-		return nil
+		return nil, nil
 
 	case "PullRequest":
-		if err := lookAtPullRequest(ctx, client, ghn, resultCounts); err != nil {
+		if toMarkAsDone, err := lookAtPullRequest(ctx, client, ghn, resultCounts); err != nil {
 			if !errors.Is(err, errOwnerNotOnAllowlist) {
-				return err
+				return nil, err
 			}
 
 			resultCounts.increment(prOwnerNotOnAllowlist)
+		} else if toMarkAsDone != nil {
+			return toMarkAsDone, nil
 		}
 
-		return nil
+		return nil, nil
 
 	case "CheckSuite":
 		resultCounts.increment(prCheckSuite)
 
-		return nil
+		return nil, nil
 
 	case "Release":
 		resultCounts.increment(prRelease)
 
-		return nil
+		return nil, nil
 
 	default:
 		prTypes := make([]string, 0)
@@ -487,7 +536,7 @@ func process(ctx context.Context, client *github.Client, ghn *github.Notificatio
 			slog.String("type", ghn.GetSubject().GetType()),
 			slog.String("title", ghn.GetSubject().GetTitle()))
 
-		return nil
+		return nil, nil
 	}
 }
 
@@ -559,7 +608,7 @@ func lookAtIssue(ctx context.Context, client *github.Client, ghn *github.Notific
 	return nil
 }
 
-func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, doneCounts *resultCounter) error {
+func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.Notification, doneCounts *resultCounter) (*github.Notification, error) {
 	slog.Debug("PR notification",
 		slog.String("repo", ghn.GetRepository().GetFullName()),
 		slog.String("title", ghn.GetSubject().GetTitle()),
@@ -569,7 +618,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 
 	prDets, err := parseForDetails(ghn)
 	if err != nil {
-		return fmt.Errorf("parsing for details: %w", err)
+		return nil, fmt.Errorf("parsing for details: %w", err)
 	}
 
 	pr, resp, err := client.PullRequests.Get(ctx, prDets.owner, prDets.repo, prDets.number)
@@ -585,11 +634,11 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 				slog.String("url", ghn.GetSubject().GetURL()),
 				slog.Time("updated_at", ghn.GetUpdatedAt().Time))
 
-			return nil
+			return nil, nil
 		}
 	}
 	if err != nil {
-		return fmt.Errorf("getting pull request: %w", err)
+		return nil, fmt.Errorf("getting pull request: %w", err)
 	}
 
 	for _, bl := range botLogins.Members() {
@@ -613,7 +662,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 			slog.Int("number", prDets.number),
 			slog.String("state", pr.GetState()))
 
-		return nil
+		return nil, nil
 	}
 
 	slog.Info("PR is closed, marking as done",
@@ -623,7 +672,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 		slog.Int("number", prDets.number),
 		slog.String("state", pr.GetState()))
 
-	return markAsDone(ctx, client, ghn)
+	return ghn, nil
 }
 
 func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notification) error {
