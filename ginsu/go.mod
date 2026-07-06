@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/charmbracelet/log v0.4.2
-	github.com/google/go-github/v62 v62.0.0
+	github.com/google/go-github/v88 v88.0.0
 	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/pflag v1.0.10
@@ -20,7 +20,7 @@ require (
 	github.com/charmbracelet/x/cellbuf v0.0.13-0.20250311204145-2c3ea96c31dd // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
-	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/go-querystring v1.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect

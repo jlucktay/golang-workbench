@@ -18,27 +18,27 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
-	"github.com/google/go-github/v62/github"
+	"github.com/google/go-github/v88/github"
 	"github.com/orsinium-labs/enum"
 	"github.com/sourcegraph/conc/pool"
 	"github.com/spf13/pflag"
-	"golang.org/x/oauth2"
 	"golang.org/x/term"
 )
 
-// ghToken is the name of an environment variable whose value needs should be set with a GitHub personal access token
-// (PAT). This PAT needs to have (at least) the 'repo' and 'notifications' [scopes]. If the notifications are inside an
-// org that uses SAML SSO, the PAT must also be [authorised] for the org.
+// ghToken is the name of an environment variable whose value needs should be set with a GitHub personal access token (PAT).
+// This PAT needs to have (at least) the 'repo' and 'notifications' [scopes].
+// If the notifications are inside an org that uses SAML SSO, the PAT must also be [authorised] for the org.
 //
 // [scopes]: https://docs.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/
 // [authorised]: https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-a-personal-access-token-for-use-with-saml-single-sign-on
 const ghToken = "GITHUB_TOKEN"
 
-const cmdName = "ginsu"
+const (
+	cmdName     = "ginsu"
+	listPerPage = 50
+)
 
 var requiredScopes = []string{"repo", "notifications"}
-
-const listPerPage = 50
 
 type botLogin = enum.Member[string]
 
@@ -80,7 +80,7 @@ const (
 
 	// headerKeySAML will be populated if the token used is not authorised for [SAML SSO].
 	//
-	// [SAML SSO]: https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2022-11-28#personal-access-tokens-and-saml-sso
+	// [SAML SSO]: https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api?apiVersion=2026-03-10#personal-access-tokens-and-saml-sso
 	headerKeySAML = "X-GitHub-SSO"
 )
 
@@ -122,8 +122,7 @@ func main() {
 	// Assume there was an unknown error, unless we make it all the way to the bottom.
 	exitStatus := exitUnknown
 	defer func() {
-		// Calling os.Exit needs to take place inside a closure so that the 'exitStatus' holding variable can be properly
-		// accessed.
+		// Calling os.Exit needs to take place inside a closure so that the 'exitStatus' holding variable can be properly accessed.
 		os.Exit(exitStatus)
 	}()
 
@@ -216,10 +215,10 @@ func main() {
 }
 
 func run(ctx context.Context, token string) error {
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	hc := oauth2.NewClient(ctx, ts)
-	hc.Timeout = 10 * time.Second
-	client := github.NewClient(hc)
+	client, err := github.NewClient(github.WithAuthToken(token), github.WithTimeout(10*time.Second))
+	if err != nil {
+		return fmt.Errorf("creating GitHub API client: %w", err)
+	}
 
 	// Start sifting through notifications.
 	firstPage, lastPage, err := listPageOfNotifications(ctx, client, 1)
@@ -250,7 +249,8 @@ func run(ctx context.Context, token string) error {
 	slog.Debug("notifications",
 		slog.Int("count", len(notifications)))
 
-	q := pool.New().WithErrors()
+	// https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2026-03-10#avoid-concurrent-requests
+	q := pool.New().WithErrors().WithMaxGoroutines(1)
 	resultCounts := &resultCounter{
 		resultCounts: make(map[processResult]uint64),
 	}
@@ -627,14 +627,14 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 }
 
 func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notification) error {
-	reqURL := client.BaseURL.String() + path.Join("notifications", "threads", ghn.GetID())
+	reqURL := client.BaseURL() + path.Join("notifications", "threads", ghn.GetID())
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, reqURL, nil)
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
 
-	resp, err := client.BareDo(ctx, req)
+	resp, err := client.BareDo(req)
 	if err != nil {
 		return fmt.Errorf("doing request: %w", err)
 	}
@@ -643,6 +643,9 @@ func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notifica
 	if resp.StatusCode < 200 || resp.StatusCode >= 400 {
 		return fmt.Errorf("response status when attempting to mark as done: %s", resp.Status)
 	}
+
+	// https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2026-03-10#pause-between-mutative-requests
+	time.Sleep(1 * time.Second)
 
 	return nil
 }
