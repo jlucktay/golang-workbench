@@ -35,7 +35,7 @@ const ghToken = "GITHUB_TOKEN"
 
 const (
 	cmdName     = "ginsu"
-	listPerPage = 50
+	listPerPage = 100
 )
 
 var requiredScopes = []string{"repo", "notifications"}
