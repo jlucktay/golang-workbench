@@ -36,6 +36,11 @@ const ghToken = "GITHUB_TOKEN"
 const (
 	cmdName     = "ginsu"
 	listPerPage = 100
+
+	// deleteSleep is the duration to [pause between mutative DELETE requests] so as not to trigger secondary rate limits.
+	//
+	// [pause between mutative DELETE requests]: https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2026-03-10#pause-between-mutative-requests
+	deleteSleep = 1 * time.Second
 )
 
 var requiredScopes = []string{"repo", "notifications"}
@@ -665,7 +670,7 @@ func lookAtPullRequest(ctx context.Context, client *github.Client, ghn *github.N
 		return nil, nil
 	}
 
-	slog.Info("PR is closed, marking as done",
+	slog.Info("PR is closed, queuing to mark notification as done",
 		slog.String("title", pr.GetTitle()),
 		slog.String("user_login", pr.GetUser().GetLogin()),
 		slog.String("repo", pr.GetBase().GetRepo().GetFullName()),
@@ -693,8 +698,13 @@ func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notifica
 		return fmt.Errorf("response status when attempting to mark as done: %s", resp.Status)
 	}
 
-	// https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2026-03-10#pause-between-mutative-requests
-	time.Sleep(1 * time.Second)
+	slog.Info("marked notification as done, sleeping",
+		slog.String("title", ghn.GetSubject().GetTitle()),
+		slog.String("repo", ghn.GetRepository().GetFullName()),
+		slog.String("type", ghn.GetSubject().GetType()),
+		slog.Duration("duration", deleteSleep))
+
+	time.Sleep(deleteSleep)
 
 	return nil
 }
