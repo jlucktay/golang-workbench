@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	charm.land/log/v2 v2.0.0
-	github.com/google/go-github/v88 v88.0.0
+	github.com/google/go-github/v89 v89.0.0
 	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/pflag v1.0.10

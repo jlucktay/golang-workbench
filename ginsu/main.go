@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"charm.land/log/v2"
-	"github.com/google/go-github/v88/github"
+	"github.com/google/go-github/v89/github"
 	"github.com/orsinium-labs/enum"
 	"github.com/sourcegraph/conc/pool"
 	"github.com/spf13/pflag"
