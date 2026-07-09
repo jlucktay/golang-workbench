@@ -8,7 +8,7 @@ require (
 	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/term v0.44.0
+	golang.org/x/term v0.45.0
 )
 
 require (
@@ -32,5 +32,5 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 )
