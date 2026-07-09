@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"runtime"
 	"runtime/debug"
 	"slices"
 	"strconv"
@@ -271,7 +272,7 @@ func run(ctx context.Context, token string) error {
 	slog.Debug("notifications",
 		slog.Int("count", len(notifications)))
 
-	q := pool.New().WithErrors()
+	q := pool.New().WithErrors().WithMaxGoroutines(runtime.GOMAXPROCS(0))
 	resultCounts := &resultCounter{
 		resultCounts: make(map[processResult]uint64),
 	}
