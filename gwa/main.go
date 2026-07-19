@@ -14,6 +14,16 @@ import (
 	"github.com/sourcegraph/conc/pool"
 )
 
+// flow:
+// - run the equivalent of my 'git rs' alias
+//   - updates all remotes
+// - choose an existing git branch, or make up a new one
+// - from git toplevel
+//   - go up one level
+//   - make up a name based on the branch
+//     - basically just swap '/' for '_' in the branch name
+// - 'git worktree add ...' as appropriate
+
 func main() {
 	ctx := context.Background()
 
@@ -22,6 +32,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "could not open/refresh repo: %v\n", err)
 		os.Exit(1)
 	}
+
+	// choose: new/existing branch
 
 	var createNewBranch bool
 
@@ -42,11 +54,13 @@ func main() {
 	)
 
 	if createNewBranch {
+		// create new? text input prompt
 		branchInput = huh.NewInput().
 			Title("Name of new branch?").
 			Validate(validateNewBranch).
 			Value(&branchName)
 	} else {
+		// use existing? picker list
 		branchInput = huh.NewSelect[string]().
 			Title("Pick an existing branch.").
 			Options(huh.NewOptions(branches...)...).
@@ -61,6 +75,9 @@ func main() {
 	fmt.Printf("Branch name: '%s'\n", branchName)
 
 	fmt.Println("Done.")
+
+	_ = git.Worktree{}
+	_ = git.AddOptions{}
 }
 
 func validateNewBranch(branchCandidate string) error {
@@ -130,6 +147,7 @@ func openAndRefreshGit(ctx context.Context) ([]string, error) {
 	branches := make([]string, 0)
 
 	if err := refIter.ForEach(func(pRef *plumbing.Reference) error {
+		_ = pRef.Name().String()
 		branches = append(branches, pRef.Name().Short())
 
 		return nil
