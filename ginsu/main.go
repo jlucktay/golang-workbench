@@ -312,6 +312,11 @@ func run(ctx context.Context, token string) error {
 
 	for i := range toBeMarkedAsDone.queue {
 		r.Go(func() error {
+			slog.Info("sleeping between deletes",
+				slog.Duration("duration", deleteSleep))
+
+			time.Sleep(deleteSleep)
+
 			return markAsDone(ctx, client, toBeMarkedAsDone.queue[i])
 		})
 	}
@@ -699,13 +704,10 @@ func markAsDone(ctx context.Context, client *github.Client, ghn *github.Notifica
 		return fmt.Errorf("response status when attempting to mark as done: %s", resp.Status)
 	}
 
-	slog.Info("marked notification as done, sleeping",
+	slog.Info("marked notification as done",
 		slog.String("title", ghn.GetSubject().GetTitle()),
 		slog.String("repo", ghn.GetRepository().GetFullName()),
-		slog.String("type", ghn.GetSubject().GetType()),
-		slog.Duration("duration", deleteSleep))
-
-	time.Sleep(deleteSleep)
+		slog.String("type", ghn.GetSubject().GetType()))
 
 	return nil
 }
