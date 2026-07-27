@@ -13,18 +13,20 @@
 ## The flow of the CLI tool
 
   1. Look up the 10 oldest videos in my YouTube Drafts collection.
+  1. Check if there are any duplicates, based on the name field alone.
   1. Prompt to optionally open the oldest video to play in Firefox.
   1. Update the metadata on that same video as follows:
     1. Add the video to the `My Marathon runs` playlist.
     1. Set the `Audience` field to `No, it's not 'Made for Kids'`.
     1. Do not restrict the video to viewers over 18 only.
-    1. AU was not used to generate or edit the content.
+    1. For the field with the prompt `Was AI used to generate or edit your content in any of the following ways?` the answer is no.
     1. Set one tag for each of the following on the video, in the format `video-games/marathon/<key>/<value>` (all lower-cased), with CLI prompts to choose values from a list of enums:
-      1. Mode: Solo, Duo, Trio
-      1. Map: Perimeter, Dire Marsh, Dire Marsh (Night), Output, Cryo Archive
+      1. Mode: PvPvE, PvE
+      1. Crew: Solo, Duo, Trio
+      1. Map: Perimeter, Dire Marsh, Dire Marsh (Night), Outpost, Cryo Archive
       1. Shell: Destroyer, Triage, Recon, Thief, Assassin, Vandal, Sentinel
     1. Set the recording date, based on the video's original filename which is in the format `YYYY-MM-DD_HH-MM-SS.mp4`.
     1. Under category, set the game title to `Marathon (2026)`.
-    1. Change the title to `<mode> <shell> on <map> — YYYY-MM-DDTHH:MM:SS`.
+    1. Change the title to `<crew> <shell> on <map> (<mode>) — YYYY-MM-DDTHH:MM:SS`.
     1. Set visibility to `Private`.
   1. Repeat this Firefox open option and metadata update process for each video in the fetched list.
