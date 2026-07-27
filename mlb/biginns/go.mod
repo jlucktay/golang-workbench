@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/anaskhan96/soup v1.2.5
 	github.com/lmittmann/tint v1.2.0
-	github.com/mattn/go-isatty v0.0.23
+	github.com/mattn/go-isatty v0.0.24
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.21.0
 )
