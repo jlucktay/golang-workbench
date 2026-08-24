@@ -4,8 +4,8 @@ go 1.25.0
 
 require (
 	github.com/aws/jsii-runtime-go v1.139.0
-	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.92
-	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.48
+	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.93
+	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.49
 )
 
 require (
