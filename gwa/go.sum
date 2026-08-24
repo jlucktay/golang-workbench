@@ -17,8 +17,8 @@ github.com/aymanbagabas/go-osc52/v2 v2.0.1 h1:HwpRHbFMcZLEVr42D4p7XBqjyuxQH5SMiE
 github.com/aymanbagabas/go-osc52/v2 v2.0.1/go.mod h1:uYgXzlJ7ZpABp8OJ+exZzJJhRNQ2ASbcXHWsFqH8hp8=
 github.com/aymanbagabas/go-udiff v0.3.1 h1:LV+qyBQ2pqe0u42ZsUEtPiCaUoqgA9gYRDs3vj1nolY=
 github.com/aymanbagabas/go-udiff v0.3.1/go.mod h1:G0fsKmG+P6ylD0r6N/KgQD/nWzgfnl8ZBcNLgcbrw8E=
-github.com/bitfield/script v0.24.3 h1:RT/jiMY4SGUKJrqVK1xg4yuFOcZAc8W3kvfSM+z3Xmw=
-github.com/bitfield/script v0.24.3/go.mod h1:Zi9lceeCvnGWNDffYXU7ibqelo87yD+AWocbODaT1ts=
+github.com/bitfield/script v0.25.0 h1:Ml/7GM82vzYWKrK2oPIl5/lkZEGhEMCQZm235usJuwc=
+github.com/bitfield/script v0.25.0/go.mod h1:d/ZBty4KX3QZnd4Ee7+rdGdTDrkqPjeMuhc5e0p1jzs=
 github.com/catppuccin/go v0.3.0 h1:d+0/YicIq+hSTo5oPuRi5kOpqkVA5tAsU6dNhvRu+aY=
 github.com/catppuccin/go v0.3.0/go.mod h1:8IHJuMGaUUjQM82qBrGNBv7LFq6JI3NnQCF6MOlZjpc=
 github.com/charmbracelet/bubbles v0.21.1-0.20250623103423-23b8fd6302d7 h1:JFgG/xnwFfbezlUnFMJy0nusZvytYysV4SCS2cYbvws=
