@@ -1,5 +1,5 @@
 module go.jlucktay.dev/golang-workbench/golang.org/x/crypto/bcrypt
 
-go 1.26
+go 1.26.0
 
-require golang.org/x/crypto v0.55.0
+require golang.org/x/crypto v0.56.0
