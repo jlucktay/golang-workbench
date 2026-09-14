@@ -1,6 +1,6 @@
 module go.jlucktay.dev/golang-workbench/ginsu
 
-go 1.26
+go 1.26.0
 
 require (
 	charm.land/log/v2 v2.0.1
@@ -8,7 +8,7 @@ require (
 	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
 	github.com/spf13/pflag v1.0.10
-	golang.org/x/term v0.45.0
+	golang.org/x/term v0.46.0
 )
 
 require (
@@ -31,6 +31,6 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
-	golang.org/x/sync v0.22.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/sync v0.23.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
 )
