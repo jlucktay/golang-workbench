@@ -1,5 +1,5 @@
 module go.jlucktay.dev/golang-workbench/concurrency/pipeline-pattern
 
-go 1.26
+go 1.26.0
 
-require golang.org/x/text v0.41.0
+require golang.org/x/text v0.42.0
