@@ -3,9 +3,9 @@ module go.jlucktay.dev/golang-workbench/github.com/go-playground/mold
 go 1.26.0
 
 require (
-	github.com/go-playground/form/v4 v4.3.1
+	github.com/go-playground/form/v4 v4.5.0
 	github.com/go-playground/mold/v4 v4.5.1
-	github.com/go-playground/validator/v10 v10.30.4
+	github.com/go-playground/validator/v10 v10.30.5
 )
 
 require (
