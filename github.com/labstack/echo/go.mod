@@ -2,7 +2,7 @@ module go.jlucktay.dev/golang-workbench/github.com/labstack/echo
 
 go 1.26.0
 
-require github.com/labstack/echo/v4 v4.15.4
+require github.com/labstack/echo/v4 v4.16.0
 
 require (
 	github.com/labstack/gommon v0.5.0 // indirect
