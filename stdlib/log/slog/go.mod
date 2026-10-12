@@ -3,7 +3,7 @@ module go.jlucktay.dev/golang-workbench/stdlib/log/slog
 go 1.26.0
 
 require (
-	github.com/lmittmann/tint v1.2.0
+	github.com/lmittmann/tint v1.2.1
 	golang.org/x/term v0.46.0
 )
 

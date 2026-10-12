@@ -4,8 +4,8 @@ go 1.26.0
 
 require (
 	github.com/aws/jsii-runtime-go v1.141.0
-	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.106
-	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.58
+	github.com/cdk8s-team/cdk8s-core-go/cdk8s/v2 v2.70.109
+	github.com/cdk8s-team/cdk8s-plus-go/cdk8splus33/v2 v2.5.61
 )
 
 require (
@@ -17,7 +17,7 @@ require (
 	github.com/yuin/goldmark v1.7.16 // indirect
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067 // indirect
 	golang.org/x/mod v0.41.0 // indirect
-	golang.org/x/sync v0.23.0 // indirect
+	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/telemetry v0.0.0-20260908163034-4bcc4b2ee518 // indirect
 	golang.org/x/tools v0.50.0 // indirect
