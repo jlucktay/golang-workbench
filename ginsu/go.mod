@@ -7,8 +7,8 @@ require (
 	github.com/google/go-github/v89 v89.0.0
 	github.com/orsinium-labs/enum v1.5.0
 	github.com/sourcegraph/conc v0.3.0
-	github.com/spf13/pflag v1.0.10
-	golang.org/x/term v0.47.0
+	github.com/spf13/pflag v1.1.0
+	golang.org/x/term v0.48.0
 )
 
 require (
@@ -31,6 +31,6 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
-	golang.org/x/sync v0.24.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 )
